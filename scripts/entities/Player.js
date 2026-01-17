@@ -84,6 +84,9 @@ export class Player {
   hit() {
     if (this.isInvulnerable()) return false;
 
+    const hitAudio = new Audio("assets/audio/Hit.wav");
+    hitAudio.play();
+
     this.lives--;
     this.startInvulnerability();
 
