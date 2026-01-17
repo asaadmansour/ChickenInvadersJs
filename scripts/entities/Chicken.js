@@ -15,6 +15,22 @@ export class Chicken {
     this.health = 1;
     this.horizontalRange = 100;
     this.verticalRange = 15;
+
+    // Animation properties
+    this.currentFrame = 0;
+    this.frameCount = 4;
+    this.cols = 2;
+    this.rows = 2;
+    this.frameTimer = 0;
+    this.frameDelay = 15; // Change frame every 15 game ticks
+  }
+
+  updateAnimation() {
+    this.frameTimer++;
+    if (this.frameTimer >= this.frameDelay) {
+      this.frameTimer = 0;
+      this.currentFrame = (this.currentFrame + 1) % this.frameCount;
+    }
   }
   get width() {
     return GameConfig.getChickenWidth();

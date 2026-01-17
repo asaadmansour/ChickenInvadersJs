@@ -10,7 +10,7 @@ export class Player {
     this.lives = 3;
     this.score = 0;
 
-    this.fireRate = 200; // ms between shots
+    this.fireRate = 500; // ms between shots
     this.lastShotTime = 0;
 
     this.invulnerableUntil = 0;
