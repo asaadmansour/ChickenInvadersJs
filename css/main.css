@@ -1,0 +1,145 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Orbitron', sans-serif;
+    min-height: 100vh;
+    background: #050111 url('../assets/images/space_background.png') no-repeat center center / cover;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10vh;
+}
+
+.text{
+    text-align: center;
+    gap:0;
+    cursor: pointer;
+}
+
+h1 {
+    font-size: 100px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    line-height: 0.9;
+    position: relative;
+}
+
+.gradient-text {
+    color: transparent;
+    
+    /* The Gradient */
+    background: linear-gradient(
+        to right,
+        #c388dc,
+        #a7d0ef,
+        #aafbfc,
+        #a4f6fa,
+        #dbfdf4,
+        #f9fbac
+    );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    -webkit-text-stroke: 3px transparent;
+    
+    filter: drop-shadow(0 0 15px rgba(167, 208, 239, 0.7));
+}
+
+
+.gradient-text {
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from { filter: drop-shadow(0 0 10px rgba(167, 208, 239, 0.5)); }
+    to { filter: drop-shadow(0 0 20px rgba(167, 208, 239, 0.9)); }
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.border-button {
+    display: inline-block;
+    background: linear-gradient(to right, #99DDCC 0%, #BFFF00 100%);
+    padding: 4px;
+    border-radius: 68px; /* Slightly larger than button radius */
+    transition: all 0.3s ease-in-out;
+}
+
+button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    background: linear-gradient(to right, #99DDCC 0%, #BFFF00 100%);
+    color: #35013F;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 900;
+    text-transform: uppercase;
+    border-radius: 64px;
+    border: 3px solid #1a0535;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    outline: none;
+}
+
+button.play {
+    width: 28vw;
+    height: 14vh;
+    font-size: 48px;
+}
+
+button.instructions {
+    width: 20vw;
+    height: 10vh;
+    font-size: 20px;
+}
+
+.border-button:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 15px rgba(191, 255, 0, 0.6));
+}
+
+footer{
+    position: absolute;
+    bottom: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 40px;
+    color: #FFFFFF;
+}
+
+.others{
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+    text-transform: uppercase;
+    font-size: 16px;
+    text-align: center;
+    cursor: pointer;
+}
+.others p:hover {
+    text-decoration: underline;
+}
