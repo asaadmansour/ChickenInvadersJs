@@ -25,17 +25,8 @@ export class Game {
     this.bullets = [];
     this.eggs = [];
 
-    this.chickens = [
-      new Chicken(110, 50),
-      new Chicken(210, 50),
-      new Chicken(310, 50),
-      new Chicken(410, 50),
-      new Chicken(510, 50),
-      new Chicken(610, 50),
-      new Chicken(710, 50),
-      new Chicken(810, 50),
-      new Chicken(910, 50),
-    ];
+    this.chickens = [];
+    this.initChickens();
 
     this.setupControls();
     this.start();
@@ -43,6 +34,25 @@ export class Game {
     this.canvasManager.onResize = () => {
       this.player.clampToBounds();
     };
+  }
+
+  initChickens() {
+    const rowCount = 2;
+    const colCount = 13;
+    const spacingX = 100;
+    const spacingY = 80;
+    const startY = 50;
+
+    const totalWidth = (colCount - 1) * spacingX;
+    const startX = (this.canvasManager.canvas.width - totalWidth) / 2;
+
+    for (let r = 0; r < rowCount; r++) {
+      for (let c = 0; c < colCount; c++) {
+        const x = startX + c * spacingX;
+        const y = startY + r * spacingY;
+        this.chickens.push(new Chicken(x, y));
+      }
+    }
   }
   setupControls() {
     this.inputHandler.bindKey("ArrowLeft", () => {
@@ -86,9 +96,11 @@ export class Game {
     this.bullets.forEach((bullet) => bullet.move());
     this.eggs.forEach((egg) => egg.move(this.canvasManager.height));
 
+    Chicken.updateTime();
     this.chickens.forEach((chicken) => {
-      // 0.2% kol frame
-      if (chicken.isAlive && Math.random() < 0.002) {
+      chicken.move();
+      // 0.1% kol frame
+      if (chicken.isAlive && Math.random() < 0.001) {
         this.eggs.push(
           new Egg(chicken.x + chicken.width / 2, chicken.y + chicken.height),
         );
