@@ -11,7 +11,8 @@ export class Game {
     this.inputHandler = new InputHandler();
     this.collisionDetector = new CollisionDetector();
 
-    this.backgroundAudio = new Audio("../assets/audio/Game Audio.wav");
+    this.backgroundAudio = new Audio();
+    this.backgroundAudio.src = "../assets/audio/Game Audio.wav";
     this.backgroundAudio.loop = true;
     this.backgroundAudio.volume = 0.8; // 3ashan ne5aly al soot mayeb2ash 3aly
 
@@ -42,26 +43,39 @@ export class Game {
     };
   }
   setupControls() {
-    this.inputHandler.bindKey("ArrowLeft", () =>
-      this.player.move({ left: true }),
-    );
+    this.inputHandler.bindKey("ArrowLeft", () => {
+      this.player.move({ left: true });
+      this.startBackgroundAudio();
+    });
 
-    this.inputHandler.bindKey("ArrowRight", () =>
-      this.player.move({ right: true }),
-    );
+    this.inputHandler.bindKey("ArrowRight", () => {
+      this.player.move({ right: true });
+      this.startBackgroundAudio();
+    });
 
-    this.inputHandler.bindKey("ArrowUp", () => this.player.move({ up: true }));
+    this.inputHandler.bindKey("ArrowUp", () => {
+      this.player.move({ up: true });
+      this.startBackgroundAudio();
+    });
 
-    this.inputHandler.bindKey("ArrowDown", () =>
-      this.player.move({ down: true }),
-    );
+    this.inputHandler.bindKey("ArrowDown", () => {
+      this.player.move({ down: true });
+      this.startBackgroundAudio();
+    });
 
     this.inputHandler.bindKey("Space", () => {
       if (this.player.canShoot()) {
         const spawn = this.player.shoot();
         this.bullets.push(new Bullet(spawn.x, spawn.y));
       }
+      this.startBackgroundAudio();
     });
+  }
+
+  startBackgroundAudio() {
+    if (this.backgroundAudio.paused) {
+      this.backgroundAudio.play().catch(() => {});
+    }
   }
 
   updateState() {
@@ -85,10 +99,6 @@ export class Game {
   }
 
   start() {
-    if (this.backgroundAudio.paused) {
-      this.backgroundAudio.currentTime = 0;
-      this.backgroundAudio.play();
-    }
     this.gameLoop();
   }
 }
