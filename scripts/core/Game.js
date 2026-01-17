@@ -11,10 +11,7 @@ export class Game {
     this.inputHandler = new InputHandler();
     this.collisionDetector = new CollisionDetector();
 
-    this.player = new Player(
-      this.canvasManager.width,
-      this.canvasManager.height
-    );
+    this.player = new Player();
     this.bullets = [];
 
     this.chickens = [
@@ -23,12 +20,19 @@ export class Game {
       new Chicken(310, 50),
       new Chicken(410, 50),
       new Chicken(510, 50),
+      new Chicken(610, 50),
+      new Chicken(710, 50),
+      new Chicken(810, 50),
+      new Chicken(910, 50),
     ];
 
     this.setupControls();
     this.start();
-  }
-
+  
+  this.canvasManager.onResize = () => {
+    this.player.clampToBounds();
+  };
+}
   setupControls() {
     this.inputHandler.bindKey("ArrowLeft", () =>
       this.player.move({ left: true })

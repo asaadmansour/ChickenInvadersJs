@@ -1,10 +1,9 @@
+import { GameConfig } from '../config/Config.js';
 export class CanvasManager {
+
   constructor() {
     this.canvas = document.getElementById("gameCanvas");
     this.ctx = this.canvas.getContext("2d");
-    this.width = this.canvas.width;
-    this.height = this.canvas.height;
-
     this.chickenSprite = new Image();
     this.chickenSprite.src = "./assets/images/chicken.png";
 
@@ -13,8 +12,18 @@ export class CanvasManager {
 
     this.bulletSprite = new Image();
     this.bulletSprite.src = "./assets/images/bullet.png";
+    this.resizeCanvas();
+    this.canavasChanges();
   }
-
+  resizeCanvas() {
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
+    GameConfig.updateDimensions(this.canvas.width,this.canvas.height);
+    if(this.onResize) this.onResize();
+  }
+  canavasChanges() {
+    window.addEventListener("resize",()=> this.resizeCanvas());
+  }
   render(player, bullets, chickens) {
     this.clear();
 

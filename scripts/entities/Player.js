@@ -1,12 +1,9 @@
+import { GameConfig } from "../config/Config.js";
+// import {}
 export class Player {
-  constructor(canvasWidth, canvasHeight) {
-    this.canvasWidth = canvasWidth;
-    this.canvasHeight = canvasHeight;
-
-    this.width = 64;
-    this.height = 64;
-    this.x = canvasWidth / 2 - this.width / 2;
-    this.y = canvasHeight - this.height - 20;
+  constructor() {
+    this.x = (this.canvasWidth / 2) - (this.width / 2);
+    this.y = this.canvasHeight - (this.height + 5);
 
     this.moveSpeed = 5;
 
@@ -16,7 +13,18 @@ export class Player {
     this.fireRate = 200; // ms between shots
     this.lastShotTime = 0;
   }
-
+  get width() {
+    return GameConfig.getPlayerWidth();
+  }
+  get height() {
+    return GameConfig.getPlayerHeight();
+  }
+  get canvasWidth() {
+      return GameConfig.canvasWidth;
+  }
+  get canvasHeight() {
+      return GameConfig.canvasHeight;
+  }
   /**
    * Update player position based on direction
    * @param {Object} direction - Movement direction flags

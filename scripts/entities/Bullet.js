@@ -1,16 +1,19 @@
+import { GameConfig } from "../config/Config.js";
+
 export class Bullet {
   constructor(x, y) {
     this.x = x;
     this.y = y;
-
-    this.width = 8;
-    this.height = 16;
-
     this.moveSpeed = 10;
-
     this.isActive = true;
   }
 
+    get width() {
+      return GameConfig.getBulletWidth();
+    }
+    get height() {
+      return GameConfig.getBulletHeight();
+    }
   /**
    * Move bullet upward
    */
