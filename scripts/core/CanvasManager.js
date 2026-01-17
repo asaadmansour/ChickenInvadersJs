@@ -11,6 +11,9 @@ export class CanvasManager {
 
     this.bulletSprite = new Image();
     this.bulletSprite.src = "./assets/images/bullet.png";
+
+    this.eggSprite = new Image();
+    this.eggSprite.src = "./assets/images/Egg.webp";
     this.resizeCanvas();
     this.canavasChanges();
   }
@@ -23,7 +26,7 @@ export class CanvasManager {
   canavasChanges() {
     window.addEventListener("resize", () => this.resizeCanvas());
   }
-  render(player, bullets, chickens) {
+  render(player, bullets, chickens, eggs) {
     this.clear();
 
     if (!player.shouldRender || player.shouldRender()) {
@@ -36,6 +39,10 @@ export class CanvasManager {
 
     chickens.forEach((chicken) => {
       this.drawSprite(chicken, this.chickenSprite);
+    });
+
+    eggs.forEach((egg) => {
+      this.drawSprite(egg, this.eggSprite);
     });
   }
 

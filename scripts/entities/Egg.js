@@ -1,6 +1,6 @@
 import { GameConfig } from "../config/Config.js";
 
-class Egg {
+export class Egg {
   constructor(x, y) {
     this.x = x;
     this.y = y;
@@ -15,7 +15,14 @@ class Egg {
   }
   move(canvasHeight) {
     this.y += this.speed;
-      if(this.y > canvasHeight)
-        this.isActive = false;
+    if (this.y > canvasHeight) this.isActive = false;
+  }
+  getBounds() {
+    return {
+      x: this.x,
+      y: this.y,
+      width: this.width,
+      height: this.height,
+    };
   }
 }

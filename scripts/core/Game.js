@@ -3,6 +3,7 @@ import { InputHandler } from "./InputHandler.js";
 import { Player } from "../entities/Player.js";
 import { Bullet } from "../entities/Bullet.js";
 import { Chicken } from "../entities/Chicken.js";
+import { Egg } from "../entities/Egg.js";
 import { CollisionDetector } from "./CollisionDetector.js";
 
 export class Game {
@@ -22,6 +23,7 @@ export class Game {
     );
 
     this.bullets = [];
+    this.eggs = [];
 
     this.chickens = [
       new Chicken(110, 50),
@@ -82,20 +84,37 @@ export class Game {
     this.inputHandler.processInput();
 
     this.bullets.forEach((bullet) => bullet.move());
+    this.eggs.forEach((egg) => egg.move(this.canvasManager.height));
+
+    this.chickens.forEach((chicken) => {
+      // 0.2% kol frame
+      if (chicken.isAlive && Math.random() < 0.002) {
+        this.eggs.push(
+          new Egg(chicken.x + chicken.width / 2, chicken.y + chicken.height),
+        );
+      }
+    });
 
     this.collisionDetector.checkBulletsVsChickens(this.bullets, this.chickens);
     this.collisionDetector.checkPlayerVsChickens(this.player, this.chickens);
+    this.collisionDetector.checkEggsVsPlayer(this.eggs, this.player);
 
     this.bullets = this.bullets.filter(
       (bullet) => bullet.y + bullet.height > 0 && bullet.isActive,
     );
+    this.eggs = this.eggs.filter((egg) => egg.isActive);
 
     this.chickens = this.chickens.filter((chicken) => chicken.isAlive);
   }
 
   gameLoop() {
     this.updateState();
-    this.canvasManager.render(this.player, this.bullets, this.chickens);
+    this.canvasManager.render(
+      this.player,
+      this.bullets,
+      this.chickens,
+      this.eggs,
+    );
     requestAnimationFrame(() => this.gameLoop());
   }
 

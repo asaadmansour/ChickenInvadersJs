@@ -39,4 +39,19 @@ export class CollisionDetector {
       }
     }
   }
+
+  checkEggsVsPlayer(eggs, player) {
+    if (!player.isAlive()) return;
+    if (player.isInvulnerable && player.isInvulnerable()) return;
+
+    for (const egg of eggs) {
+      if (!egg.isActive) continue;
+
+      if (this.isOverlap(egg, player)) {
+        egg.isActive = false;
+        player.hit();
+        break;
+      }
+    }
+  }
 }
