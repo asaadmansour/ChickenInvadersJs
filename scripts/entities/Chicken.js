@@ -1,4 +1,4 @@
-class Chicken {
+export class Chicken {
   constructor(x, y, speed) {
     this.x = x;
     this.y = y;
@@ -32,7 +32,16 @@ class Chicken {
     return (this.direction *= -1);
   }
   draw(ctx) {
-    ctx.drawImage(this.image,this.x,this.y,this.width,this.height);
+    ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+  }
+
+  getBounds() {
+    return {
+      x: this.x,
+      y: this.y,
+      width: this.width,
+      height: this.height,
+    };
   }
 }
 // add getbounds if we add collison in the future
