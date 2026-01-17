@@ -12,9 +12,18 @@ html, body {
 body {
     position: relative;
     background-image: url("../assets/images/space_background.png");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    background-size: auto;
+    background-repeat: repeat;
+    animation: scrollBackground 25s linear infinite;
+}
+
+@keyframes scrollBackground {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 0 2000px;
+    }
 }
 body::after {
     position: absolute;
