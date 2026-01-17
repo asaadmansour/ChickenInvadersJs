@@ -11,9 +11,13 @@ export class Game {
     this.inputHandler = new InputHandler();
     this.collisionDetector = new CollisionDetector();
 
+    this.backgroundAudio = new Audio("../assets/audio/Game Audio.wav");
+    this.backgroundAudio.loop = true;
+    this.backgroundAudio.volume = 0.8; // 3ashan ne5aly al soot mayeb2ash 3aly
+
     this.player = new Player(
       this.canvasManager.width,
-      this.canvasManager.height
+      this.canvasManager.height,
     );
     this.bullets = [];
 
@@ -31,17 +35,17 @@ export class Game {
 
   setupControls() {
     this.inputHandler.bindKey("ArrowLeft", () =>
-      this.player.move({ left: true })
+      this.player.move({ left: true }),
     );
 
     this.inputHandler.bindKey("ArrowRight", () =>
-      this.player.move({ right: true })
+      this.player.move({ right: true }),
     );
 
     this.inputHandler.bindKey("ArrowUp", () => this.player.move({ up: true }));
 
     this.inputHandler.bindKey("ArrowDown", () =>
-      this.player.move({ down: true })
+      this.player.move({ down: true }),
     );
 
     this.inputHandler.bindKey("Space", () => {
@@ -60,7 +64,7 @@ export class Game {
     this.collisionDetector.checkBulletsVsChickens(this.bullets, this.chickens);
 
     this.bullets = this.bullets.filter(
-      (bullet) => bullet.y + bullet.height > 0 && bullet.isActive
+      (bullet) => bullet.y + bullet.height > 0 && bullet.isActive,
     );
 
     this.chickens = this.chickens.filter((chicken) => chicken.isAlive);
@@ -73,6 +77,10 @@ export class Game {
   }
 
   start() {
+    if (this.backgroundAudio.paused) {
+      this.backgroundAudio.currentTime = 0;
+      this.backgroundAudio.play();
+    }
     this.gameLoop();
   }
 }
