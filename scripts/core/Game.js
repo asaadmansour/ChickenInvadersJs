@@ -84,6 +84,7 @@ export class Game {
     this.bullets.forEach((bullet) => bullet.move());
 
     this.collisionDetector.checkBulletsVsChickens(this.bullets, this.chickens);
+    this.collisionDetector.checkPlayerVsChickens(this.player, this.chickens);
 
     this.bullets = this.bullets.filter(
       (bullet) => bullet.y + bullet.height > 0 && bullet.isActive,

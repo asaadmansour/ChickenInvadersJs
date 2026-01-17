@@ -25,4 +25,18 @@ export class CollisionDetector {
       });
     });
   }
+
+  checkPlayerVsChickens(player, chickens) {
+    if (!player.isAlive()) return;
+    if (player.isInvulnerable && player.isInvulnerable()) return;
+
+    for (const chicken of chickens) {
+      if (!chicken.isAlive) continue;
+
+      if (this.isOverlap(player, chicken)) {
+        player.hit();
+        break;
+      }
+    }
+  }
 }

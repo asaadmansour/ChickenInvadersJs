@@ -1,6 +1,5 @@
-import { GameConfig } from '../config/Config.js';
+import { GameConfig } from "../config/Config.js";
 export class CanvasManager {
-
   constructor() {
     this.canvas = document.getElementById("gameCanvas");
     this.ctx = this.canvas.getContext("2d");
@@ -18,16 +17,18 @@ export class CanvasManager {
   resizeCanvas() {
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
-    GameConfig.updateDimensions(this.canvas.width,this.canvas.height);
-    if(this.onResize) this.onResize();
+    GameConfig.updateDimensions(this.canvas.width, this.canvas.height);
+    if (this.onResize) this.onResize();
   }
   canavasChanges() {
-    window.addEventListener("resize",()=> this.resizeCanvas());
+    window.addEventListener("resize", () => this.resizeCanvas());
   }
   render(player, bullets, chickens) {
     this.clear();
 
-    this.drawSprite(player, this.playerSprite);
+    if (!player.shouldRender || player.shouldRender()) {
+      this.drawSprite(player, this.playerSprite);
+    }
 
     bullets.forEach((bullet) => {
       this.drawSprite(bullet, this.bulletSprite);
@@ -50,7 +51,7 @@ export class CanvasManager {
         entity.x,
         entity.y,
         entity.width,
-        entity.height
+        entity.height,
       );
     }
   }
