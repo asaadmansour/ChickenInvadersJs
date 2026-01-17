@@ -57,7 +57,9 @@ export class Player {
    */
   shoot() {
     this.lastShotTime = Date.now();
-
+    const laserAudio = new Audio("assets/audio/Laser.mp3");
+    laserAudio.currentTime = 0;
+    laserAudio.play();
     return {
       x: this.x + this.width / 2,
       y: this.y,
