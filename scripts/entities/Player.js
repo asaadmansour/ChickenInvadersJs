@@ -2,7 +2,7 @@ import { GameConfig } from "../config/Config.js";
 // import {}
 export class Player {
   constructor() {
-    this.x = (this.canvasWidth / 2) - (this.width / 2);
+    this.x = this.canvasWidth / 2 - this.width / 2;
     this.y = this.canvasHeight - (this.height + 5);
 
     this.moveSpeed = 5;
@@ -10,8 +10,11 @@ export class Player {
     this.lives = 3;
     this.score = 0;
 
-    this.fireRate = 200; // ms between shots
+    this.fireRate = 500; // ms between shots
     this.lastShotTime = 0;
+
+    this.invulnerableUntil = 0;
+    this.blinkInterval = 100;
   }
   get width() {
     return GameConfig.getPlayerWidth();
@@ -20,10 +23,10 @@ export class Player {
     return GameConfig.getPlayerHeight();
   }
   get canvasWidth() {
-      return GameConfig.canvasWidth;
+    return GameConfig.canvasWidth;
   }
   get canvasHeight() {
-      return GameConfig.canvasHeight;
+    return GameConfig.canvasHeight;
   }
   /**
    * Update player position based on direction
@@ -65,7 +68,9 @@ export class Player {
    */
   shoot() {
     this.lastShotTime = Date.now();
-
+    const laserAudio = new Audio("assets/audio/Laser.mp3");
+    laserAudio.currentTime = 0;
+    laserAudio.play();
     return {
       x: this.x + this.width / 2,
       y: this.y,
@@ -77,9 +82,28 @@ export class Player {
    * @returns {boolean} True if player died (no lives left)
    */
   hit() {
+    if (this.isInvulnerable()) return false;
+
+    const hitAudio = new Audio("assets/audio/Hit.wav");
+    hitAudio.play();
+
     this.lives--;
+    this.startInvulnerability();
 
     return !this.isAlive();
+  }
+
+  startInvulnerability(durationMs = 2000) {
+    this.invulnerableUntil = Date.now() + durationMs;
+  }
+
+  isInvulnerable() {
+    return Date.now() < this.invulnerableUntil;
+  }
+
+  shouldRender() {
+    if (!this.isInvulnerable()) return true;
+    return Math.floor(Date.now() / this.blinkInterval) % 2 === 0; // haya3mel render mara ahh mara laa kol 100ms
   }
 
   /**
