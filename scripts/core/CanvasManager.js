@@ -1,4 +1,3 @@
-import { GameConfig } from "../config/Config.js";
 export class CanvasManager {
   static #instance = null;
 
@@ -45,7 +44,6 @@ export class CanvasManager {
   resizeCanvas() {
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
-    GameConfig.updateDimensions(this.canvas.width, this.canvas.height);
     if (this.onResize) this.onResize();
   }
   canavasChanges() {
