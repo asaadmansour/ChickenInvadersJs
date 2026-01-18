@@ -5,23 +5,19 @@ import { Bullet } from "../entities/Bullet.js";
 import { Chicken } from "../entities/Chicken.js";
 import { Egg } from "../entities/Egg.js";
 import { CollisionDetector } from "./CollisionDetector.js";
+import { AudioManager } from "./AudioManager.js";
 import { GameState } from "./GameState.js";
 import { WaveController } from "./WaveController.js";
 import { WAVE_CONFIGS } from "../config/Config.js";
 
 export class Game {
   constructor() {
+    this.audioManager = AudioManager.getInstance();
     this.canvasManager = CanvasManager.getInstance();
     this.inputHandler = new InputHandler();
     this.collisionDetector = new CollisionDetector();
     this.gameState = GameState.getInstance();
     this.waveController = new WaveController();
-
-    this.backgroundAudio = new Audio();
-    this.backgroundAudio.src = "../assets/audio/Game Audio.wav";
-    this.backgroundAudio.loop = true;
-    this.backgroundAudio.volume = 0.8; // 3ashan ne5aly al soot mayeb2ash 3aly
-
     this.waveController.createFirstWave(this.gameState);
     this.setupControls();
     this.start();
@@ -29,6 +25,7 @@ export class Game {
     this.canvasManager.onResize = () => {
       this.gameState.player.clampToBounds();
     };
+    // this.startBackgroundAudio(); browser blocks autoplay audio on refersh
   }
 
   setupControls() {
@@ -62,9 +59,7 @@ export class Game {
   }
 
   startBackgroundAudio() {
-    if (this.backgroundAudio.paused) {
-      this.backgroundAudio.play().catch(() => {});
-    }
+    this.audioManager.playMusic();
   }
 
   gameLoop() {

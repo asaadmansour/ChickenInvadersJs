@@ -1,3 +1,4 @@
+import { CHICKEN,PLAYER,BULLET,EGG } from "../config/Constants.js";
 export class CanvasManager {
   static #instance = null;
 
@@ -9,19 +10,19 @@ export class CanvasManager {
     this.canvas = document.getElementById("gameCanvas");
     this.ctx = this.canvas.getContext("2d");
     this.chickenSpriteSheet = new Image();
-    this.chickenSpriteSheet.src = "./assets/images/chicken_spritesheet.png";
+    this.chickenSpriteSheet.src = CHICKEN.IMAGE;
 
     this.Boss = new Image();
     this.chickenSpriteSheet.src = "./assets/images/chicken_spritesheet.png";
 
     this.playerSprite = new Image();
-    this.playerSprite.src = "./assets/images/player.png";
+    this.playerSprite.src = PLAYER.IMAGE;
 
     this.bulletSprite = new Image();
-    this.bulletSprite.src = "./assets/images/bullet.png";
+    this.bulletSprite.src = BULLET.IMAGE ;
 
     this.eggSprite = new Image();
-    this.eggSprite.src = "./assets/images/Egg.webp";
+    this.eggSprite.src = EGG.IMAGE ;
     this.resizeCanvas();
     this.canavasChanges();
   }

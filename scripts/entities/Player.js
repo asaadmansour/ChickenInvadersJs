@@ -2,10 +2,11 @@ import { CanvasManager } from "../core/CanvasManager.js";
 import { GameObject } from "./GameObject.js";
 import { ENTITY_RATIOS } from "../config/Constants.js";
 import { PLAYER } from "../config/Constants.js";
-
+import { AudioManager } from "../core/AudioManager.js";
 export class Player extends GameObject {
   constructor() {
     super(0, 0, PLAYER.MOVE_SPEED);
+    this.audioManager = AudioManager.getInstance();
 
     this.x = CanvasManager.getInstance().width / 2 - this.width / 2;
     this.y = CanvasManager.getInstance().height - this.height - 5;
@@ -81,9 +82,7 @@ export class Player extends GameObject {
    */
   shoot() {
     this.lastShotTime = Date.now();
-    const laserAudio = new Audio("assets/audio/Laser.mp3");
-    laserAudio.currentTime = 0;
-    laserAudio.play();
+    this.audioManager.play("bullet");
 
     return {
       x: this.x + this.width / 2,
@@ -98,8 +97,7 @@ export class Player extends GameObject {
   hit() {
     if (this.isInvulnerable()) return false;
 
-    const hitAudio = new Audio("assets/audio/Hit.wav");
-    hitAudio.play();
+    this.audioManager.play("hit");
 
     this.lives--;
     this.startInvulnerability();
