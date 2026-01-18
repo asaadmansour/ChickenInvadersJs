@@ -8,10 +8,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/gameover.css">
+    <link rel="stylesheet" href="./css/pause.css">
 </head>
 <body>
     <div class="game-container">
-        <div class="text">
+        <!-- <div class="text">
             <h1 class="gradient-text" data-text="CHICKEN">CHICKEN</h1>
             <h1 class="gradient-text" data-text="INVADERS">INVADERS</h1>
         </div>
@@ -47,7 +49,50 @@
                     <img src="./assets/instagram-icon.png" alt="Instagram">
                 </div>
             </div>
-        </footer>
+        </footer> -->
+
+
+    <!-- This is the gameover part -->
+
+    <div class="gameover-container">
+        <h1>
+            GAME OVER
+        </h1>
+        <div class="scores-container">
+            <p class="final-score-text">
+                FINAL SCORE: <span id="final-score">0</span>
+            </p>
+            <p class="high-score-text">
+                HIGH SCORE: <span id="high-score">0</span>
+            </p>
+        </div>
+        <div class="buttons">
+            <button type="button" class="retry-button">
+                RETRY
+            </button>
+            <button type="button" class="back-to-menu-button">
+                BACK TO MENU
+            </button>
+        </div>
+    </div>
+
+
+    <!-- This is the pause menu part -->
+
+    <!-- <div class="pause-menu-container">
+        <div class="flex-container">
+            <p>
+                PAUSED
+            </p>
+            <div class="buttons">
+                <button type="button">RESUME</button>
+                <button type="button">RESTART</button>
+                <button type="button">EXIT TO MENU</button>
+            </div>
+        </div>
+    </div> -->
+
+
     </div>
 </body>
 </html>

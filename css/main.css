@@ -58,12 +58,9 @@ h1 {
     -webkit-text-stroke: 3px transparent;
     
     filter: drop-shadow(0 0 15px rgba(167, 208, 239, 0.7));
-}
-
-
-.gradient-text {
     animation: glow 2s ease-in-out infinite alternate;
 }
+
 
 @keyframes glow {
     from { filter: drop-shadow(0 0 10px rgba(167, 208, 239, 0.5)); }
