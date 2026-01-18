@@ -1,9 +1,18 @@
 import { GameConfig } from "../config/Config.js";
 export class CanvasManager {
+  static #instance = null;
+
   constructor() {
+    if (CanvasManager.#instance) {
+      throw new Error("Use CanvasManager.getInstance() instead of new");
+    }
+
     this.canvas = document.getElementById("gameCanvas");
     this.ctx = this.canvas.getContext("2d");
     this.chickenSpriteSheet = new Image();
+    this.chickenSpriteSheet.src = "./assets/images/chicken_spritesheet.png";
+
+    this.Boss = new Image();
     this.chickenSpriteSheet.src = "./assets/images/chicken_spritesheet.png";
 
     this.playerSprite = new Image();
@@ -17,6 +26,22 @@ export class CanvasManager {
     this.resizeCanvas();
     this.canavasChanges();
   }
+
+  get width() {
+    return this.canvas.width;
+  }
+
+  get height() {
+    return this.canvas.height;
+  }
+
+  static getInstance() {
+    if (!CanvasManager.#instance) {
+      CanvasManager.#instance = new CanvasManager();
+    }
+    return CanvasManager.#instance;
+  }
+
   resizeCanvas() {
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
@@ -70,13 +95,17 @@ export class CanvasManager {
       const frameHeight = spriteSheet.height / entity.rows;
       const col = entity.currentFrame % entity.cols;
       const row = Math.floor(entity.currentFrame / entity.cols);
-      
+
       this.ctx.drawImage(
         spriteSheet,
-        col * frameWidth, row * frameHeight,    // Source x, y
-        frameWidth, frameHeight,                 // Source width, height
-        entity.x, entity.y,                      // Destination x, y
-        entity.width, entity.height              // Destination width, height
+        col * frameWidth,
+        row * frameHeight, // Source x, y
+        frameWidth,
+        frameHeight, // Source width, height
+        entity.x,
+        entity.y, // Destination x, y
+        entity.width,
+        entity.height, // Destination width, height
       );
     }
   }

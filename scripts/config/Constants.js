@@ -1,1 +1,37 @@
-export class Constants {}
+export const ENTITY_RATIOS = {
+  CHICKEN_WIDTH: 0.06,
+  CHICKEN_HEIGHT: 0.09,
+  PLAYER_WIDTH: 0.06,
+  PLAYER_HEIGHT: 0.06,
+  EGG_WIDTH: 0.012,
+  EGG_HEIGHT: 0.025,
+  BULLET_WIDTH: 0.005,
+  BULLET_HEIGHT: 0.02,
+};
+
+export const PLAYER = {
+  MOVE_SPEED: 5,
+  FIRE_RATE: 500,
+  INVULNERABILITY_DURATION: 2000,
+  BLINK_INTERVAL: 100,
+  INITIAL_LIVES: 3,
+};
+
+export const BULLET = {
+  MOVE_SPEED: 10,
+};
+
+export const EGG = {
+  MOVE_SPEED: 3,
+};
+
+export const CHICKEN = {
+  HORIZONTAL_RANGE: 100,
+  VERTICAL_RANGE: 15,
+  FRAME_COUNT: 4,
+  FRAME_DELAY: 15,
+  COLS: 2,
+  ROWS: 2,
+  TIME_INCREMENT: 0.02,
+  MOVE_SPEED: 1,
+};

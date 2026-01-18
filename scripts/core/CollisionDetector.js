@@ -16,11 +16,11 @@ export class CollisionDetector {
       if (!bullet.isActive) return;
 
       chickens.forEach((chicken) => {
-        if (!chicken.isAlive) return;
+        if (!chicken.isActive) return;
 
         if (this.isOverlap(bullet, chicken)) {
           bullet.isActive = false;
-          chicken.isAlive = false;
+          chicken.isActive = false;
         }
       });
     });
@@ -31,7 +31,7 @@ export class CollisionDetector {
     if (player.isInvulnerable && player.isInvulnerable()) return;
 
     for (const chicken of chickens) {
-      if (!chicken.isAlive) continue;
+      if (!chicken.isActive) continue;
 
       if (this.isOverlap(player, chicken)) {
         player.hit();

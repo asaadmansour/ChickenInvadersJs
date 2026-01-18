@@ -1,28 +1,31 @@
-import { GameConfig } from "../config/Config.js";
+import { CanvasManager } from "../core/CanvasManager.js";
+import { GameObject } from "./GameObject.js";
+import { ENTITY_RATIOS } from "../config/Constants.js";
+import { EGG } from "../config/Constants.js";
 
-export class Egg {
+export class Egg extends GameObject {
   constructor(x, y) {
-    this.x = x;
-    this.y = y;
-    this.speed = 3;
-    this.isActive = true;
+    super(x, y, EGG.MOVE_SPEED);
   }
+
+  /**
+   * Get egg width dynamically based on current canvas size
+   */
   get width() {
-    return GameConfig.getEggWidth();
+    return CanvasManager.getInstance().width * ENTITY_RATIOS.EGG_WIDTH;
   }
+
+  /**
+   * Get egg height dynamically based on current canvas size
+   */
   get height() {
-    return GameConfig.getEggHeight();
+    return CanvasManager.getInstance().height * ENTITY_RATIOS.EGG_HEIGHT;
   }
-  move(canvasHeight) {
-    this.y += this.speed;
-    if (this.y > canvasHeight) this.isActive = false;
-  }
-  getBounds() {
-    return {
-      x: this.x,
-      y: this.y,
-      width: this.width,
-      height: this.height,
-    };
+
+  /**
+   * Move egg downward
+   */
+  move() {
+    this.y += this.moveSpeed;
   }
 }

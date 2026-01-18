@@ -8,7 +8,7 @@ import { CollisionDetector } from "./CollisionDetector.js";
 
 export class Game {
   constructor() {
-    this.canvasManager = new CanvasManager();
+    this.canvasManager = CanvasManager.getInstance();
     this.inputHandler = new InputHandler();
     this.collisionDetector = new CollisionDetector();
 
@@ -17,10 +17,9 @@ export class Game {
     this.backgroundAudio.loop = true;
     this.backgroundAudio.volume = 0.8; // 3ashan ne5aly al soot mayeb2ash 3aly
 
-    this.player = new Player(
-      this.canvasManager.width,
-      this.canvasManager.height,
-    );
+    this.gameTime = 0;
+
+    this.player = new Player();
 
     this.bullets = [];
     this.eggs = [];
@@ -92,18 +91,17 @@ export class Game {
 
   updateState() {
     this.inputHandler.processInput();
+    this.updateTime();
 
     this.bullets.forEach((bullet) => bullet.move());
-    this.eggs.forEach((egg) => egg.move(this.canvasManager.height));
+    this.eggs.forEach((egg) => egg.move());
 
-    Chicken.updateTime();
     this.chickens.forEach((chicken) => {
-      chicken.move();
+      chicken.move(this.gameTime);
       // 0.1% kol frame
-      if (chicken.isAlive && Math.random() < 0.001) {
-        this.eggs.push(
-          new Egg(chicken.x + chicken.width / 2, chicken.y + chicken.height),
-        );
+      if (chicken.isActive && Math.random() < 0.001) {
+        const spawn = chicken.drop();
+        this.eggs.push(new Egg(spawn.x, spawn.y));
       }
     });
 
@@ -114,9 +112,19 @@ export class Game {
     this.bullets = this.bullets.filter(
       (bullet) => bullet.y + bullet.height > 0 && bullet.isActive,
     );
-    this.eggs = this.eggs.filter((egg) => egg.isActive);
 
-    this.chickens = this.chickens.filter((chicken) => chicken.isAlive);
+    this.eggs = this.eggs.filter(
+      (egg) => egg.isActive && egg.y < this.canvasManager.height,
+    );
+
+    this.chickens = this.chickens.filter((chicken) => chicken.isActive);
+  }
+
+  /**
+   * Update global time for movement calculations
+   */
+  updateTime() {
+    this.gameTime += 0.02;
   }
 
   gameLoop() {
