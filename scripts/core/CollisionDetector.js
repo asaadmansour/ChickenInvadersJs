@@ -11,6 +11,12 @@ export class CollisionDetector {
     );
   }
 
+  checkCollisions(gameState) {
+    this.checkBulletsVsChickens(gameState.bullets, gameState.chickens);
+    this.checkPlayerVsChickens(gameState.player, gameState.chickens);
+    this.checkEggsVsPlayer(gameState.eggs, gameState.player);
+  }
+
   checkBulletsVsChickens(bullets, chickens) {
     bullets.forEach((bullet) => {
       if (!bullet.isActive) return;
@@ -19,8 +25,8 @@ export class CollisionDetector {
         if (!chicken.isActive) return;
 
         if (this.isOverlap(bullet, chicken)) {
-          bullet.isActive = false;
-          chicken.isActive = false;
+          bullet.deactivate();
+          chicken.deactivate();
         }
       });
     });
@@ -48,7 +54,7 @@ export class CollisionDetector {
       if (!egg.isActive) continue;
 
       if (this.isOverlap(egg, player)) {
-        egg.isActive = false;
+        egg.deactivate();
         player.hit();
         break;
       }

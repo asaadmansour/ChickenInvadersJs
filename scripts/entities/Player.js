@@ -149,5 +149,6 @@ export class Player extends GameObject {
     this.lives = 3;
     this.score = 0;
     this.lastShotTime = 0;
+    this.invulnerableUntil = 0;
   }
 }

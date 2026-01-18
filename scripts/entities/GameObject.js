@@ -32,4 +32,10 @@ export class GameObject {
       height: this.height,
     };
   }
+  /**
+   * deactivate the object
+   */
+  deactivate() {
+    this.isActive = false;
+  }
 }

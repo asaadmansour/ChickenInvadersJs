@@ -49,23 +49,24 @@ export class CanvasManager {
   canavasChanges() {
     window.addEventListener("resize", () => this.resizeCanvas());
   }
-  render(player, bullets, chickens, eggs) {
+
+  render(gameState) {
     this.clear();
 
-    if (!player.shouldRender || player.shouldRender()) {
-      this.drawSprite(player, this.playerSprite);
+    if (!gameState.player.shouldRender || gameState.player.shouldRender()) {
+      this.drawSprite(gameState.player, this.playerSprite);
     }
 
-    bullets.forEach((bullet) => {
+    gameState.bullets.forEach((bullet) => {
       this.drawSprite(bullet, this.bulletSprite);
     });
 
-    chickens.forEach((chicken) => {
+    gameState.chickens.forEach((chicken) => {
       chicken.updateAnimation();
       this.drawAnimatedSprite(chicken, this.chickenSpriteSheet);
     });
 
-    eggs.forEach((egg) => {
+    gameState.eggs.forEach((egg) => {
       this.drawSprite(egg, this.eggSprite);
     });
   }
