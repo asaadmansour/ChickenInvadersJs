@@ -1,0 +1,36 @@
+:root {
+    /* Colors */
+    --color-bg-dark: #1a0933;
+    --color-bg-mid: #2d1b4e;
+    --color-purple: #5208db;
+    --color-teal: #00f5ff;
+    --color-teal-light: #00d9ff;
+    --color-pink: #ff5da2;
+    --color-green: #8fe0cc;
+    --color-yellow: #c0e060;
+    --color-text-white: #ffffff;
+    --color-text-dark: #35013F;
+  
+    /* Fonts */
+    --font-primary: 'Orbitron', sans-serif;
+    --font-retro: 'Press Start 2P', cursive;
+  
+    /* Font Sizes */
+    --font-size-heading: 4rem;
+    --font-size-subheading: 1.5rem;
+    --font-size-text: 1rem;
+  
+    /* Shadows */
+    --shadow-glow: 0 0 30px rgba(89, 11, 233, 0.8);
+    --shadow-text: 0 0 40px rgba(41, 130, 133, 0.842);
+    --shadow-input: 0 0 15px rgba(0, 245, 255, 0.4), inset 0 0 10px rgba(0, 245, 255, 0.1);
+    --shadow-btn: 0 5px 30px rgba(204, 255, 0, 0.4);
+  
+    /* Gradients */
+    --gradient-bg: linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg-mid) 50%, var(--color-bg-dark) 100%);
+    --gradient-heading: linear-gradient(180deg, #00f5ff 0%, #00d9ff 50%, #0099ff 100%);
+    --gradient-btn: linear-gradient(400deg, var(--color-green) 20%, var(--color-yellow) 80%);
+    --gradient-back-btn: linear-gradient(90deg, #2dd4bf 0%, #84cc16 100%);
+    --gradient-newgame-btn: linear-gradient(90deg, #06b6d4 0%, #84cc16 100%);
+  }
+  
