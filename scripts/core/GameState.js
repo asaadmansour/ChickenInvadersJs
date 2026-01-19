@@ -22,6 +22,7 @@ export class GameState {
     this.chickens = [];
   }
 
+  // Singleton access method
   static getInstance() {
     if (!GameState.#instance) {
       GameState.#instance = new GameState();
@@ -58,11 +59,11 @@ export class GameState {
     return this.chickens.length === 0;
   }
 
-  nextWave() {
+  incrementWaveNumber() {
     this.currentWave++;
   }
 
-  // Reset
+  // Reset the game state to initial values
   reset() {
     this.score = 0;
     this.lives = 3;

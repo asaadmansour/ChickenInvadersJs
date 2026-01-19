@@ -1,5 +1,5 @@
 export const WAVE_CONFIGS = [
-  // Level 1
+  // Wave 1
   {
     rows: 2,
     cols: 13,

@@ -18,16 +18,21 @@ export class Game {
     this.collisionDetector = new CollisionDetector();
     this.gameState = GameState.getInstance();
     this.waveController = new WaveController();
-    this.waveController.createFirstWave(this.gameState);
-    this.setupControls();
-    this.start();
 
-    this.canvasManager.onResize = () => {
+    this.setupControls();
+
+    this.waveController.createFirstWave(this.gameState);
+
+    this.canvasManager.onResizeAction = () => {
       this.gameState.player.clampToBounds();
     };
+
+    this.start();
+
     // this.startBackgroundAudio(); browser blocks autoplay audio on refersh
   }
 
+  // Setup keyboard controls for player movement and shooting
   setupControls() {
     this.inputHandler.bindKey("ArrowLeft", () => {
       this.gameState.player.move({ left: true });
@@ -58,21 +63,24 @@ export class Game {
     });
   }
 
+  // Start background music playback
   startBackgroundAudio() {
     this.audioManager.playMusic();
   }
 
+  // Main game loop called every frame
   gameLoop() {
     this.inputHandler.processInput();
     this.gameState.updateTime();
     this.updateEntitiesPositions();
     this.attemptSpawnEggs();
     this.collisionDetector.checkCollisions(this.gameState);
-    this.filterInactiveEntities();
+    this.removeInactiveEntities();
     this.canvasManager.render(this.gameState);
     requestAnimationFrame(() => this.gameLoop());
   }
 
+  // Update positions of all entities based on their velocities and movement types
   updateEntitiesPositions() {
     this.gameState.bullets.forEach((bullet) => bullet.move());
     this.gameState.eggs.forEach((egg) => egg.move());
@@ -81,6 +89,7 @@ export class Game {
     );
   }
 
+  // Attempt to spawn eggs from active chickens based on the current wave's drop rate
   attemptSpawnEggs() {
     this.gameState.chickens.forEach((chicken) => {
       if (
@@ -94,7 +103,8 @@ export class Game {
     });
   }
 
-  filterInactiveEntities() {
+  // Remove inactive entities caused by collisions or moving out of bounds
+  removeInactiveEntities() {
     this.gameState.bullets = this.gameState.bullets.filter(
       (bullet) => bullet.isActive && bullet.y + bullet.height > 0,
     );

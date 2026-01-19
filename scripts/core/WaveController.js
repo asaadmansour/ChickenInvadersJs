@@ -4,6 +4,7 @@ import { WAVE_CONFIGS } from "../config/Config.js";
 export class WaveController {
   constructor() {}
 
+  // Create the first wave of chickens - 2 rows, 13 chickens per row
   createFirstWave(gameState) {
     const config = WAVE_CONFIGS[0];
 

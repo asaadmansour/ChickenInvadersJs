@@ -1,4 +1,4 @@
-import { CHICKEN,PLAYER,BULLET,EGG } from "../config/Constants.js";
+import { CHICKEN, PLAYER, BULLET, EGG } from "../config/Constants.js";
 export class CanvasManager {
   static #instance = null;
 
@@ -19,14 +19,19 @@ export class CanvasManager {
     this.playerSprite.src = PLAYER.IMAGE;
 
     this.bulletSprite = new Image();
-    this.bulletSprite.src = BULLET.IMAGE ;
+    this.bulletSprite.src = BULLET.IMAGE;
 
     this.eggSprite = new Image();
-    this.eggSprite.src = EGG.IMAGE ;
+    this.eggSprite.src = EGG.IMAGE;
+
+    this.onResizeAction = null;
+
     this.resizeCanvas();
-    this.canavasChanges();
+
+    this.setResizeListener();
   }
 
+  // Getters for canvas dimensions
   get width() {
     return this.canvas.width;
   }
@@ -35,6 +40,7 @@ export class CanvasManager {
     return this.canvas.height;
   }
 
+  // Singleton access method
   static getInstance() {
     if (!CanvasManager.#instance) {
       CanvasManager.#instance = new CanvasManager();
@@ -42,15 +48,24 @@ export class CanvasManager {
     return CanvasManager.#instance;
   }
 
+  // Resize canvas to fit window
   resizeCanvas() {
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
-    if (this.onResize) this.onResize();
-  }
-  canavasChanges() {
-    window.addEventListener("resize", () => this.resizeCanvas());
   }
 
+  // Handle window resize events
+  setResizeListener() {
+    window.addEventListener("resize", () => {
+      this.resizeCanvas();
+      if (this.onResizeAction) this.onResizeAction();
+    });
+  }
+
+  /**
+   * render the game state onto the canvas [player, bullets, chickens, eggs]
+   * @param {*} gameState - the current game state object
+   */
   render(gameState) {
     this.clear();
 
@@ -72,11 +87,7 @@ export class CanvasManager {
     });
   }
 
-  drawEntity(entity, color) {
-    this.ctx.fillStyle = color;
-    this.ctx.fillRect(entity.x, entity.y, entity.width, entity.height);
-  }
-
+  // Draw a static sprite
   drawSprite(entity, image) {
     if (image.complete) {
       this.ctx.drawImage(
@@ -89,6 +100,7 @@ export class CanvasManager {
     }
   }
 
+  // Draw an animated sprite from a sprite sheet
   drawAnimatedSprite(entity, spriteSheet) {
     if (spriteSheet.complete) {
       const frameWidth = spriteSheet.width / entity.cols;
@@ -110,6 +122,7 @@ export class CanvasManager {
     }
   }
 
+  // Clear the entire canvas
   clear() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
