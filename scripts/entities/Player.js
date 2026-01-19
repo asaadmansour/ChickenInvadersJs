@@ -1,33 +1,40 @@
-import { GameConfig } from "../config/Config.js";
-// import {}
-export class Player {
+import { CanvasManager } from "../core/CanvasManager.js";
+import { GameObject } from "./GameObject.js";
+import { ENTITY_RATIOS } from "../config/Constants.js";
+import { PLAYER } from "../config/Constants.js";
+import { AudioManager } from "../core/AudioManager.js";
+export class Player extends GameObject {
   constructor() {
-    this.x = this.canvasWidth / 2 - this.width / 2;
-    this.y = this.canvasHeight - (this.height + 5);
+    super(0, 0, PLAYER.MOVE_SPEED);
+    this.audioManager = AudioManager.getInstance();
 
-    this.moveSpeed = 5;
+    this.x = CanvasManager.getInstance().width / 2 - this.width / 2;
+    this.y = CanvasManager.getInstance().height - this.height - 5;
 
-    this.lives = 3;
+    this.lives = PLAYER.INITIAL_LIVES;
     this.score = 0;
 
-    this.fireRate = 500; // ms between shots
+    this.fireRate = PLAYER.FIRE_RATE; // ms between shots
     this.lastShotTime = 0;
 
     this.invulnerableUntil = 0;
-    this.blinkInterval = 100;
+    this.blinkInterval = PLAYER.BLINK_INTERVAL;
   }
+
+  /**
+   * Get player width dynamically based on current canvas size
+   */
   get width() {
-    return GameConfig.getPlayerWidth();
+    return CanvasManager.getInstance().width * ENTITY_RATIOS.PLAYER_WIDTH;
   }
+
+  /**
+   * Get player height dynamically based on current canvas size
+   */
   get height() {
-    return GameConfig.getPlayerHeight();
+    return CanvasManager.getInstance().height * ENTITY_RATIOS.PLAYER_HEIGHT;
   }
-  get canvasWidth() {
-    return GameConfig.canvasWidth;
-  }
-  get canvasHeight() {
-    return GameConfig.canvasHeight;
-  }
+
   /**
    * Update player position based on direction
    * @param {Object} direction - Movement direction flags
@@ -49,8 +56,15 @@ export class Player {
    * Keep player within canvas boundaries
    */
   clampToBounds() {
-    this.x = Math.max(0, Math.min(this.x, this.canvasWidth - this.width));
-    this.y = Math.max(0, Math.min(this.y, this.canvasHeight - this.height));
+    this.x = Math.max(
+      0,
+      Math.min(this.x, CanvasManager.getInstance().width - this.width),
+    );
+
+    this.y = Math.max(
+      0,
+      Math.min(this.y, CanvasManager.getInstance().height - this.height),
+    );
   }
 
   /**
@@ -68,9 +82,8 @@ export class Player {
    */
   shoot() {
     this.lastShotTime = Date.now();
-    const laserAudio = new Audio("assets/audio/Laser.mp3");
-    laserAudio.currentTime = 0;
-    laserAudio.play();
+    this.audioManager.play("bullet");
+
     return {
       x: this.x + this.width / 2,
       y: this.y,
@@ -84,8 +97,7 @@ export class Player {
   hit() {
     if (this.isInvulnerable()) return false;
 
-    const hitAudio = new Audio("assets/audio/Hit.wav");
-    hitAudio.play();
+    this.audioManager.play("hit");
 
     this.lives--;
     this.startInvulnerability();
@@ -93,14 +105,26 @@ export class Player {
     return !this.isAlive();
   }
 
+  /**
+   * Start invulnerability period after being hit
+   * @param {number} durationMs - Duration of invulnerability in milliseconds
+   */
   startInvulnerability(durationMs = 2000) {
     this.invulnerableUntil = Date.now() + durationMs;
   }
 
+  /**
+   * Check if player is currently invulnerable
+   * @returns {boolean} True if invulnerable
+   */
   isInvulnerable() {
     return Date.now() < this.invulnerableUntil;
   }
 
+  /**
+   * Determine if player should be rendered (for blinking effect)
+   * @returns {boolean} True if player should be rendered
+   */
   shouldRender() {
     if (!this.isInvulnerable()) return true;
     return Math.floor(Date.now() / this.blinkInterval) % 2 === 0; // haya3mel render mara ahh mara laa kol 100ms
@@ -110,40 +134,19 @@ export class Player {
    * Check if player is alive
    * @returns {boolean} True if player is alive (has lives left)
    */
-
   isAlive() {
     return this.lives > 0;
-  }
-
-  /**
-   * Add points to player score
-   * @param {number} points - Points to add
-   */
-  addScore(points) {
-    this.score += points;
-  }
-
-  /**
-   * Get bounding box for player
-   * @returns {Object} {x, y, width, height}
-   */
-  getBounds() {
-    return {
-      x: this.x,
-      y: this.y,
-      width: this.width,
-      height: this.height,
-    };
   }
 
   /**
    * Reset player to starting state
    */
   reset() {
-    this.x = this.canvasWidth / 2 - this.width / 2;
-    this.y = this.canvasHeight - this.height - 20;
+    this.x = CanvasManager.getInstance().width / 2 - this.width / 2;
+    this.y = CanvasManager.getInstance().height - this.height - 20;
     this.lives = 3;
     this.score = 0;
     this.lastShotTime = 0;
+    this.invulnerableUntil = 0;
   }
 }

@@ -5,129 +5,117 @@ import { Bullet } from "../entities/Bullet.js";
 import { Chicken } from "../entities/Chicken.js";
 import { Egg } from "../entities/Egg.js";
 import { CollisionDetector } from "./CollisionDetector.js";
+import { AudioManager } from "./AudioManager.js";
+import { GameState } from "./GameState.js";
+import { WaveController } from "./WaveController.js";
+import { WAVE_CONFIGS } from "../config/Config.js";
 
 export class Game {
   constructor() {
-    this.canvasManager = new CanvasManager();
+    this.audioManager = AudioManager.getInstance();
+    this.canvasManager = CanvasManager.getInstance();
     this.inputHandler = new InputHandler();
     this.collisionDetector = new CollisionDetector();
-
-    this.backgroundAudio = new Audio();
-    this.backgroundAudio.src = "../assets/audio/Game Audio.wav";
-    this.backgroundAudio.loop = true;
-    this.backgroundAudio.volume = 0.8; // 3ashan ne5aly al soot mayeb2ash 3aly
-
-    this.player = new Player(
-      this.canvasManager.width,
-      this.canvasManager.height,
-    );
-
-    this.bullets = [];
-    this.eggs = [];
-
-    this.chickens = [];
-    this.initChickens();
+    this.gameState = GameState.getInstance();
+    this.waveController = new WaveController();
 
     this.setupControls();
+
+    this.waveController.createFirstWave(this.gameState);
+
+    this.canvasManager.onResizeAction = () => {
+      this.gameState.player.clampToBounds();
+    };
+
     this.start();
 
-    this.canvasManager.onResize = () => {
-      this.player.clampToBounds();
-    };
+    // this.startBackgroundAudio(); browser blocks autoplay audio on refersh
   }
 
-  initChickens() {
-    const rowCount = 2;
-    const colCount = 13;
-    const spacingX = 100;
-    const spacingY = 80;
-    const startY = 50;
-
-    const totalWidth = (colCount - 1) * spacingX;
-    const startX = (this.canvasManager.canvas.width - totalWidth) / 2;
-
-    for (let r = 0; r < rowCount; r++) {
-      for (let c = 0; c < colCount; c++) {
-        const x = startX + c * spacingX;
-        const y = startY + r * spacingY;
-        this.chickens.push(new Chicken(x, y));
-      }
-    }
-  }
+  // Setup keyboard controls for player movement and shooting
   setupControls() {
     this.inputHandler.bindKey("ArrowLeft", () => {
-      this.player.move({ left: true });
+      this.gameState.player.move({ left: true });
       this.startBackgroundAudio();
     });
 
     this.inputHandler.bindKey("ArrowRight", () => {
-      this.player.move({ right: true });
+      this.gameState.player.move({ right: true });
       this.startBackgroundAudio();
     });
 
     this.inputHandler.bindKey("ArrowUp", () => {
-      this.player.move({ up: true });
+      this.gameState.player.move({ up: true });
       this.startBackgroundAudio();
     });
 
     this.inputHandler.bindKey("ArrowDown", () => {
-      this.player.move({ down: true });
+      this.gameState.player.move({ down: true });
       this.startBackgroundAudio();
     });
 
     this.inputHandler.bindKey("Space", () => {
-      if (this.player.canShoot()) {
-        const spawn = this.player.shoot();
-        this.bullets.push(new Bullet(spawn.x, spawn.y));
+      if (this.gameState.player.canShoot()) {
+        const spawn = this.gameState.player.shoot();
+        this.gameState.addBullet(new Bullet(spawn.x, spawn.y));
       }
       this.startBackgroundAudio();
     });
   }
 
+  // Start background music playback
   startBackgroundAudio() {
-    if (this.backgroundAudio.paused) {
-      this.backgroundAudio.play().catch(() => {});
-    }
+    this.audioManager.playMusic();
   }
 
-  updateState() {
+  // Main game loop called every frame
+  gameLoop() {
     this.inputHandler.processInput();
+    this.gameState.updateTime();
+    this.updateEntitiesPositions();
+    this.attemptSpawnEggs();
+    this.collisionDetector.checkCollisions(this.gameState);
+    this.removeInactiveEntities();
+    this.canvasManager.render(this.gameState);
+    requestAnimationFrame(() => this.gameLoop());
+  }
 
-    this.bullets.forEach((bullet) => bullet.move());
-    this.eggs.forEach((egg) => egg.move(this.canvasManager.height));
+  // Update positions of all entities based on their velocities and movement types
+  updateEntitiesPositions() {
+    this.gameState.bullets.forEach((bullet) => bullet.move());
+    this.gameState.eggs.forEach((egg) => egg.move());
+    this.gameState.chickens.forEach((chicken) =>
+      chicken.move(this.gameState.gameTime),
+    );
+  }
 
-    Chicken.updateTime();
-    this.chickens.forEach((chicken) => {
-      chicken.move();
-      // 0.1% kol frame
-      if (chicken.isAlive && Math.random() < 0.001) {
-        this.eggs.push(
-          new Egg(chicken.x + chicken.width / 2, chicken.y + chicken.height),
-        );
+  // Attempt to spawn eggs from active chickens based on the current wave's drop rate
+  attemptSpawnEggs() {
+    this.gameState.chickens.forEach((chicken) => {
+      if (
+        chicken.isActive &&
+        Math.random() <
+          WAVE_CONFIGS[this.gameState.currentWave - 1].eggsDropRate
+      ) {
+        const spawn = chicken.drop();
+        this.gameState.addEgg(new Egg(spawn.x, spawn.y));
       }
     });
-
-    this.collisionDetector.checkBulletsVsChickens(this.bullets, this.chickens);
-    this.collisionDetector.checkPlayerVsChickens(this.player, this.chickens);
-    this.collisionDetector.checkEggsVsPlayer(this.eggs, this.player);
-
-    this.bullets = this.bullets.filter(
-      (bullet) => bullet.y + bullet.height > 0 && bullet.isActive,
-    );
-    this.eggs = this.eggs.filter((egg) => egg.isActive);
-
-    this.chickens = this.chickens.filter((chicken) => chicken.isAlive);
   }
 
-  gameLoop() {
-    this.updateState();
-    this.canvasManager.render(
-      this.player,
-      this.bullets,
-      this.chickens,
-      this.eggs,
+  // Remove inactive entities caused by collisions or moving out of bounds
+  removeInactiveEntities() {
+    this.gameState.bullets = this.gameState.bullets.filter(
+      (bullet) => bullet.isActive && bullet.y + bullet.height > 0,
     );
-    requestAnimationFrame(() => this.gameLoop());
+
+    this.gameState.eggs = this.gameState.eggs.filter(
+      (egg) => egg.isActive && egg.y < CanvasManager.getInstance().height,
+    );
+
+    this.gameState.chickens = this.gameState.chickens.filter(
+      (chicken) => chicken.isActive,
+    );
   }
 
   start() {
