@@ -13,12 +13,13 @@ export class CanvasManager {
     this.chickenSpriteSheet.src = CHICKEN.IMAGE;
 
     this.Boss = new Image();
-    this.chickenSpriteSheet.src = "./assets/images/chicken_spritesheet.png";
+    this.chickenSpriteSheet.src = CHICKEN.IMAGE;
 
     this.playerSprite = new Image();
     this.playerSprite.src = PLAYER.IMAGE;
 
     this.bulletSprite = new Image();
+    this.bulletSprite.src = BULLET.IMAGE;
     this.bulletSprite.src = BULLET.IMAGE;
 
     this.eggSprite = new Image();
