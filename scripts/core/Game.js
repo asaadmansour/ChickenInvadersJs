@@ -67,14 +67,29 @@ export class Game {
   startBackgroundAudio() {
     this.audioManager.playMusic();
   }
-
+  // check if the player was hit and returns true if so
+  checkAllCollisions() {
+    return this.collisionDetector.checkCollisions(this.gameState);
+  }
+  // check if the player should still be alive after the hit or no
+  handlePlayerHit(wasHit) {
+    if (wasHit) {
+      const isDead = this.gameState.loseLife();
+      if (isDead) this.handleGameOver();
+    }
+  }
+  handleGameOver() {
+    this.gameState.status = "gameover";
+    window.location.href = "/pages/gameover.html"
+  }
   // Main game loop called every frame
   gameLoop() {
     this.inputHandler.processInput();
     this.gameState.updateTime();
     this.updateEntitiesPositions();
     this.attemptSpawnEggs();
-    this.collisionDetector.checkCollisions(this.gameState);
+    // this.collisionDetector.checkCollisions(this.gameState);
+    this.handlePlayerHit(this.checkAllCollisions());
     this.removeInactiveEntities();
     this.canvasManager.render(this.gameState);
     requestAnimationFrame(() => this.gameLoop());

@@ -62,7 +62,9 @@ export class GameState {
   incrementWaveNumber() {
     this.currentWave++;
   }
-
+  isAlive() {
+    return this.lives > 0;
+  }
   // Reset the game state to initial values
   reset() {
     this.score = 0;

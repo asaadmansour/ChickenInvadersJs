@@ -15,19 +15,19 @@ export const PLAYER = {
   INVULNERABILITY_DURATION: 2000,
   BLINK_INTERVAL: 100,
   INITIAL_LIVES: 3,
-  IMAGE: "./assets/images/player.png",
-  AUDIO: "assets/audio/Hit.wav"
+  IMAGE: "/assets/images/player.png",
+  AUDIO: "/assets/audio/Hit.wav"
 };
 
 export const BULLET = {
   MOVE_SPEED: 10,
-  IMAGE: "./assets/images/bullet.png",
-  AUDIO: "./assets/audio/Laser.mp3"
+  IMAGE: "/assets/images/bullet.png",
+  AUDIO: "/assets/audio/Laser.mp3"
 };
 
 export const EGG = {
   MOVE_SPEED: 3,
-  IMAGE: "./assets/images/Egg.webp"
+  IMAGE: "/assets/images/Egg.webp"
 };
 
 export const CHICKEN = {
@@ -39,8 +39,8 @@ export const CHICKEN = {
   ROWS: 2,
   TIME_INCREMENT: 0.02,
   MOVE_SPEED: 1,
-  IMAGE: "./assets/images/chicken_spritesheet.png"
+  IMAGE: "/assets/images/chicken_spritesheet.png"
 };
 export const GAME = {
-  AUDIO: "../assets/audio/Game Audio.wav"
+  AUDIO: "/assets/audio/Game Audio.wav"
 }
