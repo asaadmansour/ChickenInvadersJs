@@ -20,6 +20,7 @@ export class GameState {
     this.bullets = [];
     this.eggs = [];
     this.chickens = [];
+    this.friedChickens = [];
   }
 
   // Singleton access method
@@ -33,7 +34,6 @@ export class GameState {
   addScore(points) {
     this.score += points;
   }
-
   loseLife() {
     this.lives--;
     return this.lives <= 0;
@@ -53,6 +53,10 @@ export class GameState {
 
   addChicken(chicken) {
     this.chickens.push(chicken);
+  }
+
+  addFriedChicken(friedChicken) {
+    this.friedChickens.push(friedChicken);
   }
 
   isWaveComplete() {

@@ -9,6 +9,8 @@ import { AudioManager } from "./AudioManager.js";
 import { GameState } from "./GameState.js";
 import { WaveController } from "./WaveController.js";
 import { WAVE_CONFIGS } from "../config/Config.js";
+import { HUDManager } from "./HUDManager.js";
+import { FriedChicken } from "../entities/FriedChicken.js";
 
 export class Game {
   constructor() {
@@ -17,6 +19,7 @@ export class Game {
     this.inputHandler = new InputHandler();
     this.collisionDetector = new CollisionDetector();
     this.gameState = GameState.getInstance();
+    this.hudManager = new HUDManager();
     this.waveController = new WaveController();
 
     this.setupControls();
@@ -26,7 +29,7 @@ export class Game {
     this.canvasManager.onResizeAction = () => {
       this.gameState.player.clampToBounds();
     };
-
+    this.hudManager.printLives(this.gameState);
     this.start();
 
     // this.startBackgroundAudio(); browser blocks autoplay audio on refersh
@@ -75,9 +78,46 @@ export class Game {
   handlePlayerHit(wasHit) {
     if (wasHit) {
       const isDead = this.gameState.loseLife();
+      this.hudManager.printLives(this.gameState);
       if (isDead) this.handleGameOver();
     }
   }
+  // Handle bullet-chicken collisions: deactivate both and spawn fried chicken
+  handleBulletChickenCollisions(collisions) {
+    collisions.forEach(({ bullet, chicken }) => {
+      bullet.deactivate();
+      chicken.deactivate();
+      this.gameState.addFriedChicken(
+        new FriedChicken(chicken.x, chicken.y, chicken.score)
+      );
+    });
+  }
+
+  // Check and return bullet-chicken collisions
+  bulletChickenCollisions() {
+    return this.collisionDetector.checkBulletsVsChickens(
+      this.gameState.bullets,
+      this.gameState.chickens
+    );
+  }
+
+  // Handle fried chicken collection: deactivate and add score
+  handleFriedChickenCollection(collected) {
+    collected.forEach((fc) => {
+      fc.deactivate();
+      this.gameState.addScore(fc.score);
+    });
+    this.hudManager.updateScore(this.gameState);
+  }
+
+  // Check and return fried chicken-player collisions
+  friedChickenCollection() {
+    return this.collisionDetector.checkFriedChickensVsPlayer(
+      this.gameState.friedChickens,
+      this.gameState.player
+    );
+  }
+
   handleGameOver() {
     this.gameState.status = "gameover";
     window.location.href = "/pages/gameover.html"
@@ -88,11 +128,30 @@ export class Game {
     this.gameState.updateTime();
     this.updateEntitiesPositions();
     this.attemptSpawnEggs();
-    // this.collisionDetector.checkCollisions(this.gameState);
+    this.handleBulletChickenCollisions(this.bulletChickenCollisions());
     this.handlePlayerHit(this.checkAllCollisions());
+    this.handleFriedChickenCollection(this.friedChickenCollection());
     this.removeInactiveEntities();
+
+    if (this.checkWaveComplete()) return;
+
     this.canvasManager.render(this.gameState);
     requestAnimationFrame(() => this.gameLoop());
+  }
+
+  // check if wave is complete and return true if so.
+  checkWaveComplete() {
+    if (this.gameState.isWaveComplete()) {
+      this.handleWaveComplete();
+      return true;
+    }
+    return false;
+  }
+
+  // simple redirection if the wave is complete "will change when we add more waves"
+  handleWaveComplete() {
+    this.gameState.status = "complete";
+    window.location.href = "/pages/scoreboard.html";
   }
 
   // Update positions of all entities based on their velocities and movement types
@@ -102,6 +161,7 @@ export class Game {
     this.gameState.chickens.forEach((chicken) =>
       chicken.move(this.gameState.gameTime),
     );
+    this.gameState.friedChickens.forEach((fc)=>fc.move());
   }
 
   // Attempt to spawn eggs from active chickens based on the current wave's drop rate
@@ -131,6 +191,9 @@ export class Game {
     this.gameState.chickens = this.gameState.chickens.filter(
       (chicken) => chicken.isActive,
     );
+    this.gameState.friedChickens = this.gameState.friedChickens.filter(
+      (fc)=>fc.isActive && fc.y < CanvasManager.getInstance().height
+    )
   }
 
   start() {

@@ -35,21 +35,20 @@ export class CollisionDetector {
    * mark both as inactive if collision detected
    * @param {*} bullets - array of bullet entities
    * @param {*} chickens - array of chicken entities
+   * returns collisions
    */
   checkBulletsVsChickens(bullets, chickens) {
-    bullets.forEach((bullet) => {
-      if (!bullet.isActive) return;
-
-      chickens.forEach((chicken) => {
-        if (!chicken.isActive) return;
-
-        if (this.isOverlap(bullet, chicken)) {
-          bullet.deactivate();
-          chicken.deactivate();
-        }
+  const collisions = [];
+  bullets.forEach(bullet => {
+    chickens.forEach(chicken => {
+      if (bullet.isActive && chicken.isActive && this.isOverlap(bullet, chicken)) {
+        collisions.push({ bullet, chicken });
+          }
       });
     });
+    return collisions;
   }
+  
 
   /**
    * check collisions between player and chickens
@@ -94,5 +93,21 @@ export class CollisionDetector {
       }
     }
     return false;
+  }
+  /**
+   * check collisions between friedchicken and player
+   * @param {*} friedChickens - array of egg entities
+   * @param {*} player - player entity
+   * @returns collected friedchickens if the player was hit and false if not
+   */
+  checkFriedChickensVsPlayer(friedChickens, player) {
+    const collected = [];
+    for (const fc of friedChickens) {
+      if (!fc.isActive) continue;
+      if (this.isOverlap(fc, player)) {
+        collected.push(fc);
+      }
+    }
+    return collected;
   }
 }
