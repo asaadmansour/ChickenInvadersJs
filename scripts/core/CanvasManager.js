@@ -1,4 +1,11 @@
-import { CHICKEN, PLAYER, BULLET, EGG, ROCK } from "../config/Constants.js";
+import {
+  CHICKEN,
+  PLAYER,
+  BULLET,
+  EGG,
+  FRIED_CHICKEN,
+  ROCK,
+} from "../config/Constants.js";
 export class CanvasManager {
   static #instance = null;
 
@@ -28,6 +35,8 @@ export class CanvasManager {
     this.rockSprite = new Image();
     this.rockSprite.src = ROCK.IMAGE;
 
+    this.friedChickenSprite = new Image();
+    this.friedChickenSprite.src = FRIED_CHICKEN.IMAGE;
     this.onResizeAction = null;
 
     this.resizeCanvas();
@@ -92,6 +101,9 @@ export class CanvasManager {
 
     gameState.rocks.forEach((rock) => {
       this.drawSprite(rock, this.rockSprite);
+    });
+    gameState.friedChickens.forEach((fc) => {
+      this.drawSprite(fc, this.friedChickenSprite);
     });
   }
 

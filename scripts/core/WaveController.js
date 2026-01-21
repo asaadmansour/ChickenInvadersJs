@@ -13,6 +13,11 @@ export class WaveController {
       case 2:
         this.createSecondWave(gameState);
         break;
+      default:
+        console.warn(
+          `No configuration for wave ${gameState.currentWave}. No entities created.`,
+        );
+        break;
     }
   }
 

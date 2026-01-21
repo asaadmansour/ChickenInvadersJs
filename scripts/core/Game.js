@@ -9,6 +9,8 @@ import { AudioManager } from "./AudioManager.js";
 import { GameState } from "./GameState.js";
 import { WaveController } from "./WaveController.js";
 import { WAVE_CONFIGS } from "../config/Config.js";
+import { HUDManager } from "./HUDManager.js";
+import { FriedChicken } from "../entities/FriedChicken.js";
 
 export class Game {
   constructor() {
@@ -17,17 +19,17 @@ export class Game {
     this.inputHandler = new InputHandler();
     this.collisionDetector = new CollisionDetector();
     this.gameState = GameState.getInstance();
+    this.hudManager = new HUDManager();
     this.waveController = new WaveController();
 
     this.setupControls();
 
-    // this.waveController.createFirstWave(this.gameState);
     this.waveController.createWave(this.gameState);
 
     this.canvasManager.onResizeAction = () => {
       this.gameState.player.clampToBounds();
     };
-
+    this.hudManager.printLives(this.gameState);
     this.start();
 
     // this.startBackgroundAudio(); browser blocks autoplay audio on refersh
@@ -70,17 +72,82 @@ export class Game {
     this.audioManager.playMusic();
   }
 
+  // check if the player was hit and returns true if so
+  checkAllCollisions() {
+    return this.collisionDetector.checkCollisions(this.gameState);
+  }
+
+  // check if the player should still be alive after the hit or no
+  handlePlayerHit(wasHit) {
+    if (wasHit) {
+      const isDead = this.gameState.loseLife();
+      this.hudManager.printLives(this.gameState);
+      if (isDead) this.handleGameOver();
+    }
+  }
+
+  // Handle bullet-chicken collisions: deactivate both and spawn fried chicken
+  handleBulletChickenCollisions(collisions) {
+    collisions.forEach(({ bullet, chicken }) => {
+      bullet.deactivate();
+      chicken.deactivate();
+      this.gameState.addFriedChicken(
+        new FriedChicken(chicken.x, chicken.y, chicken.score),
+      );
+    });
+  }
+
+  // Check and return bullet-chicken collisions
+  bulletChickenCollisions() {
+    return this.collisionDetector.checkBulletsVsChickens(
+      this.gameState.bullets,
+      this.gameState.chickens,
+    );
+  }
+
+  // Handle fried chicken collection: deactivate and add score
+  handleFriedChickenCollection(collected) {
+    collected.forEach((fc) => {
+      fc.deactivate();
+      this.gameState.addScore(fc.score);
+    });
+    this.hudManager.updateScore(this.gameState);
+  }
+
+  // Check and return fried chicken-player collisions
+  friedChickenCollection() {
+    return this.collisionDetector.checkFriedChickensVsPlayer(
+      this.gameState.friedChickens,
+      this.gameState.player,
+    );
+  }
+
+  handleGameOver() {
+    this.gameState.status = "gameover";
+    window.location.href = "/pages/gameover.html";
+  }
+
   // Main game loop called every frame
   gameLoop() {
     this.inputHandler.processInput();
     this.gameState.updateTime();
     this.updateEntitiesPositions();
     this.attemptSpawnEggs();
-    this.checkAllCollisions();
+    this.handleBulletChickenCollisions(this.bulletChickenCollisions());
+    this.handlePlayerHit(this.checkAllCollisions());
+    this.handleFriedChickenCollection(this.friedChickenCollection());
     this.removeInactiveEntities();
-    this.canvasManager.render(this.gameState);
     this.checkAndAdvanceWave();
+    // this.checkAllCollisions2();
+
+    this.canvasManager.render(this.gameState);
     requestAnimationFrame(() => this.gameLoop());
+  }
+
+  // simple redirection if the wave is complete "will change when we add more waves"
+  handleWaveComplete() {
+    this.gameState.status = "complete";
+    window.location.href = "/pages/scoreboard.html";
   }
 
   // Update positions of all entities based on their velocities and movement types
@@ -94,6 +161,8 @@ export class Game {
     );
 
     this.gameState.rocks.forEach((rock) => rock.move());
+
+    this.gameState.friedChickens.forEach((fc) => fc.move());
   }
 
   // Attempt to spawn eggs from active chickens based on the current wave's drop rate
@@ -110,45 +179,45 @@ export class Game {
     });
   }
 
-  // Check all collisions between entities and handle their effects
-  checkAllCollisions() {
-    this.collisionDetector.checkBulletsVsChickens(
-      this.gameState.bullets,
-      this.gameState.chickens,
-      (bullet, chicken) => {
-        bullet.deactivate();
-        chicken.deactivate();
-        this.gameState.addScore(20);
-      },
-    );
+  // // Check all collisions between entities and handle their effects
+  // checkAllCollisions2() {
+  //   this.collisionDetector.checkBulletsVsChickens(
+  //     this.gameState.bullets,
+  //     this.gameState.chickens,
+  //     (bullet, chicken) => {
+  //       bullet.deactivate();
+  //       chicken.deactivate();
+  //       this.gameState.addScore(20);
+  //     },
+  //   );
 
-    this.collisionDetector.checkPlayerVsChickens(
-      this.gameState.player,
-      this.gameState.chickens,
-      (chicken) => {
-        chicken.deactivate();
-        this.handlePlayerHit();
-      },
-    );
+  //   this.collisionDetector.checkPlayerVsChickens(
+  //     this.gameState.player,
+  //     this.gameState.chickens,
+  //     (chicken) => {
+  //       chicken.deactivate();
+  //       this.handlePlayerHit();
+  //     },
+  //   );
 
-    this.collisionDetector.checkEggsVsPlayer(
-      this.gameState.eggs,
-      this.gameState.player,
-      (egg) => {
-        egg.deactivate();
-        this.handlePlayerHit();
-      },
-    );
+  //   this.collisionDetector.checkEggsVsPlayer(
+  //     this.gameState.eggs,
+  //     this.gameState.player,
+  //     (egg) => {
+  //       egg.deactivate();
+  //       this.handlePlayerHit();
+  //     },
+  //   );
 
-    this.collisionDetector.checkPlayerVsRocks(
-      this.gameState.player,
-      this.gameState.rocks,
-      (rock) => {
-        rock.deactivate();
-        this.handlePlayerHit();
-      },
-    );
-  }
+  //   this.collisionDetector.checkPlayerVsRocks(
+  //     this.gameState.player,
+  //     this.gameState.rocks,
+  //     (rock) => {
+  //       rock.deactivate();
+  //       this.handlePlayerHit();
+  //     },
+  //   );
+  // }
 
   // check if the player should still be alive after the hit or no
   handlePlayerHit() {
@@ -178,6 +247,10 @@ export class Game {
     );
 
     this.gameState.rocks = this.gameState.rocks.filter((rock) => rock.isActive);
+
+    this.gameState.friedChickens = this.gameState.friedChickens.filter(
+      (fc) => fc.isActive,
+    );
   }
 
   checkAndAdvanceWave() {
@@ -196,6 +269,9 @@ export class Game {
         if (this.gameState.rocks.length === 0) {
           waveCompleted = true;
         }
+        break;
+      case 3:
+        this.handleGameOver();
         break;
     }
 

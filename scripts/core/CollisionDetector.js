@@ -17,6 +17,23 @@ export class CollisionDetector {
   }
 
   /**
+   * Check all collisions between entities
+   * @param {*} gameState - the current game state object
+   * returns true if the player was hit by chicken or an egg
+   */
+  checkCollisions(gameState) {
+    if (!gameState.isAlive()) return;
+    const hitByChicken = this.checkPlayerVsChickens(
+      gameState.player,
+      gameState.chickens,
+    );
+
+    const hitByEgg = this.checkEggsVsPlayer(gameState.eggs, gameState.player);
+
+    return hitByChicken || hitByEgg;
+  }
+
+  /**
    * check collisions between bullets and chickens
    * mark both as inactive if collision detected
    * @param {*} bullets - array of bullet entities
@@ -38,24 +55,65 @@ export class CollisionDetector {
   }
 
   /**
+   * returns collisions
+   */
+  checkBulletsVsChickens(bullets, chickens) {
+    const collisions = [];
+    bullets.forEach((bullet) => {
+      chickens.forEach((chicken) => {
+        if (
+          bullet.isActive &&
+          chicken.isActive &&
+          this.isOverlap(bullet, chicken)
+        ) {
+          collisions.push({ bullet, chicken });
+        }
+      });
+    });
+    return collisions;
+  }
+
+  // /**
+  //  * check collisions between player and chickens
+  //  * hit the player if collision detected
+  //  * mark chicken as inactive if collision detected
+  //  * @param {*} player - player entity
+  //  * @param {*} chickens - array of chicken entities
+  //  * @param {*} onCollision - callback function to handle collision
+  //  */
+  // checkPlayerVsChickens(player, chickens, onCollision) {
+  //   if (player.isInvulnerable()) return;
+
+  //   for (const chicken of chickens) {
+  //     if (!chicken.isActive) continue;
+
+  //     if (this.isOverlap(player, chicken)) {
+  //       onCollision(chicken);
+  //       return;
+  //     }
+  //   }
+  // }
+
+  /**
    * check collisions between player and chickens
    * hit the player if collision detected
    * mark chicken as inactive if collision detected
    * @param {*} player - player entity
    * @param {*} chickens - array of chicken entities
-   * @param {*} onCollision - callback function to handle collision
+   * @returns true if the player was hit and false if not
    */
-  checkPlayerVsChickens(player, chickens, onCollision) {
-    if (player.isInvulnerable()) return;
+  checkPlayerVsChickens(player, chickens) {
+    if (player.isInvulnerable && player.isInvulnerable()) return;
 
     for (const chicken of chickens) {
       if (!chicken.isActive) continue;
 
       if (this.isOverlap(player, chicken)) {
-        onCollision(chicken);
-        return;
+        player.hit();
+        return true;
       }
     }
+    return false;
   }
 
   /**
@@ -98,5 +156,22 @@ export class CollisionDetector {
         return;
       }
     }
+  }
+
+  /**
+   * check collisions between friedchicken and player
+   * @param {*} friedChickens - array of egg entities
+   * @param {*} player - player entity
+   * @returns collected friedchickens if the player was hit and false if not
+   */
+  checkFriedChickensVsPlayer(friedChickens, player) {
+    const collected = [];
+    for (const fc of friedChickens) {
+      if (!fc.isActive) continue;
+      if (this.isOverlap(fc, player)) {
+        collected.push(fc);
+      }
+    }
+    return collected;
   }
 }
