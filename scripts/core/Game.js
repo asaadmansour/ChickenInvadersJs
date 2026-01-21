@@ -57,6 +57,7 @@ export class Game {
     this.inputHandler.bindKey("Space", () => {
       if (this.gameState.player.canShoot()) {
         const spawn = this.gameState.player.shoot();
+        this.audioManager.play("bullet");
         this.gameState.addBullet(new Bullet(spawn.x, spawn.y));
       }
       this.startBackgroundAudio();
@@ -67,29 +68,14 @@ export class Game {
   startBackgroundAudio() {
     this.audioManager.playMusic();
   }
-  // check if the player was hit and returns true if so
-  checkAllCollisions() {
-    return this.collisionDetector.checkCollisions(this.gameState);
-  }
-  // check if the player should still be alive after the hit or no
-  handlePlayerHit(wasHit) {
-    if (wasHit) {
-      const isDead = this.gameState.loseLife();
-      if (isDead) this.handleGameOver();
-    }
-  }
-  handleGameOver() {
-    this.gameState.status = "gameover";
-    window.location.href = "/pages/gameover.html"
-  }
+
   // Main game loop called every frame
   gameLoop() {
     this.inputHandler.processInput();
     this.gameState.updateTime();
     this.updateEntitiesPositions();
     this.attemptSpawnEggs();
-    // this.collisionDetector.checkCollisions(this.gameState);
-    this.handlePlayerHit(this.checkAllCollisions());
+    this.checkAllCollisions();
     this.removeInactiveEntities();
     this.canvasManager.render(this.gameState);
     requestAnimationFrame(() => this.gameLoop());
@@ -116,6 +102,52 @@ export class Game {
         this.gameState.addEgg(new Egg(spawn.x, spawn.y));
       }
     });
+  }
+
+  // Check all collisions between entities and handle their effects
+  checkAllCollisions() {
+    this.collisionDetector.checkBulletsVsChickens(
+      this.gameState.bullets,
+      this.gameState.chickens,
+      (bullet, chicken) => {
+        bullet.deactivate();
+        chicken.deactivate();
+        this.gameState.addScore(20);
+      },
+    );
+
+    this.collisionDetector.checkPlayerVsChickens(
+      this.gameState.player,
+      this.gameState.chickens,
+      (chicken) => {
+        chicken.deactivate();
+        this.handlePlayerHit();
+      },
+    );
+
+    this.collisionDetector.checkEggsVsPlayer(
+      this.gameState.eggs,
+      this.gameState.player,
+      (egg) => {
+        egg.deactivate();
+        this.handlePlayerHit();
+      },
+    );
+  }
+
+  // check if the player should still be alive after the hit or no
+  handlePlayerHit() {
+    const wasHit = this.gameState.player.hit();
+    if (!wasHit) return;
+    this.audioManager.play("hit");
+    const isDead = this.gameState.loseLife();
+    if (isDead) this.handleGameOver();
+  }
+
+  // Handle game over state and redirect to game over screen
+  handleGameOver() {
+    this.gameState.status = "gameover";
+    window.location.href = "/pages/gameover.html";
   }
 
   // Remove inactive entities caused by collisions or moving out of bounds
