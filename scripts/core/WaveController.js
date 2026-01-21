@@ -11,10 +11,10 @@ export class WaveController {
     const totalWidth = (config.cols - 1) * config.spacingX;
     const startX = (CanvasManager.getInstance().width - totalWidth) / 2;
 
-    for (let r = 0; r < config.rows; r++) {
-      for (let c = 0; c < config.cols; c++) {
-        const x = startX + c * config.spacingX;
-        const y = config.startY + r * config.spacingY;
+    for (let rows = 0; rows < config.rows; rows++) {
+      for (let cols = 0; cols < config.cols; cols++) {
+        const x = startX + cols * config.spacingX;
+        const y = config.startY + rows * config.spacingY;
         gameState.addChicken(new Chicken(x, y));
       }
     }
