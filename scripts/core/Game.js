@@ -22,6 +22,8 @@ export class Game {
     this.hudManager = new HUDManager();
     this.waveController = new WaveController();
 
+    this.animationFrameId = null;
+
     this.setupControls();
 
     this.waveController.createWave(this.gameState);
@@ -64,6 +66,14 @@ export class Game {
         this.gameState.addBullet(new Bullet(spawn.x, spawn.y));
       }
       this.startBackgroundAudio();
+    });
+
+    this.inputHandler.bindKey("Escape", () => {
+      if (this.gameState.isPaused) {
+        this.resume();
+      } else {
+        this.pause();
+      }
     });
   }
 
@@ -130,6 +140,10 @@ export class Game {
 
   // Main game loop called every frame
   gameLoop() {
+    if (this.gameState.isPaused) {
+      return;
+    }
+
     this.inputHandler.processInput();
     this.gameState.updateTime();
     this.updateEntitiesPositions();
@@ -142,7 +156,7 @@ export class Game {
     // this.checkAllCollisions2();
 
     this.canvasManager.render(this.gameState);
-    requestAnimationFrame(() => this.gameLoop());
+    this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
   }
 
   // simple redirection if the wave is complete "will change when we add more waves"
@@ -222,7 +236,6 @@ export class Game {
 
   // check if the player should still be alive after the hit or no
 
-
   // Handle game over state and redirect to game over screen
   handleGameOver() {
     this.gameState.status = "gameover";
@@ -273,6 +286,27 @@ export class Game {
     if (waveCompleted) {
       this.gameState.incrementWaveNumber();
       this.waveController.createWave(this.gameState);
+    }
+  }
+
+  pause() {
+    if (!this.gameState.isPaused) {
+      this.gameState.pause();
+      this.audioManager.pauseMusic();
+
+      if (this.animationFrameId) {
+        cancelAnimationFrame(this.animationFrameId);
+        this.animationFrameId = null;
+      }
+    }
+  }
+
+  resume() {
+    if (this.gameState.isPaused) {
+      this.gameState.resume();
+      this.audioManager.resumeMusic();
+
+      this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
     }
   }
 

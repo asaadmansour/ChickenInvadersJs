@@ -14,6 +14,7 @@ export class GameState {
     this.currentWave = 1;
     this.status = "playing";
     this.gameTime = 0;
+    this.isPaused = false;
 
     // Entity collections
     this.player = new Player();
@@ -41,7 +42,9 @@ export class GameState {
   }
 
   updateTime() {
-    this.gameTime += 0.02;
+    if (!this.isPaused) {
+      this.gameTime += 0.02;
+    }
   }
 
   addBullet(bullet) {
@@ -71,6 +74,15 @@ export class GameState {
   isAlive() {
     return this.lives > 0;
   }
+
+  pause() {
+    this.isPaused = true;
+  }
+
+  resume() {
+    this.isPaused = false;
+  }
+
   // Reset the game state to initial values
   reset() {
     this.score = 0;
@@ -78,6 +90,7 @@ export class GameState {
     this.currentLevel = 1;
     this.status = "playing";
     this.gameTime = 0;
+    this.isPaused = false;
     this.player.reset();
     this.bullets = [];
     this.eggs = [];
