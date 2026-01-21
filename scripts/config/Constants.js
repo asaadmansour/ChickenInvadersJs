@@ -6,7 +6,9 @@ export const ENTITY_RATIOS = {
   EGG_WIDTH: 0.012,
   EGG_HEIGHT: 0.025,
   BULLET_WIDTH: 0.005,
-  BULLET_HEIGHT: 0.02,
+  BULLET_HEIGHT: 0.03,
+  ROCK_WIDTH: 0.05,
+  ROCK_HEIGHT: 0.08,
 };
 
 export const PLAYER = {
@@ -16,18 +18,23 @@ export const PLAYER = {
   BLINK_INTERVAL: 100,
   INITIAL_LIVES: 3,
   IMAGE: "/assets/images/player.png",
-  AUDIO: "/assets/audio/Hit.wav"
+  AUDIO: "/assets/audio/Hit.wav",
 };
 
 export const BULLET = {
   MOVE_SPEED: 10,
   IMAGE: "/assets/images/bullet.png",
-  AUDIO: "/assets/audio/Laser.mp3"
+  AUDIO: "/assets/audio/Laser.mp3",
 };
 
 export const EGG = {
   MOVE_SPEED: 3,
-  IMAGE: "/assets/images/Egg.webp"
+  IMAGE: "/assets/images/Egg.webp",
+};
+
+export const ROCK = {
+  MOVE_SPEED: 6,
+  IMAGE: "/assets/images/rock.webp",
 };
 
 export const CHICKEN = {
@@ -39,8 +46,8 @@ export const CHICKEN = {
   ROWS: 2,
   TIME_INCREMENT: 0.02,
   MOVE_SPEED: 1,
-  IMAGE: "/assets/images/chicken_spritesheet.png"
+  IMAGE: "/assets/images/chicken_spritesheet.png",
 };
 export const GAME = {
-  AUDIO: "/assets/audio/Game Audio.wav"
-}
+  AUDIO: "/assets/audio/Game Audio.wav",
+};

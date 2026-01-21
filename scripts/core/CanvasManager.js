@@ -1,4 +1,4 @@
-import { CHICKEN, PLAYER, BULLET, EGG } from "../config/Constants.js";
+import { CHICKEN, PLAYER, BULLET, EGG, ROCK } from "../config/Constants.js";
 export class CanvasManager {
   static #instance = null;
 
@@ -24,6 +24,9 @@ export class CanvasManager {
 
     this.eggSprite = new Image();
     this.eggSprite.src = EGG.IMAGE;
+
+    this.rockSprite = new Image();
+    this.rockSprite.src = ROCK.IMAGE;
 
     this.onResizeAction = null;
 
@@ -85,6 +88,10 @@ export class CanvasManager {
 
     gameState.eggs.forEach((egg) => {
       this.drawSprite(egg, this.eggSprite);
+    });
+
+    gameState.rocks.forEach((rock) => {
+      this.drawSprite(rock, this.rockSprite);
     });
   }
 

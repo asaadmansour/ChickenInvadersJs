@@ -27,5 +27,9 @@ export class Egg extends GameObject {
    */
   move() {
     this.y += this.moveSpeed;
+
+    if (this.y > CanvasManager.getInstance().height) {
+      this.deactivate();
+    }
   }
 }

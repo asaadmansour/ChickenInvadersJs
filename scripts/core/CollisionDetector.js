@@ -78,4 +78,25 @@ export class CollisionDetector {
       }
     }
   }
+
+  /**
+   * check collisions between rocks and player
+   * hit the player if collision detected
+   * deactivate rock if collision detected
+   * @param {*} player - player entity
+   * @param {*} rocks - array of rock entities
+   * @param {*} onCollision - callback function to handle collision
+   */
+  checkPlayerVsRocks(player, rocks, onCollision) {
+    if (player.isInvulnerable()) return;
+
+    for (const rock of rocks) {
+      if (!rock.isActive) continue;
+
+      if (this.isOverlap(rock, player)) {
+        onCollision(rock);
+        return;
+      }
+    }
+  }
 }

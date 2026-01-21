@@ -21,7 +21,8 @@ export class Game {
 
     this.setupControls();
 
-    this.waveController.createFirstWave(this.gameState);
+    // this.waveController.createFirstWave(this.gameState);
+    this.waveController.createWave(this.gameState);
 
     this.canvasManager.onResizeAction = () => {
       this.gameState.player.clampToBounds();
@@ -78,16 +79,21 @@ export class Game {
     this.checkAllCollisions();
     this.removeInactiveEntities();
     this.canvasManager.render(this.gameState);
+    this.checkAndAdvanceWave();
     requestAnimationFrame(() => this.gameLoop());
   }
 
   // Update positions of all entities based on their velocities and movement types
   updateEntitiesPositions() {
     this.gameState.bullets.forEach((bullet) => bullet.move());
+
     this.gameState.eggs.forEach((egg) => egg.move());
+
     this.gameState.chickens.forEach((chicken) =>
       chicken.move(this.gameState.gameTime),
     );
+
+    this.gameState.rocks.forEach((rock) => rock.move());
   }
 
   // Attempt to spawn eggs from active chickens based on the current wave's drop rate
@@ -133,6 +139,15 @@ export class Game {
         this.handlePlayerHit();
       },
     );
+
+    this.collisionDetector.checkPlayerVsRocks(
+      this.gameState.player,
+      this.gameState.rocks,
+      (rock) => {
+        rock.deactivate();
+        this.handlePlayerHit();
+      },
+    );
   }
 
   // check if the player should still be alive after the hit or no
@@ -153,16 +168,41 @@ export class Game {
   // Remove inactive entities caused by collisions or moving out of bounds
   removeInactiveEntities() {
     this.gameState.bullets = this.gameState.bullets.filter(
-      (bullet) => bullet.isActive && bullet.y + bullet.height > 0,
+      (bullet) => bullet.isActive,
     );
 
-    this.gameState.eggs = this.gameState.eggs.filter(
-      (egg) => egg.isActive && egg.y < CanvasManager.getInstance().height,
-    );
+    this.gameState.eggs = this.gameState.eggs.filter((egg) => egg.isActive);
 
     this.gameState.chickens = this.gameState.chickens.filter(
       (chicken) => chicken.isActive,
     );
+
+    this.gameState.rocks = this.gameState.rocks.filter((rock) => rock.isActive);
+  }
+
+  checkAndAdvanceWave() {
+    let waveCompleted = false;
+
+    switch (this.gameState.currentWave) {
+      case 1:
+        if (
+          this.gameState.chickens.length === 0 &&
+          this.gameState.eggs.length === 0
+        ) {
+          waveCompleted = true;
+        }
+        break;
+      case 2:
+        if (this.gameState.rocks.length === 0) {
+          waveCompleted = true;
+        }
+        break;
+    }
+
+    if (waveCompleted) {
+      this.gameState.incrementWaveNumber();
+      this.waveController.createWave(this.gameState);
+    }
   }
 
   start() {

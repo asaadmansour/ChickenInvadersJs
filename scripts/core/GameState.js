@@ -20,6 +20,7 @@ export class GameState {
     this.bullets = [];
     this.eggs = [];
     this.chickens = [];
+    this.rocks = [];
   }
 
   // Singleton access method
@@ -55,13 +56,14 @@ export class GameState {
     this.chickens.push(chicken);
   }
 
-  isWaveComplete() {
-    return this.chickens.length === 0;
+  addRock(rock) {
+    this.rocks.push(rock);
   }
 
   incrementWaveNumber() {
     this.currentWave++;
   }
+
   isAlive() {
     return this.lives > 0;
   }
