@@ -27,7 +27,6 @@ export class CollisionDetector {
       gameState.player,
       gameState.chickens,
     );
-
     const hitByEgg = this.checkEggsVsPlayer(gameState.eggs, gameState.player);
 
     return hitByChicken || hitByEgg;
@@ -73,27 +72,6 @@ export class CollisionDetector {
     return collisions;
   }
 
-  // /**
-  //  * check collisions between player and chickens
-  //  * hit the player if collision detected
-  //  * mark chicken as inactive if collision detected
-  //  * @param {*} player - player entity
-  //  * @param {*} chickens - array of chicken entities
-  //  * @param {*} onCollision - callback function to handle collision
-  //  */
-  // checkPlayerVsChickens(player, chickens, onCollision) {
-  //   if (player.isInvulnerable()) return;
-
-  //   for (const chicken of chickens) {
-  //     if (!chicken.isActive) continue;
-
-  //     if (this.isOverlap(player, chicken)) {
-  //       onCollision(chicken);
-  //       return;
-  //     }
-  //   }
-  // }
-
   /**
    * check collisions between player and chickens
    * hit the player if collision detected
@@ -103,7 +81,7 @@ export class CollisionDetector {
    * @returns true if the player was hit and false if not
    */
   checkPlayerVsChickens(player, chickens) {
-    if (player.isInvulnerable && player.isInvulnerable()) return;
+    if (player.isInvulnerable()) return false;
 
     for (const chicken of chickens) {
       if (!chicken.isActive) continue;
@@ -124,17 +102,19 @@ export class CollisionDetector {
    * @param {*} player - player entity
    * @param {*} onCollision - callback function to handle collision
    */
-  checkEggsVsPlayer(eggs, player, onCollision) {
-    if (player.isInvulnerable()) return;
+  checkEggsVsPlayer(eggs, player) {
+    if (player.isInvulnerable()) return false;
 
     for (const egg of eggs) {
       if (!egg.isActive) continue;
 
       if (this.isOverlap(egg, player)) {
-        onCollision(egg);
-        return;
+        egg.deactivate();
+        player.hit();
+        return true;
       }
     }
+    return false;
   }
 
   /**

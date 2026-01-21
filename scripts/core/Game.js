@@ -80,6 +80,7 @@ export class Game {
   // check if the player should still be alive after the hit or no
   handlePlayerHit(wasHit) {
     if (wasHit) {
+      this.audioManager.play("hit");
       const isDead = this.gameState.loseLife();
       this.hudManager.printLives(this.gameState);
       if (isDead) this.handleGameOver();
@@ -220,13 +221,7 @@ export class Game {
   // }
 
   // check if the player should still be alive after the hit or no
-  handlePlayerHit() {
-    const wasHit = this.gameState.player.hit();
-    if (!wasHit) return;
-    this.audioManager.play("hit");
-    const isDead = this.gameState.loseLife();
-    if (isDead) this.handleGameOver();
-  }
+
 
   // Handle game over state and redirect to game over screen
   handleGameOver() {
