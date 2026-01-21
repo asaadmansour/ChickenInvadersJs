@@ -10,8 +10,6 @@ export class Player extends GameObject {
 
     this.x = CanvasManager.getInstance().width / 2 - this.width / 2;
     this.y = CanvasManager.getInstance().height - this.height - 5;
-
-    this.lives = PLAYER.INITIAL_LIVES;
     this.score = 0;
 
     this.fireRate = PLAYER.FIRE_RATE; // ms between shots
@@ -96,13 +94,9 @@ export class Player extends GameObject {
    */
   hit() {
     if (this.isInvulnerable()) return false;
-
     this.audioManager.play("hit");
-
-    this.lives--;
     this.startInvulnerability();
-
-    return !this.isAlive();
+    return true;
   }
 
   /**
@@ -134,9 +128,9 @@ export class Player extends GameObject {
    * Check if player is alive
    * @returns {boolean} True if player is alive (has lives left)
    */
-  isAlive() {
-    return this.lives > 0;
-  }
+  // isAlive() {
+  //   return this.lives > 0;
+  // }
 
   /**
    * Reset player to starting state

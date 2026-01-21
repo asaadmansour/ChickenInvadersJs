@@ -1,4 +1,4 @@
-import { CHICKEN, PLAYER, BULLET, EGG } from "../config/Constants.js";
+import { CHICKEN, PLAYER, BULLET, EGG, FRIED_CHICKEN } from "../config/Constants.js";
 export class CanvasManager {
   static #instance = null;
 
@@ -13,17 +13,19 @@ export class CanvasManager {
     this.chickenSpriteSheet.src = CHICKEN.IMAGE;
 
     this.Boss = new Image();
-    this.chickenSpriteSheet.src = "./assets/images/chicken_spritesheet.png";
+    this.chickenSpriteSheet.src = CHICKEN.IMAGE;
 
     this.playerSprite = new Image();
     this.playerSprite.src = PLAYER.IMAGE;
 
     this.bulletSprite = new Image();
     this.bulletSprite.src = BULLET.IMAGE;
+    this.bulletSprite.src = BULLET.IMAGE;
 
     this.eggSprite = new Image();
     this.eggSprite.src = EGG.IMAGE;
-
+    this.friedChickenSprite = new Image();
+    this.friedChickenSprite.src = FRIED_CHICKEN.IMAGE;
     this.onResizeAction = null;
 
     this.resizeCanvas();
@@ -85,6 +87,9 @@ export class CanvasManager {
     gameState.eggs.forEach((egg) => {
       this.drawSprite(egg, this.eggSprite);
     });
+    gameState.friedChickens.forEach((fc)=> {
+      this.drawSprite(fc,this.friedChickenSprite);
+    })
   }
 
   // Draw a static sprite

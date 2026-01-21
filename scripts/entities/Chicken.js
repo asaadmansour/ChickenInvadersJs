@@ -8,6 +8,7 @@ export class Chicken extends GameObject {
 
     this.startX = x;
     this.startY = y;
+    this.score = CHICKEN.SCORE;  //chicken points
 
     // Animation properties
     this.horizontalRange = CHICKEN.HORIZONTAL_RANGE;
