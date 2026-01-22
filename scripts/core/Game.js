@@ -11,6 +11,7 @@ import { WaveController } from "./WaveController.js";
 import { WAVE_CONFIGS } from "../config/Config.js";
 import { HUDManager } from "./HUDManager.js";
 import { FriedChicken } from "../entities/FriedChicken.js";
+import { DeathEffect } from "../entities/DeathEffect.js";
 
 export class Game {
   constructor() {
@@ -155,6 +156,9 @@ export class Game {
         bullet.deactivate();
         chicken.deactivate();
         const spawn = chicken.drop();
+        this.gameState.addDeathEffect(
+          new DeathEffect(chicken.x, chicken.y, chicken.width, chicken.height),
+        );
         this.gameState.addFriedChicken(
           new FriedChicken(spawn.x, spawn.y, chicken.score),
         );
@@ -239,6 +243,10 @@ export class Game {
 
     this.gameState.friedChickens = this.gameState.friedChickens.filter(
       (fc) => fc.isActive,
+    );
+
+    this.gameState.deathEffects = this.gameState.deathEffects.filter(
+      (effect) => effect.isActive,
     );
   }
 

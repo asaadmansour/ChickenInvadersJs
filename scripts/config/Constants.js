@@ -13,6 +13,8 @@ export const ENTITY_RATIOS = {
   ROCK_HEIGHT: 0.08,
   UMBRELLA_CHICKEN_WIDTH: 0.07,
   UMBRELLA_CHICKEN_HEIGHT: 0.1,
+  DEATH_EFFECT_WIDTH: 0.07,
+  DEATH_EFFECT_HEIGHT: 0.13,
 };
 
 export const PLAYER = {
@@ -63,6 +65,14 @@ export const UMBRELLA_CHICKEN = {
   MOVE_SPEED: 4,
   IMAGE: "/assets/images/chicken_umbrellas_spritesheet.png",
   SCORE: 150,
+};
+
+export const DEATH_EFFECT = {
+  IMAGE: "/assets/images/Death Effect.png",
+  FRAME_COUNT: 9,
+  FRAME_DELAY: 3,
+  COLS: 3,
+  ROWS: 3,
 };
 
 export const GAME = {

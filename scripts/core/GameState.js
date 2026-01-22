@@ -24,6 +24,7 @@ export class GameState {
     this.chickens = [];
     this.rocks = [];
     this.friedChickens = [];
+    this.deathEffects = [];
   }
 
   // Singleton access method
@@ -67,6 +68,10 @@ export class GameState {
 
   addFriedChicken(friedChicken) {
     this.friedChickens.push(friedChicken);
+  }
+
+  addDeathEffect(effect) {
+    this.deathEffects.push(effect);
   }
 
   incrementWaveNumber() {

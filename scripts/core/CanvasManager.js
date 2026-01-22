@@ -6,6 +6,7 @@ import {
   FRIED_CHICKEN,
   ROCK,
   UMBRELLA_CHICKEN,
+  DEATH_EFFECT,
 } from "../config/Constants.js";
 
 import { UmbrellaChicken } from "../entities/UmbrellaChicken.js";
@@ -45,6 +46,9 @@ export class CanvasManager {
 
     this.umbrellaChickenSpriteSheet = new Image();
     this.umbrellaChickenSpriteSheet.src = UMBRELLA_CHICKEN.IMAGE;
+
+    this.deathEffectSpriteSheet = new Image();
+    this.deathEffectSpriteSheet.src = DEATH_EFFECT.IMAGE;
 
     this.resizeCanvas();
 
@@ -116,6 +120,11 @@ export class CanvasManager {
     });
     gameState.friedChickens.forEach((fc) => {
       this.drawSprite(fc, this.friedChickenSprite);
+    });
+
+    gameState.deathEffects.forEach((effect) => {
+      effect.updateAnimation();
+      this.drawAnimatedSprite(effect, this.deathEffectSpriteSheet);
     });
   }
 
