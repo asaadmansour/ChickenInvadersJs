@@ -179,6 +179,7 @@ export class Game {
       this.gameState.player,
       (fc) => {
         fc.deactivate();
+        this.audioManager.play("crunch");
         this.gameState.addScore(fc.score);
         this.hudManager.updateScore(this.gameState);
       },

@@ -3,6 +3,7 @@ import {
   BULLET,
   PLAYER,
   CHICKEN_DEATH_AUDIO,
+  FRIED_CHICKEN_CRUNCH_AUDIO,
 } from "../config/Constants.js";
 export class AudioManager {
   static #instance = null;
@@ -15,6 +16,7 @@ export class AudioManager {
       bullet: new Audio(BULLET.AUDIO),
       hit: new Audio(PLAYER.AUDIO),
       chickenDeath: new Audio(CHICKEN_DEATH_AUDIO.AUDIO),
+      crunch: new Audio(FRIED_CHICKEN_CRUNCH_AUDIO.AUDIO),
     };
     this.sounds.game.loop = true;
     this.sounds.game.volume = 0.7;
