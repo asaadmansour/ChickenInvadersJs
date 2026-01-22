@@ -268,6 +268,16 @@ export class Game {
         }
         break;
 
+      case 3:
+        if (
+          !this.gameState.hasPendingSpawns &&
+          this.gameState.chickens.length === 0 &&
+          this.gameState.eggs.length === 0
+        ) {
+          waveCompleted = true;
+        }
+        break;
+
       default:
         this.handleGameComplete();
         break;

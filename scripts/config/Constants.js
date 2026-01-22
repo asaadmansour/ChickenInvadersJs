@@ -11,6 +11,8 @@ export const ENTITY_RATIOS = {
   BULLET_HEIGHT: 0.03,
   ROCK_WIDTH: 0.05,
   ROCK_HEIGHT: 0.08,
+  UMBRELLA_CHICKEN_WIDTH: 0.07,
+  UMBRELLA_CHICKEN_HEIGHT: 0.1,
 };
 
 export const PLAYER = {
@@ -51,10 +53,18 @@ export const CHICKEN = {
   IMAGE: "/assets/images/chicken_spritesheet.png",
   SCORE: 100,
 };
+
 export const FRIED_CHICKEN = {
   MOVE_SPEED: 3,
   IMAGE: "/assets/images/fried-chicken.png",
 };
+
+export const UMBRELLA_CHICKEN = {
+  MOVE_SPEED: 4,
+  IMAGE: "/assets/images/chicken_umbrellas_spritesheet.png",
+  SCORE: 150,
+};
+
 export const GAME = {
   AUDIO: "/assets/audio/Game Audio.wav",
 };

@@ -5,7 +5,11 @@ import {
   EGG,
   FRIED_CHICKEN,
   ROCK,
+  UMBRELLA_CHICKEN,
 } from "../config/Constants.js";
+
+import { UmbrellaChicken } from "../entities/UmbrellaChicken.js";
+
 export class CanvasManager {
   static #instance = null;
 
@@ -38,6 +42,9 @@ export class CanvasManager {
     this.friedChickenSprite = new Image();
     this.friedChickenSprite.src = FRIED_CHICKEN.IMAGE;
     this.onResizeAction = null;
+
+    this.umbrellaChickenSpriteSheet = new Image();
+    this.umbrellaChickenSpriteSheet.src = UMBRELLA_CHICKEN.IMAGE;
 
     this.resizeCanvas();
 
@@ -92,7 +99,12 @@ export class CanvasManager {
 
     gameState.chickens.forEach((chicken) => {
       chicken.updateAnimation();
-      this.drawAnimatedSprite(chicken, this.chickenSpriteSheet);
+
+      if (chicken instanceof UmbrellaChicken) {
+        this.drawAnimatedSprite(chicken, this.umbrellaChickenSpriteSheet);
+      } else {
+        this.drawAnimatedSprite(chicken, this.chickenSpriteSheet);
+      }
     });
 
     gameState.eggs.forEach((egg) => {
