@@ -15,6 +15,7 @@ export class GameState {
     this.status = "playing";
     this.gameTime = 0;
     this.isPaused = false;
+    this.hasPendingSpawns = false;
 
     // Entity collections
     this.player = new Player();
@@ -36,6 +37,7 @@ export class GameState {
   addScore(points) {
     this.score += points;
   }
+
   loseLife() {
     this.lives--;
     return this.lives <= 0;

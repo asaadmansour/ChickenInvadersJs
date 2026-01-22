@@ -31,10 +31,9 @@ export class Game {
     this.canvasManager.onResizeAction = () => {
       this.gameState.player.clampToBounds();
     };
+
     this.hudManager.printLives(this.gameState);
     this.start();
-
-    // this.startBackgroundAudio(); browser blocks autoplay audio on refersh
   }
 
   // Setup keyboard controls for player movement and shooting
@@ -82,62 +81,6 @@ export class Game {
     this.audioManager.playMusic();
   }
 
-  // check if the player was hit and returns true if so
-  checkAllCollisions() {
-    return this.collisionDetector.checkCollisions(this.gameState);
-  }
-
-  // check if the player should still be alive after the hit or no
-  handlePlayerHit(wasHit) {
-    if (wasHit) {
-      this.audioManager.play("hit");
-      const isDead = this.gameState.loseLife();
-      this.hudManager.printLives(this.gameState);
-      if (isDead) this.handleGameOver();
-    }
-  }
-
-  // Handle bullet-chicken collisions: deactivate both and spawn fried chicken
-  handleBulletChickenCollisions(collisions) {
-    collisions.forEach(({ bullet, chicken }) => {
-      bullet.deactivate();
-      chicken.deactivate();
-      this.gameState.addFriedChicken(
-        new FriedChicken(chicken.x, chicken.y, chicken.score),
-      );
-    });
-  }
-
-  // Check and return bullet-chicken collisions
-  bulletChickenCollisions() {
-    return this.collisionDetector.checkBulletsVsChickens(
-      this.gameState.bullets,
-      this.gameState.chickens,
-    );
-  }
-
-  // Handle fried chicken collection: deactivate and add score
-  handleFriedChickenCollection(collected) {
-    collected.forEach((fc) => {
-      fc.deactivate();
-      this.gameState.addScore(fc.score);
-    });
-    this.hudManager.updateScore(this.gameState);
-  }
-
-  // Check and return fried chicken-player collisions
-  friedChickenCollection() {
-    return this.collisionDetector.checkFriedChickensVsPlayer(
-      this.gameState.friedChickens,
-      this.gameState.player,
-    );
-  }
-
-  handleGameOver() {
-    this.gameState.status = "gameover";
-    window.location.href = "/pages/gameover.html";
-  }
-
   // Main game loop called every frame
   gameLoop() {
     if (this.gameState.isPaused) {
@@ -148,21 +91,12 @@ export class Game {
     this.gameState.updateTime();
     this.updateEntitiesPositions();
     this.attemptSpawnEggs();
-    this.handleBulletChickenCollisions(this.bulletChickenCollisions());
-    this.handlePlayerHit(this.checkAllCollisions());
-    this.handleFriedChickenCollection(this.friedChickenCollection());
+    this.checkCollisions();
     this.removeInactiveEntities();
     this.checkAndAdvanceWave();
-    // this.checkAllCollisions2();
-
     this.canvasManager.render(this.gameState);
-    this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
-  }
 
-  // simple redirection if the wave is complete "will change when we add more waves"
-  handleWaveComplete() {
-    this.gameState.status = "complete";
-    window.location.href = "/pages/scoreboard.html";
+    this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
   }
 
   // Update positions of all entities based on their velocities and movement types
@@ -194,52 +128,99 @@ export class Game {
     });
   }
 
-  // // Check all collisions between entities and handle their effects
-  // checkAllCollisions2() {
-  //   this.collisionDetector.checkBulletsVsChickens(
-  //     this.gameState.bullets,
-  //     this.gameState.chickens,
-  //     (bullet, chicken) => {
-  //       bullet.deactivate();
-  //       chicken.deactivate();
-  //       this.gameState.addScore(20);
-  //     },
-  //   );
+  // Check all collisions between entities and handle their effects
+  checkCollisions() {
+    this.checkBulletsVsChickens();
 
-  //   this.collisionDetector.checkPlayerVsChickens(
-  //     this.gameState.player,
-  //     this.gameState.chickens,
-  //     (chicken) => {
-  //       chicken.deactivate();
-  //       this.handlePlayerHit();
-  //     },
-  //   );
+    this.checkPlayerVsFriedChickens();
 
-  //   this.collisionDetector.checkEggsVsPlayer(
-  //     this.gameState.eggs,
-  //     this.gameState.player,
-  //     (egg) => {
-  //       egg.deactivate();
-  //       this.handlePlayerHit();
-  //     },
-  //   );
+    if (this.gameState.player.isInvulnerable()) return;
 
-  //   this.collisionDetector.checkPlayerVsRocks(
-  //     this.gameState.player,
-  //     this.gameState.rocks,
-  //     (rock) => {
-  //       rock.deactivate();
-  //       this.handlePlayerHit();
-  //     },
-  //   );
-  // }
+    this.checkPlayerVsChickens();
 
-  // check if the player should still be alive after the hit or no
+    this.checkPlayerVsEggs();
 
-  // Handle game over state and redirect to game over screen
-  handleGameOver() {
-    this.gameState.status = "gameover";
-    window.location.href = "/pages/gameover.html";
+    this.checkPlayerVsRocks();
+  }
+
+  /**
+   * Check collisions between bullets and chickens
+   * On collision, deactivate both and spawn fried chicken
+   */
+  checkBulletsVsChickens() {
+    this.collisionDetector.checkGroupVsGroup(
+      this.gameState.bullets,
+      this.gameState.chickens,
+      (bullet, chicken) => {
+        bullet.deactivate();
+        chicken.deactivate();
+        const spawn = chicken.drop();
+        this.gameState.addFriedChicken(
+          new FriedChicken(spawn.x, spawn.y, chicken.score),
+        );
+      },
+    );
+  }
+
+  /**
+   * Check collisions between player and fried chickens
+   * On collision, deactivate fried chicken and increase score
+   */
+  checkPlayerVsFriedChickens() {
+    this.collisionDetector.checkGroupVsItem(
+      this.gameState.friedChickens,
+      this.gameState.player,
+      (fc) => {
+        fc.deactivate();
+        this.gameState.addScore(fc.score);
+        this.hudManager.updateScore(this.gameState);
+      },
+    );
+  }
+
+  /**
+   * Check collisions between player and chickens
+   * On collision, deactivate chicken and handle player hit
+   */
+  checkPlayerVsChickens() {
+    this.collisionDetector.checkGroupVsItem(
+      this.gameState.chickens,
+      this.gameState.player,
+      (chicken) => {
+        chicken.deactivate();
+        this.handlePlayerHit();
+      },
+    );
+  }
+
+  /**
+   * Check collisions between player and eggs
+   * On collision, deactivate egg and handle player hit
+   */
+  checkPlayerVsEggs() {
+    this.collisionDetector.checkGroupVsItem(
+      this.gameState.eggs,
+      this.gameState.player,
+      (egg) => {
+        egg.deactivate();
+        this.handlePlayerHit();
+      },
+    );
+  }
+
+  /**
+   * Check collisions between player and rocks
+   * On collision, deactivate rock and handle player hit
+   */
+  checkPlayerVsRocks() {
+    this.collisionDetector.checkGroupVsItem(
+      this.gameState.rocks,
+      this.gameState.player,
+      (rock) => {
+        rock.deactivate();
+        this.handlePlayerHit();
+      },
+    );
   }
 
   // Remove inactive entities caused by collisions or moving out of bounds
@@ -261,6 +242,10 @@ export class Game {
     );
   }
 
+  /**
+   * Check if the current wave is completed and advance to the next wave if so,
+   * if all waves are completed, handle game completion.
+   */
   checkAndAdvanceWave() {
     let waveCompleted = false;
 
@@ -273,13 +258,18 @@ export class Game {
           waveCompleted = true;
         }
         break;
+
       case 2:
-        if (this.gameState.rocks.length === 0) {
+        if (
+          !this.gameState.hasPendingSpawns &&
+          this.gameState.rocks.length === 0
+        ) {
           waveCompleted = true;
         }
         break;
-      case 3:
-        this.handleGameOver();
+
+      default:
+        this.handleGameComplete();
         break;
     }
 
@@ -287,6 +277,31 @@ export class Game {
       this.gameState.incrementWaveNumber();
       this.waveController.createWave(this.gameState);
     }
+  }
+
+  // handle player hit logic: play sound, lose life, check for game over
+  handlePlayerHit() {
+    const wasHit = this.gameState.player.hit();
+
+    if (!wasHit) return;
+
+    this.audioManager.play("hit");
+    const isDead = this.gameState.loseLife();
+    this.hudManager.printLives(this.gameState);
+
+    if (isDead) this.handleGameOver();
+  }
+
+  // simple redirection to game over page
+  handleGameOver() {
+    this.gameState.status = "gameover";
+    window.location.href = "/pages/gameover.html";
+  }
+
+  // simple redirection to scoreboard page
+  handleGameComplete() {
+    this.gameState.status = "complete";
+    window.location.href = "/pages/scoreboard.html";
   }
 
   pause() {

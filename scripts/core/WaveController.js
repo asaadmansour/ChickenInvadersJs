@@ -42,8 +42,9 @@ export class WaveController {
     const config = WAVE_CONFIGS[1];
 
     let accumulatedTime = 0;
+    gameState.hasPendingSpawns = true;
 
-    for (let i = 0; i < config.count && gameState.status === "playing"; i++) {
+    for (let i = 0; i < config.count; i++) {
       const nextDelay =
         config.minSpawnInterval +
         Math.random() * (config.maxSpawnInterval - config.minSpawnInterval);
@@ -74,6 +75,11 @@ export class WaveController {
         rock.moveSpeed *= speedVar;
 
         gameState.addRock(rock);
+
+        // If this is the last rock, clear the pending spawns flag
+        if (i === config.count - 1) {
+          gameState.hasPendingSpawns = false;
+        }
       }, accumulatedTime);
     }
   }
