@@ -1,73 +1,224 @@
-import { getScores } from "../utils/Storage.js";
-import { isValidScoreEntry } from "../utils/Validations.js";
+// // import { getScores } from "../services/scoreService.js";
+
+// // const scoreList = document.getElementById("scoreList");
+// // const emptyState = document.getElementById("emptyState");
+
+// // // TEAM NOTE: Added references for navigation buttons
+// // const backBtn = document.getElementById("backBtn");
+// // const newGameBtn = document.getElementById("newGameBtn");
+
+// // async function renderScoreboard() {
+// //   const scores = await getScores();
+// //   scoreList.innerHTML = "";
+
+// //   if (!scores.length) {
+// //     emptyState.classList.remove("hidden");
+// //     return;
+// //   }
+
+// //   emptyState.classList.add("hidden");
+
+// //   scores.forEach((player, index) => {
+// //     const li = document.createElement("li");
+// //     li.innerHTML = `
+// //       <span>${index + 1}</span>
+// //       <span>${player.name}</span>
+// //       <span>${player.score}</span>
+// //     `;
+// //     scoreList.appendChild(li);
+// //   });
+// // }
+
+
+// // if (backBtn) {
+// //   backBtn.addEventListener("click", () => {
+// //     window.location.href = "../../index.html"; 
+// //   });
+// // }
+
+// // if (newGameBtn) {
+// //   newGameBtn.addEventListener("click", () => {
+// //     window.location.href = "./game.html";
+// //   });
+// // }
+
+// // renderScoreboard();
+// import { getScores, saveScore } from "../services/scoreService.js";
+
+// const scoreList = document.getElementById("scoreList");
+// const emptyState = document.getElementById("emptyState");
+// const backBtn = document.getElementById("backBtn");
+// const newGameBtn = document.getElementById("newGameBtn");
+// const submitBtn = document.getElementById("submitBtn");
+// const playerNameInput = document.getElementById("playerNameInput");
+
+// async function renderScoreboard() {
+//   try {
+//     const scores = await getScores();
+//     scoreList.innerHTML = "";
+
+//     if (!scores || scores.length === 0) {
+//       emptyState.classList.remove("hidden");
+//       return;
+//     }
+
+//     emptyState.classList.add("hidden");
+
+//     scores.forEach((player, index) => {
+//       const li = document.createElement("li");
+//       // TEAM NOTE: Using flexbox structure from your CSS
+//       li.innerHTML = `
+//         <span>${index + 1}</span>
+//         <span>${player.name || "Unknown"}</span>
+//         <span>${(player.score || 0).toLocaleString()}</span>
+//       `;
+//       scoreList.appendChild(li);
+//     });
+//   } catch (error) {
+//     console.error("Error rendering scoreboard:", error);
+//   }
+// }
+
+// // TEAM NOTE: Link the SUBMIT button to save score from the input field
+// if (submitBtn) {
+//   submitBtn.addEventListener("click", async () => {
+//     const name = playerNameInput.value.trim();
+//     const finalScore = parseInt(localStorage.getItem("finalScore")) || 0;
+
+//     if (!name) {
+//       alert("Please enter a Pilot name!");
+//       return;
+//     }
+
+//     submitBtn.disabled = true; 
+//     await saveScore(name, finalScore);
+//     playerNameInput.value = "";
+//     renderScoreboard(); 
+//   });
+// }
+
+// // Navigation Links
+// if (backBtn) {
+//   backBtn.addEventListener("click", () => {
+//     window.location.href = "../../index.html"; 
+//   });
+// }
+
+// if (newGameBtn) {
+//   newGameBtn.addEventListener("click", () => {
+//     window.location.href = "./game.html";
+//   });
+// }
+
+// // Initial Call
+// renderScoreboard();
+
+
+
+
+
+
+
+
+
+import { getScores, saveScore } from "../services/scoreService.js";
 
 const scoreList = document.getElementById("scoreList");
 const emptyState = document.getElementById("emptyState");
 const backBtn = document.getElementById("backBtn");
 const newGameBtn = document.getElementById("newGameBtn");
+const submitBtn = document.getElementById("submitBtn");
 const playerNameInput = document.getElementById("playerNameInput");
 
-// Get all scores and store original list
-let allScores = getScores();
-allScores = allScores.filter(isValidScoreEntry);
-allScores = allScores.sort((a, b) => b.score - a.score);
+let allScores = [];
 
-// Function to render scores
-function renderScores(scoresToRender) {
-  // Clear existing list
-  scoreList.innerHTML = "";
-  
-  if (scoresToRender.length === 0) {
-    emptyState.classList.remove("hidden");
-  } else {
+async function renderScoreboard(scoresToDisplay = null) {
+  try {
+    if (!scoresToDisplay) {
+      allScores = await getScores();
+      scoresToDisplay = allScores;
+    }
+
+    scoreList.innerHTML = "";
+
+    if (!scoresToDisplay || scoresToDisplay.length === 0) {
+      emptyState.classList.remove("hidden");
+      return;
+    }
+
     emptyState.classList.add("hidden");
-    scoresToRender.forEach((player, index) => {
+
+    scoresToDisplay.forEach((player, index) => {
       const li = document.createElement("li");
-
-      const rankSpan = document.createElement("span");
-      rankSpan.textContent = index + 1;
-
-      const nameSpan = document.createElement("span");
-      nameSpan.textContent = player.name;
-
-      const scoreSpan = document.createElement("span");
-      scoreSpan.textContent = player.score.toLocaleString();
-
-      li.appendChild(rankSpan);
-      li.appendChild(nameSpan);
-      li.appendChild(scoreSpan);
-
+      li.innerHTML = `
+        <span>${index + 1}</span>
+        <span>${player.name || "Unknown"}</span>
+        <span>${(player.score || 0).toLocaleString()}</span>
+      `;
       scoreList.appendChild(li);
     });
+  } catch (error) {
+    console.error("Error rendering scoreboard:", error);
   }
 }
 
-// Initial render with top 10
-renderScores(allScores.slice(0, 10));
-
-// Filter functionality - filter as user types
+// Live filter as the user types in the input field
 playerNameInput.addEventListener("input", (e) => {
-  const searchName = e.target.value.trim().toLowerCase();
+  const searchTerm = e.target.value.trim().toLowerCase();
   
-  if (searchName === "") {
-    // Show top 10 if input is empty
-    renderScores(allScores.slice(0, 10));
-  } else {
-    // Filter scores by name (case-insensitive)
-    const filteredScores = allScores.filter(player => 
-      player.name.toLowerCase().includes(searchName)
+  const filtered = allScores.filter(player => 
+    player.name.toLowerCase().includes(searchTerm)
+  );
+  
+  renderScoreboard(filtered);
+});
+
+// Logic for submitting a new score with name duplication check
+if (submitBtn) {
+  submitBtn.addEventListener("click", async () => {
+    const name = playerNameInput.value.trim();
+    const finalScore = parseInt(localStorage.getItem("finalScore")) || 0;
+
+    if (!name) {
+      alert("Please enter a Pilot name!");
+      return;
+    }
+
+    // Check if the name already exists in the fetched scores list
+    const nameExists = allScores.some(player => 
+      player.name.toLowerCase() === name.toLowerCase()
     );
-    renderScores(filteredScores);
-  }
-});
 
+    if (nameExists) {
+      alert("This Pilot name is already taken! Please choose another.");
+      return;
+    }
 
+    submitBtn.disabled = true;
+    submitBtn.textContent = "SAVING...";
+    
+    await saveScore(name, finalScore);
+    
+    playerNameInput.value = "";
+    submitBtn.disabled = false;
+    submitBtn.textContent = "SUBMIT";
+    
+    await renderScoreboard(); 
+  });
+}
 
-// Navigation
-backBtn.addEventListener("click", () => {
-  window.location.href = "index.html";
-});
+// Navigation event listeners
+if (backBtn) {
+  backBtn.addEventListener("click", () => {
+    window.location.href = "../../index.html"; 
+  });
+}
 
-newGameBtn.addEventListener("click", () => {
-  window.location.href = "game.html";
-});
+if (newGameBtn) {
+  newGameBtn.addEventListener("click", () => {
+    window.location.href = "./game.html";
+  });
+}
+
+// Initial data fetch and render
+renderScoreboard();

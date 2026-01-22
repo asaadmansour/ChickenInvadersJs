@@ -1,0 +1,126 @@
+/* instructions.css */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 3rem 1rem;
+    text-align: center;
+    position: relative;
+    z-index: 10;
+}
+
+h1 {
+    font-family: var(--font-retro);
+    font-size: 2.5rem;
+    background: var(--gradient-heading);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: var(--shadow-text);
+    margin-bottom: 2rem;
+    letter-spacing: 4px;
+}
+
+.instructions-card {
+    background: rgba(45, 27, 78, 0.75); /* Transparency with --color-bg-mid */
+    border: 2px solid var(--color-teal);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: var(--shadow-glow);
+    backdrop-filter: blur(12px);
+    margin-bottom: 2rem;
+}
+
+.instruction-section {
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+.instruction-section:last-child {
+    margin-bottom: 0;
+}
+
+.instruction-section h2 {
+    font-family: var(--font-retro);
+    font-size: 1.1rem;
+    color: var(--color-pink);
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.control-list {
+    list-style: none;
+    padding: 0;
+}
+
+.control-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.2rem;
+    font-family: var(--font-primary);
+    font-size: 1.1rem;
+    color: var(--color-text-white);
+}
+
+.key-cap {
+    background: var(--color-bg-dark);
+    border: 1px solid var(--color-teal);
+    color: var(--color-teal);
+    padding: 6px 14px;
+    border-radius: 8px;
+    margin-right: 20px;
+    font-family: var(--font-retro);
+    font-size: 0.7rem;
+    min-width: 100px;
+    text-align: center;
+    box-shadow: var(--shadow-input);
+}
+
+.mission-text {
+    font-family: var(--font-primary);
+    line-height: 1.8;
+    color: var(--color-text-white);
+    font-size: 1.1rem;
+}
+
+.mission-text strong {
+    color: var(--color-yellow);
+    text-shadow: 0 0 5px var(--color-yellow);
+}
+
+/* Button Styling */
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin-top: 1rem;
+}
+
+.nav-btn {
+    font-family: var(--font-retro);
+    font-size: 0.8rem;
+    padding: 18px 35px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    color: var(--color-text-dark);
+}
+
+#backToMenuBtn {
+    background: var(--gradient-back-btn);
+    box-shadow: 0 0 15px rgba(45, 212, 191, 0.4);
+}
+
+#startNowBtn {
+    background: var(--gradient-newgame-btn);
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+}
+
+.nav-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    filter: brightness(1.1);
+}
+
+.nav-btn:active {
+    transform: translateY(1px);
+}

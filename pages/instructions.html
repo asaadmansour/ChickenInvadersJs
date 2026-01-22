@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission Instructions - Space Chicken</title>
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/instructions.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body style="background: var(--gradient-bg); min-height: 100vh; overflow-x: hidden;">
+    
+    <div class="ambient-glow ambient-glow-1"></div>
+    <div class="ambient-glow ambient-glow-2"></div>
+
+    <div class="container">
+        <h1>HOW TO FLY</h1>
+
+        <div class="instructions-card">
+            <div class="instruction-section">
+                <h2>SYSTEM CONTROLS</h2>
+                <ul class="control-list">
+                    <li class="control-item">
+                        <span class="key-cap">ARROWS</span> 
+                        <p>Navigate Starship</p>
+                    </li>
+                    <li class="control-item">
+                        <span class="key-cap">SPACE</span> 
+                        <p>Fire Laser Cannon</p>
+                    </li>
+                    <li class="control-item">
+                        <span class="key-cap">ESC</span> 
+                        <p>Pause Tactical HUD</p>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="instruction-section">
+                <h2>TACTICAL MISSION</h2>
+                <p class="mission-text">
+                    The intergalactic chicken fleet is invading! Destroy chickens to earn points. 
+                    Keep an eye out for <strong>Fried Chicken</strong> drops—collect them to boost your score 
+                    and climb the high-score leaderboard.
+                </p>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button id="backToMenuBtn" class="nav-btn">ABORT TO MENU</button>
+            <button id="startNowBtn" class="nav-btn">ENGAGE GAME</button>
+        </div>
+    </div>
+
+    <script type="module">
+        // Functional logic for the buttons
+        const backBtn = document.getElementById("backToMenuBtn");
+        const startBtn = document.getElementById("startNowBtn");
+
+        if (backBtn) {
+            backBtn.addEventListener("click", () => {
+                // Exit pages folder to root index
+                window.location.href = "../index.html";
+            });
+        }
+
+        if (startBtn) {
+            startBtn.addEventListener("click", () => {
+                // Stay in pages folder to open game
+                window.location.href = "./game.html";
+            });
+        }
+    </script>
+</body>
+</html>
