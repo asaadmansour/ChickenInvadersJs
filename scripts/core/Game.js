@@ -156,6 +156,9 @@ export class Game {
         bullet.deactivate();
         chicken.deactivate();
         const spawn = chicken.drop();
+        import("./AudioManager.js").then(({ AudioManager }) => {
+          AudioManager.getInstance().play("chickenDeath");
+        });
         this.gameState.addDeathEffect(
           new DeathEffect(chicken.x, chicken.y, chicken.width, chicken.height),
         );

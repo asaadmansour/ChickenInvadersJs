@@ -78,6 +78,11 @@ export const DEATH_EFFECT = {
 export const GAME = {
   AUDIO: "/assets/audio/Game Audio.wav",
 };
+
+export const CHICKEN_DEATH_AUDIO = {
+  AUDIO: "/assets/audio/Chicken Sound.mp3",
+};
+
 export const LIVE = {
   IMAGE: "/assets/images/lives.webp",
 };

@@ -1,4 +1,9 @@
-import { GAME, BULLET, PLAYER } from "../config/Constants.js";
+import {
+  GAME,
+  BULLET,
+  PLAYER,
+  CHICKEN_DEATH_AUDIO,
+} from "../config/Constants.js";
 export class AudioManager {
   static #instance = null;
   constructor() {
@@ -9,6 +14,7 @@ export class AudioManager {
       game: new Audio(GAME.AUDIO),
       bullet: new Audio(BULLET.AUDIO),
       hit: new Audio(PLAYER.AUDIO),
+      chickenDeath: new Audio(CHICKEN_DEATH_AUDIO.AUDIO),
     };
     this.sounds.game.loop = true;
     this.sounds.game.volume = 0.7;
