@@ -29,14 +29,25 @@ export class WaveController {
   // Create the first wave of chickens - 2 rows, 13 chickens per row
   createFirstWave(gameState) {
     const config = WAVE_CONFIGS[0];
+    const canvas = CanvasManager.getInstance();
 
-    const totalWidth = (config.cols - 1) * config.spacingX;
-    const startX = (CanvasManager.getInstance().width - totalWidth) / 2;
+    // Calculate actual pixel spacing from ratios
+    const spacingX = canvas.width * config.spacingXRatio;
+    const spacingY = canvas.height * config.spacingYRatio;
+    const startY = canvas.height * config.startYRatio;
+
+    
+    const chickenWidth = canvas.width * 0.06; // ENTITY_RATIOS.CHICKEN_WIDTH
+    const oscillationRange = canvas.width * 0.077; // ENTITY_RATIOS.CHICKEN_HORIZONTAL_RANGE
+
+    // Total width includes: all spacing + one chicken width + oscillation on both sides
+    const totalWidth = (config.cols - 1) * spacingX + chickenWidth + oscillationRange * 2;
+    const startX = (canvas.width - totalWidth) / 2 + oscillationRange;
 
     for (let rows = 0; rows < config.rows; rows++) {
       for (let cols = 0; cols < config.cols; cols++) {
-        const x = startX + cols * config.spacingX;
-        const y = config.startY + rows * config.spacingY;
+        const x = startX + cols * spacingX;
+        const y = startY + rows * spacingY;
         gameState.addChicken(new Chicken(x, y));
       }
     }
