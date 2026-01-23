@@ -41,22 +41,18 @@ export class Game {
   setupControls() {
     this.inputHandler.bindKey("ArrowLeft", () => {
       this.gameState.player.move({ left: true });
-      this.startBackgroundAudio();
     });
 
     this.inputHandler.bindKey("ArrowRight", () => {
       this.gameState.player.move({ right: true });
-      this.startBackgroundAudio();
     });
 
     this.inputHandler.bindKey("ArrowUp", () => {
       this.gameState.player.move({ up: true });
-      this.startBackgroundAudio();
     });
 
     this.inputHandler.bindKey("ArrowDown", () => {
       this.gameState.player.move({ down: true });
-      this.startBackgroundAudio();
     });
 
     this.inputHandler.bindKey("Space", () => {
@@ -65,7 +61,6 @@ export class Game {
         this.audioManager.play("bullet");
         this.gameState.addBullet(new Bullet(spawn.x, spawn.y));
       }
-      this.startBackgroundAudio();
     });
 
     this.inputHandler.bindKey("Escape", () => {
@@ -75,11 +70,6 @@ export class Game {
         this.pause();
       }
     });
-  }
-
-  // Start background music playback
-  startBackgroundAudio() {
-    this.audioManager.playMusic();
   }
 
   // Main game loop called every frame

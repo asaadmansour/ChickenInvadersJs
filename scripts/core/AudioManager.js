@@ -20,6 +20,8 @@ export class AudioManager {
     };
     this.sounds.game.loop = true;
     this.sounds.game.volume = 0.7;
+    this.sounds.game.preload = "auto";
+    this.sounds.game.play();
   }
 
   // Singleton access method
@@ -37,16 +39,13 @@ export class AudioManager {
     }
   }
 
-  // For background music - only starts if paused, doesn't restart
-  playMusic() {
-    const music = this.sounds.game;
-    if (music.paused) {
-      music.play().catch(() => {});
-    }
-  }
-
   // Pause background music
   pauseMusic() {
     this.sounds.game.pause();
+  }
+
+  // Resume background music
+  resumeMusic() {
+    this.sounds.game.play().catch(() => {});
   }
 }
