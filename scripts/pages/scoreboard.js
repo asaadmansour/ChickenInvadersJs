@@ -55,39 +55,39 @@ playerNameInput.addEventListener("input", (e) => {
   renderScoreboard(filtered);
 });
 
-// Logic for submitting a new score with name duplication check
-if (submitBtn) {
-  submitBtn.addEventListener("click", async () => {
-    const name = playerNameInput.value.trim();
-    const finalScore = parseInt(localStorage.getItem("finalScore")) || 0;
+// // Logic for submitting a new score with name duplication check
+// if (submitBtn) {
+//   submitBtn.addEventListener("click", async () => {
+//     const name = playerNameInput.value.trim();
+//     const finalScore = parseInt(localStorage.getItem("finalScore")) || 0;
 
-    if (!name) {
-      alert("Please enter a Pilot name!");
-      return;
-    }
+//     if (!name) {
+//       alert("Please enter a Pilot name!");
+//       return;
+//     }
 
-    // Check if the name already exists in the fetched scores list
-    const nameExists = allScores.some(
-      (player) => player.name.toLowerCase() === name.toLowerCase(),
-    );
+//     // Check if the name already exists in the fetched scores list
+//     const nameExists = allScores.some(
+//       (player) => player.name.toLowerCase() === name.toLowerCase(),
+//     );
 
-    if (nameExists) {
-      alert("This Pilot name is already taken! Please choose another.");
-      return;
-    }
+//     if (nameExists) {
+//       alert("This Pilot name is already taken! Please choose another.");
+//       return;
+//     }
 
-    submitBtn.disabled = true;
-    submitBtn.textContent = "SAVING...";
+//     submitBtn.disabled = true;
+//     submitBtn.textContent = "SAVING...";
 
-    await saveScore(name, finalScore);
+//     // await saveScore(name, finalScore);
 
-    playerNameInput.value = "";
-    submitBtn.disabled = false;
-    submitBtn.textContent = "SUBMIT";
+//     playerNameInput.value = "";
+//     submitBtn.disabled = false;
+//     submitBtn.textContent = "SUBMIT";
 
-    await renderScoreboard();
-  });
-}
+//     await renderScoreboard();
+//   });
+// }
 
 // Navigation event listeners
 if (backBtn) {
