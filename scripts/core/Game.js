@@ -145,7 +145,6 @@ export class Game {
       (bullet, chicken) => {
         chicken.decreaseLives();
         bullet.deactivate();
-        console.log(`Chicken lives left: ${chicken.getLives()}`);
         if (chicken.getLives() <= 0) {
           chicken.deactivate();
           const spawn = chicken.drop();
