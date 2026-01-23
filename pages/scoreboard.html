@@ -1,59 +1,61 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>High Scores</title>
-<link rel="stylesheet" href="../css/scoreboard.css" />
-<link rel="stylesheet" href="../css/variables.css">
-<link rel="stylesheet" href="../css/main.css">
-</head>
-<body>
-<!-- Ambient Glow Lights -->
-<div class="ambient-glow ambient-glow-1"></div>
-<div class="ambient-glow ambient-glow-2"></div>
-<div class="ambient-glow ambient-glow-3"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>High Scores</title>
+    <link rel="stylesheet" href="../css/scoreboard.css" />
+    <link rel="stylesheet" href="../css/variables.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+  </head>
+  <body>
+    <!-- Ambient Glow Lights -->
+    <div class="ambient-glow ambient-glow-1"></div>
+    <div class="ambient-glow ambient-glow-2"></div>
+    <div class="ambient-glow ambient-glow-3"></div>
 
-<!-- Shooting Stars -->
-<div class="shooting-star shooting-star-1"></div>
-<div class="shooting-star shooting-star-2"></div>
-<div class="shooting-star shooting-star-3"></div>
+    <!-- Shooting Stars -->
+    <div class="shooting-star shooting-star-1"></div>
+    <div class="shooting-star shooting-star-2"></div>
+    <div class="shooting-star shooting-star-3"></div>
 
-<div class="container">
-<h1>HIGH SCORES</h1>
+    <div class="container">
+      <h1>HIGH SCORES</h1>
 
-<!-- New Pilot Section -->
-<div class="new-pilot">
-<h2>New Pilot</h2>
-<div class="input-group">
-<input type="text" id="playerNameInput" placeholder="Enter Player Name..." />
-<button id="submitBtn"  >SUBMIT</button>
-</div>
-</div>
+      <!-- New Pilot Section -->
+      <div class="new-pilot">
+        <h2>New Pilot</h2>
+        <div class="input-group">
+          <input
+            type="text"
+            id="playerNameInput"
+            placeholder="Enter Player Name..."
+          />
+          <button id="submitBtn">SUBMIT</button>
+        </div>
+      </div>
 
-<!-- Score Table -->
-<div class="table-header">
-<span>RANK</span>
-<span>PILOT</span>
-<span>SCORE</span>
-</div>
-<ul id="scoreList"></ul>
+      <!-- Score Table -->
+      <div class="table-header">
+        <span>RANK</span>
+        <span>PILOT</span>
+        <span>SCORE</span>
+      </div>
+      <ul id="scoreList"></ul>
 
-<p id="emptyState" class="hidden">
-No scores yet. Play the game!
-</p>
+      <p id="emptyState" class="hidden">No scores yet. Play the game!</p>
 
-<!-- Buttons -->
-<div class="buttons">
-<button id="backBtn">BACK TO HOME</button>
-<button id="newGameBtn">START NEW GAME</button>
-</div>
+      <!-- Buttons -->
+      <div class="buttons">
+        <button id="backBtn">BACK TO HOME</button>
+        <button id="newGameBtn">START NEW GAME</button>
+      </div>
 
-<p class="footer-note">Scores are fetched dynamically from LocalStorage</p>
-</div>
+      <p class="footer-note">
+        Scores are fetched dynamically from LocalStorage
+      </p>
+    </div>
 
-
-<script type="module" src="../scripts/pages/scoreboard.js"></script>
-
-</body>
+    <script type="module" src="../scripts/pages/scoreboard.js"></script>
+  </body>
 </html>

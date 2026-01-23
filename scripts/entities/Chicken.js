@@ -3,12 +3,12 @@ import { GameObject } from "./GameObject.js";
 import { ENTITY_RATIOS } from "../config/Constants.js";
 import { CHICKEN } from "../config/Constants.js";
 export class Chicken extends GameObject {
-  constructor(x, y) {
+  constructor(x, y, lives = 1) {
     super(x, y, CHICKEN.MOVE_SPEED);
-
+    this.lives = lives;
     this.startX = x;
     this.startY = y;
-    this.score = CHICKEN.SCORE;  //chicken points
+    this.score = CHICKEN.SCORE; //chicken points
 
     // Animation properties
     this.horizontalRange = CHICKEN.HORIZONTAL_RANGE;
@@ -44,6 +44,20 @@ export class Chicken extends GameObject {
    */
   get height() {
     return CanvasManager.getInstance().height * ENTITY_RATIOS.CHICKEN_HEIGHT;
+  }
+
+  /**
+   * Get current lives of the chicken
+   */
+  getLives() {
+    return this.lives;
+  }
+
+  /**
+   * Decrease chicken lives by 1
+   */
+  decreaseLives() {
+    this.lives--;
   }
 
   /**

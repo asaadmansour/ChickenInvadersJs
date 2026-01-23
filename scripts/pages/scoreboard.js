@@ -1,127 +1,9 @@
-// // import { getScores } from "../services/scoreService.js";
-
-// // const scoreList = document.getElementById("scoreList");
-// // const emptyState = document.getElementById("emptyState");
-
-// // // TEAM NOTE: Added references for navigation buttons
-// // const backBtn = document.getElementById("backBtn");
-// // const newGameBtn = document.getElementById("newGameBtn");
-
-// // async function renderScoreboard() {
-// //   const scores = await getScores();
-// //   scoreList.innerHTML = "";
-
-// //   if (!scores.length) {
-// //     emptyState.classList.remove("hidden");
-// //     return;
-// //   }
-
-// //   emptyState.classList.add("hidden");
-
-// //   scores.forEach((player, index) => {
-// //     const li = document.createElement("li");
-// //     li.innerHTML = `
-// //       <span>${index + 1}</span>
-// //       <span>${player.name}</span>
-// //       <span>${player.score}</span>
-// //     `;
-// //     scoreList.appendChild(li);
-// //   });
-// // }
-
-
-// // if (backBtn) {
-// //   backBtn.addEventListener("click", () => {
-// //     window.location.href = "../../index.html"; 
-// //   });
-// // }
-
-// // if (newGameBtn) {
-// //   newGameBtn.addEventListener("click", () => {
-// //     window.location.href = "./game.html";
-// //   });
-// // }
-
-// // renderScoreboard();
-// import { getScores, saveScore } from "../services/scoreService.js";
-
-// const scoreList = document.getElementById("scoreList");
-// const emptyState = document.getElementById("emptyState");
-// const backBtn = document.getElementById("backBtn");
-// const newGameBtn = document.getElementById("newGameBtn");
-// const submitBtn = document.getElementById("submitBtn");
-// const playerNameInput = document.getElementById("playerNameInput");
-
-// async function renderScoreboard() {
-//   try {
-//     const scores = await getScores();
-//     scoreList.innerHTML = "";
-
-//     if (!scores || scores.length === 0) {
-//       emptyState.classList.remove("hidden");
-//       return;
-//     }
-
-//     emptyState.classList.add("hidden");
-
-//     scores.forEach((player, index) => {
-//       const li = document.createElement("li");
-//       // TEAM NOTE: Using flexbox structure from your CSS
-//       li.innerHTML = `
-//         <span>${index + 1}</span>
-//         <span>${player.name || "Unknown"}</span>
-//         <span>${(player.score || 0).toLocaleString()}</span>
-//       `;
-//       scoreList.appendChild(li);
-//     });
-//   } catch (error) {
-//     console.error("Error rendering scoreboard:", error);
-//   }
-// }
-
-// // TEAM NOTE: Link the SUBMIT button to save score from the input field
-// if (submitBtn) {
-//   submitBtn.addEventListener("click", async () => {
-//     const name = playerNameInput.value.trim();
-//     const finalScore = parseInt(localStorage.getItem("finalScore")) || 0;
-
-//     if (!name) {
-//       alert("Please enter a Pilot name!");
-//       return;
-//     }
-
-//     submitBtn.disabled = true; 
-//     await saveScore(name, finalScore);
-//     playerNameInput.value = "";
-//     renderScoreboard(); 
-//   });
-// }
-
-// // Navigation Links
-// if (backBtn) {
-//   backBtn.addEventListener("click", () => {
-//     window.location.href = "../../index.html"; 
-//   });
-// }
-
-// if (newGameBtn) {
-//   newGameBtn.addEventListener("click", () => {
-//     window.location.href = "./game.html";
-//   });
-// }
-
-// // Initial Call
-// renderScoreboard();
-
-
-
-
-
-
-
-
-
 import { getScores, saveScore } from "../services/scoreService.js";
+
+import {
+  playBackgroundMusic,
+  addButtonHoverSound,
+} from "../utils/AudioHelper.js";
 
 const scoreList = document.getElementById("scoreList");
 const emptyState = document.getElementById("emptyState");
@@ -165,11 +47,11 @@ async function renderScoreboard(scoresToDisplay = null) {
 // Live filter as the user types in the input field
 playerNameInput.addEventListener("input", (e) => {
   const searchTerm = e.target.value.trim().toLowerCase();
-  
-  const filtered = allScores.filter(player => 
-    player.name.toLowerCase().includes(searchTerm)
+
+  const filtered = allScores.filter((player) =>
+    player.name.toLowerCase().includes(searchTerm),
   );
-  
+
   renderScoreboard(filtered);
 });
 
@@ -185,8 +67,8 @@ if (submitBtn) {
     }
 
     // Check if the name already exists in the fetched scores list
-    const nameExists = allScores.some(player => 
-      player.name.toLowerCase() === name.toLowerCase()
+    const nameExists = allScores.some(
+      (player) => player.name.toLowerCase() === name.toLowerCase(),
     );
 
     if (nameExists) {
@@ -196,21 +78,21 @@ if (submitBtn) {
 
     submitBtn.disabled = true;
     submitBtn.textContent = "SAVING...";
-    
+
     await saveScore(name, finalScore);
-    
+
     playerNameInput.value = "";
     submitBtn.disabled = false;
     submitBtn.textContent = "SUBMIT";
-    
-    await renderScoreboard(); 
+
+    await renderScoreboard();
   });
 }
 
 // Navigation event listeners
 if (backBtn) {
   backBtn.addEventListener("click", () => {
-    window.location.href = "../../index.html"; 
+    window.location.href = "../../index.html";
   });
 }
 
@@ -219,6 +101,12 @@ if (newGameBtn) {
     window.location.href = "./game.html";
   });
 }
+
+// Victory sound
+playBackgroundMusic("../assets/audio/Victory.mp3", 0.7, false);
+
+// Button hover sound
+addButtonHoverSound();
 
 // Initial data fetch and render
 renderScoreboard();

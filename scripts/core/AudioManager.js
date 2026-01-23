@@ -1,4 +1,10 @@
-import { GAME, BULLET, PLAYER } from "../config/Constants.js";
+import {
+  GAME,
+  BULLET,
+  PLAYER,
+  CHICKEN_DEATH_AUDIO,
+  FRIED_CHICKEN_CRUNCH_AUDIO,
+} from "../config/Constants.js";
 export class AudioManager {
   static #instance = null;
   constructor() {
@@ -9,9 +15,13 @@ export class AudioManager {
       game: new Audio(GAME.AUDIO),
       bullet: new Audio(BULLET.AUDIO),
       hit: new Audio(PLAYER.AUDIO),
+      chickenDeath: new Audio(CHICKEN_DEATH_AUDIO.AUDIO),
+      crunch: new Audio(FRIED_CHICKEN_CRUNCH_AUDIO.AUDIO),
     };
     this.sounds.game.loop = true;
     this.sounds.game.volume = 0.7;
+    this.sounds.game.preload = "auto";
+    this.sounds.game.play();
   }
 
   // Singleton access method
@@ -29,16 +39,13 @@ export class AudioManager {
     }
   }
 
-  // For background music - only starts if paused, doesn't restart
-  playMusic() {
-    const music = this.sounds.game;
-    if (music.paused) {
-      music.play().catch(() => {});
-    }
-  }
-
   // Pause background music
   pauseMusic() {
     this.sounds.game.pause();
+  }
+
+  // Resume background music
+  resumeMusic() {
+    this.sounds.game.play().catch(() => {});
   }
 }

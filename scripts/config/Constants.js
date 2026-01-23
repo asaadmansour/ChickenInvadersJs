@@ -11,6 +11,10 @@ export const ENTITY_RATIOS = {
   BULLET_HEIGHT: 0.03,
   ROCK_WIDTH: 0.05,
   ROCK_HEIGHT: 0.08,
+  UMBRELLA_CHICKEN_WIDTH: 0.07,
+  UMBRELLA_CHICKEN_HEIGHT: 0.1,
+  DEATH_EFFECT_WIDTH: 0.07,
+  DEATH_EFFECT_HEIGHT: 0.13,
 };
 
 export const PLAYER = {
@@ -51,13 +55,38 @@ export const CHICKEN = {
   IMAGE: "/assets/images/chicken_spritesheet.png",
   SCORE: 100,
 };
+
 export const FRIED_CHICKEN = {
   MOVE_SPEED: 3,
   IMAGE: "/assets/images/fried-chicken.png",
 };
+
+export const UMBRELLA_CHICKEN = {
+  MOVE_SPEED: 4,
+  IMAGE: "/assets/images/chicken_umbrellas_spritesheet.png",
+  SCORE: 150,
+};
+
+export const DEATH_EFFECT = {
+  IMAGE: "/assets/images/Death Effect.png",
+  FRAME_COUNT: 9,
+  FRAME_DELAY: 3,
+  COLS: 3,
+  ROWS: 3,
+};
+
 export const GAME = {
   AUDIO: "/assets/audio/Game Audio.wav",
 };
+
+export const CHICKEN_DEATH_AUDIO = {
+  AUDIO: "/assets/audio/Chicken Death.mp3",
+};
+
+export const FRIED_CHICKEN_CRUNCH_AUDIO = {
+  AUDIO: "/assets/audio/Crunch.mp3",
+};
+
 export const LIVE = {
   IMAGE: "/assets/images/lives.webp",
 };
