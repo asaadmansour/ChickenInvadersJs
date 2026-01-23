@@ -2,8 +2,8 @@ import { Chicken } from "./Chicken.js";
 import { CanvasManager } from "../core/CanvasManager.js";
 import { ENTITY_RATIOS, UMBRELLA_CHICKEN } from "../config/Constants.js";
 export class UmbrellaChicken extends Chicken {
-  constructor(x, y) {
-    super(x, y);
+  constructor(x, y, lives = 2) {
+    super(x, y, lives);
     this.score = UMBRELLA_CHICKEN.SCORE;
   }
 

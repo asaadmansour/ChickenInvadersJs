@@ -104,7 +104,7 @@ export class CanvasManager {
     gameState.chickens.forEach((chicken) => {
       chicken.updateAnimation();
 
-      if (chicken instanceof UmbrellaChicken) {
+      if (chicken instanceof UmbrellaChicken && chicken.lives == 2) {
         this.drawAnimatedSprite(chicken, this.umbrellaChickenSpriteSheet);
       } else {
         this.drawAnimatedSprite(chicken, this.chickenSpriteSheet);

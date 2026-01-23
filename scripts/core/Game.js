@@ -143,18 +143,27 @@ export class Game {
       this.gameState.bullets,
       this.gameState.chickens,
       (bullet, chicken) => {
+        chicken.decreaseLives();
         bullet.deactivate();
-        chicken.deactivate();
-        const spawn = chicken.drop();
-        import("./AudioManager.js").then(({ AudioManager }) => {
-          AudioManager.getInstance().play("chickenDeath");
-        });
-        this.gameState.addDeathEffect(
-          new DeathEffect(chicken.x, chicken.y, chicken.width, chicken.height),
-        );
-        this.gameState.addFriedChicken(
-          new FriedChicken(spawn.x, spawn.y, chicken.score),
-        );
+        console.log(`Chicken lives left: ${chicken.getLives()}`);
+        if (chicken.getLives() <= 0) {
+          chicken.deactivate();
+          const spawn = chicken.drop();
+          import("./AudioManager.js").then(({ AudioManager }) => {
+            AudioManager.getInstance().play("chickenDeath");
+          });
+          this.gameState.addDeathEffect(
+            new DeathEffect(
+              chicken.x,
+              chicken.y,
+              chicken.width,
+              chicken.height,
+            ),
+          );
+          this.gameState.addFriedChicken(
+            new FriedChicken(spawn.x, spawn.y, chicken.score),
+          );
+        }
       },
     );
   }
