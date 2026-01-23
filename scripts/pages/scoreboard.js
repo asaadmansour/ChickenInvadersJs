@@ -69,9 +69,20 @@ window.addEventListener("DOMContentLoaded", function () {
   victoryAudio.play();
 });
 
+// Button hover sound
+window.addEventListener("DOMContentLoaded", function () {
+  const buttons = document.querySelectorAll("button");
+  buttons.forEach((btn) => {
+    btn.addEventListener("mouseenter", () => {
+      const hoverAudio = new Audio("../assets/audio/Click.wav");
+      hoverAudio.play();
+    });
+  });
+});
+
 // Navigation
 backBtn.addEventListener("click", () => {
-  window.location.href = "index.html";
+  window.location.href = "../index.html";
 });
 
 newGameBtn.addEventListener("click", () => {

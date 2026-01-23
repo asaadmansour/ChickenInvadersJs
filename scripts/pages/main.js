@@ -15,3 +15,14 @@ window.addEventListener("DOMContentLoaded", function () {
   introAudio.loop = true;
   introAudio.play();
 });
+
+// Button hover sound
+window.addEventListener("DOMContentLoaded", function () {
+  const buttons = document.querySelectorAll("button");
+  buttons.forEach((btn) => {
+    btn.addEventListener("mouseenter", () => {
+      const hoverAudio = new Audio("../assets/audio/Click.wav");
+      hoverAudio.play();
+    });
+  });
+});
