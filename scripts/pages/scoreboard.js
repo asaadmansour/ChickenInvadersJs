@@ -16,7 +16,7 @@ allScores = allScores.sort((a, b) => b.score - a.score);
 function renderScores(scoresToRender) {
   // Clear existing list
   scoreList.innerHTML = "";
-  
+
   if (scoresToRender.length === 0) {
     emptyState.classList.remove("hidden");
   } else {
@@ -48,20 +48,26 @@ renderScores(allScores.slice(0, 10));
 // Filter functionality - filter as user types
 playerNameInput.addEventListener("input", (e) => {
   const searchName = e.target.value.trim().toLowerCase();
-  
+
   if (searchName === "") {
     // Show top 10 if input is empty
     renderScores(allScores.slice(0, 10));
   } else {
     // Filter scores by name (case-insensitive)
-    const filteredScores = allScores.filter(player => 
-      player.name.toLowerCase().includes(searchName)
+    const filteredScores = allScores.filter((player) =>
+      player.name.toLowerCase().includes(searchName),
     );
     renderScores(filteredScores);
   }
 });
 
-
+// Victory sound
+window.addEventListener("DOMContentLoaded", function () {
+  const victoryAudio = new Audio("../assets/audio/Mission Complete.mp3");
+  victoryAudio.preload = "auto";
+  victoryAudio.volume = 0.7;
+  victoryAudio.play();
+});
 
 // Navigation
 backBtn.addEventListener("click", () => {

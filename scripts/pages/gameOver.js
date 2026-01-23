@@ -12,7 +12,7 @@ mainMenuBtn.addEventListener("click", () => {
 
 // Game Over sound
 window.addEventListener("DOMContentLoaded", function () {
-  const gameOverAudio = new Audio("../../assets/audio/Game Over.mp3");
+  const gameOverAudio = new Audio("../assets/audio/Game Over.mp3");
   gameOverAudio.preload = "auto";
   gameOverAudio.volume = 0.7;
   gameOverAudio.play();
