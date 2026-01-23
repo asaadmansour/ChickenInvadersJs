@@ -63,7 +63,7 @@ playerNameInput.addEventListener("input", (e) => {
 
 // Victory sound
 window.addEventListener("DOMContentLoaded", function () {
-  const victoryAudio = new Audio("../assets/audio/Mission Complete.mp3");
+  const victoryAudio = new Audio("../assets/audio/Victory.mp3");
   victoryAudio.preload = "auto";
   victoryAudio.volume = 0.7;
   victoryAudio.play();
