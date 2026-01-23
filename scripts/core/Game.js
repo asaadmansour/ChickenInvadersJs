@@ -345,9 +345,6 @@ export class Game {
       this.animationFrameId = null;
     }
 
-    // Interaction with user and database
-    await this.saveScoreToFirebase();
-
     // Redirect to the Game Over screen
     window.location.href = "../pages/gameover.html";
   }
@@ -363,7 +360,7 @@ export class Game {
       this.animationFrameId = null;
     }
 
-    // Interaction with user and database
+    // // Interaction with user and database
     await this.saveScoreToFirebase();
 
     // Redirect to the Scoreboard screen
