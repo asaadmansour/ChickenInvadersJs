@@ -80,7 +80,7 @@ export const GAME = {
 };
 
 export const CHICKEN_DEATH_AUDIO = {
-  AUDIO: "/assets/audio/Chicken Poof.mp3",
+  AUDIO: "/assets/audio/Chicken Death.mp3",
 };
 
 export const FRIED_CHICKEN_CRUNCH_AUDIO = {
