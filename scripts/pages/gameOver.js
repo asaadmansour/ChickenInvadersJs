@@ -1,3 +1,8 @@
+import {
+  playBackgroundMusic,
+  addButtonHoverSound,
+} from "../utils/AudioHelper.js";
+
 const retryBtn = document.querySelector(".retry-button");
 
 retryBtn.addEventListener("click", () => {
@@ -11,20 +16,7 @@ mainMenuBtn.addEventListener("click", () => {
 });
 
 // Game Over sound
-window.addEventListener("DOMContentLoaded", function () {
-  const gameOverAudio = new Audio("../assets/audio/Game Over.mp3");
-  gameOverAudio.preload = "auto";
-  gameOverAudio.volume = 0.7;
-  gameOverAudio.play();
-});
+playBackgroundMusic("../assets/audio/Game Over.mp3", 0.7, false);
 
 // Button hover sound
-window.addEventListener("DOMContentLoaded", function () {
-  const buttons = document.querySelectorAll("button");
-  buttons.forEach((btn) => {
-    btn.addEventListener("mouseenter", () => {
-      const hoverAudio = new Audio("../assets/audio/Click.wav");
-      hoverAudio.play();
-    });
-  });
-});
+addButtonHoverSound();

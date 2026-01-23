@@ -1,5 +1,9 @@
 import { getScores } from "../utils/Storage.js";
 import { isValidScoreEntry } from "../utils/Validations.js";
+import {
+  playBackgroundMusic,
+  addButtonHoverSound,
+} from "../utils/AudioHelper.js";
 
 const scoreList = document.getElementById("scoreList");
 const emptyState = document.getElementById("emptyState");
@@ -62,23 +66,10 @@ playerNameInput.addEventListener("input", (e) => {
 });
 
 // Victory sound
-window.addEventListener("DOMContentLoaded", function () {
-  const victoryAudio = new Audio("../assets/audio/Victory.mp3");
-  victoryAudio.preload = "auto";
-  victoryAudio.volume = 0.7;
-  victoryAudio.play();
-});
+playBackgroundMusic("../assets/audio/Victory.mp3", 0.7, false);
 
 // Button hover sound
-window.addEventListener("DOMContentLoaded", function () {
-  const buttons = document.querySelectorAll("button");
-  buttons.forEach((btn) => {
-    btn.addEventListener("mouseenter", () => {
-      const hoverAudio = new Audio("../assets/audio/Click.wav");
-      hoverAudio.play();
-    });
-  });
-});
+addButtonHoverSound();
 
 // Navigation
 backBtn.addEventListener("click", () => {
