@@ -3,29 +3,48 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chicken Invaders</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <title>Chicken Invaders - Game Over</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../css/main.css" />
     <link rel="stylesheet" href="../css/gameover.css" />
-    <link rel="stylesheet" href="../css/pause.css" />
   </head>
   <body>
     <div class="game-container">
       <div class="gameover-container">
         <h1>GAME OVER</h1>
+
         <div class="scores-container">
           <p class="final-score-text">
             FINAL SCORE: <span id="final-score">0</span>
           </p>
-          <p class="high-score-text">
-            HIGH SCORE: <span id="high-score">0</span>
-          </p>
+          <input
+            type="text"
+            id="playerName"
+            placeholder="ENTER PILOT NAME"
+            style="
+              padding: 10px;
+              border-radius: 8px;
+              margin-bottom: 10px;
+              text-align: center;
+            "
+          />
+          <button
+            type="button"
+            class="submit-score"
+            style="
+              margin-bottom: 20px;
+              width: 15vw;
+              height: 6vh;
+              font-size: 18px;
+            "
+          >
+            SUBMIT SCORE
+          </button>
         </div>
+
         <div class="buttons">
           <button type="button" class="retry-button">RETRY</button>
           <button type="button" class="back-to-menu-button">
@@ -34,6 +53,7 @@
         </div>
       </div>
     </div>
+
     <script type="module" src="../scripts/pages/gameOver.js"></script>
   </body>
 </html>
