@@ -62,6 +62,9 @@ body::after {
   font-size: 24px;
   text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
 }
+.hud #score {
+  font-family: "Orbitron", sans-serif;
+}
 .hearts {
   display: flex;
   gap: 10px;

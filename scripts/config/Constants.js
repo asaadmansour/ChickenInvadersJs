@@ -8,7 +8,13 @@ export const ENTITY_RATIOS = {
   FRIED_CHICKEN_WIDTH: 0.012,
   FRIED_CHICKEN_HEIGHT: 0.025,
   BULLET_WIDTH: 0.005,
-  BULLET_HEIGHT: 0.02,
+  BULLET_HEIGHT: 0.03,
+  ROCK_WIDTH: 0.05,
+  ROCK_HEIGHT: 0.08,
+  UMBRELLA_CHICKEN_WIDTH: 0.07,
+  UMBRELLA_CHICKEN_HEIGHT: 0.1,
+  DEATH_EFFECT_WIDTH: 0.07,
+  DEATH_EFFECT_HEIGHT: 0.13,
 };
 
 export const PLAYER = {
@@ -18,18 +24,23 @@ export const PLAYER = {
   BLINK_INTERVAL: 100,
   INITIAL_LIVES: 3,
   IMAGE: "/assets/images/player.png",
-  AUDIO: "/assets/audio/Hit.wav"
+  AUDIO: "/assets/audio/Hit.wav",
 };
 
 export const BULLET = {
   MOVE_SPEED: 10,
   IMAGE: "/assets/images/bullet.png",
-  AUDIO: "/assets/audio/Laser.mp3"
+  AUDIO: "/assets/audio/Laser.mp3",
 };
 
 export const EGG = {
   MOVE_SPEED: 3,
-  IMAGE: "/assets/images/Egg.webp"
+  IMAGE: "/assets/images/Egg.webp",
+};
+
+export const ROCK = {
+  MOVE_SPEED: 6,
+  IMAGE: "/assets/images/rock.webp",
 };
 
 export const CHICKEN = {
@@ -42,16 +53,40 @@ export const CHICKEN = {
   TIME_INCREMENT: 0.02,
   MOVE_SPEED: 1,
   IMAGE: "/assets/images/chicken_spritesheet.png",
-  SCORE: 100
+  SCORE: 100,
 };
+
 export const FRIED_CHICKEN = {
   MOVE_SPEED: 3,
-  IMAGE: "/assets/images/fried-chicken.png"
+  IMAGE: "/assets/images/fried-chicken.png",
+};
 
-}
+export const UMBRELLA_CHICKEN = {
+  MOVE_SPEED: 4,
+  IMAGE: "/assets/images/chicken_umbrellas_spritesheet.png",
+  SCORE: 150,
+};
+
+export const DEATH_EFFECT = {
+  IMAGE: "/assets/images/Death Effect.png",
+  FRAME_COUNT: 9,
+  FRAME_DELAY: 3,
+  COLS: 3,
+  ROWS: 3,
+};
+
 export const GAME = {
-  AUDIO: "/assets/audio/Game Audio.wav"
-}
+  AUDIO: "/assets/audio/Game Audio.wav",
+};
+
+export const CHICKEN_DEATH_AUDIO = {
+  AUDIO: "/assets/audio/Chicken Death.mp3",
+};
+
+export const FRIED_CHICKEN_CRUNCH_AUDIO = {
+  AUDIO: "/assets/audio/Crunch.mp3",
+};
+
 export const LIVE = {
-  IMAGE: "/assets/images/lives.webp"
-}
+  IMAGE: "/assets/images/lives.webp",
+};

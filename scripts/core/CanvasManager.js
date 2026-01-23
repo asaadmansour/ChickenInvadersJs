@@ -1,4 +1,16 @@
-import { CHICKEN, PLAYER, BULLET, EGG, FRIED_CHICKEN } from "../config/Constants.js";
+import {
+  CHICKEN,
+  PLAYER,
+  BULLET,
+  EGG,
+  FRIED_CHICKEN,
+  ROCK,
+  UMBRELLA_CHICKEN,
+  DEATH_EFFECT,
+} from "../config/Constants.js";
+
+import { UmbrellaChicken } from "../entities/UmbrellaChicken.js";
+
 export class CanvasManager {
   static #instance = null;
 
@@ -24,9 +36,19 @@ export class CanvasManager {
 
     this.eggSprite = new Image();
     this.eggSprite.src = EGG.IMAGE;
+
+    this.rockSprite = new Image();
+    this.rockSprite.src = ROCK.IMAGE;
+
     this.friedChickenSprite = new Image();
     this.friedChickenSprite.src = FRIED_CHICKEN.IMAGE;
     this.onResizeAction = null;
+
+    this.umbrellaChickenSpriteSheet = new Image();
+    this.umbrellaChickenSpriteSheet.src = UMBRELLA_CHICKEN.IMAGE;
+
+    this.deathEffectSpriteSheet = new Image();
+    this.deathEffectSpriteSheet.src = DEATH_EFFECT.IMAGE;
 
     this.resizeCanvas();
 
@@ -81,15 +103,29 @@ export class CanvasManager {
 
     gameState.chickens.forEach((chicken) => {
       chicken.updateAnimation();
-      this.drawAnimatedSprite(chicken, this.chickenSpriteSheet);
+
+      if (chicken instanceof UmbrellaChicken && chicken.lives == 2) {
+        this.drawAnimatedSprite(chicken, this.umbrellaChickenSpriteSheet);
+      } else {
+        this.drawAnimatedSprite(chicken, this.chickenSpriteSheet);
+      }
     });
 
     gameState.eggs.forEach((egg) => {
       this.drawSprite(egg, this.eggSprite);
     });
-    gameState.friedChickens.forEach((fc)=> {
-      this.drawSprite(fc,this.friedChickenSprite);
-    })
+
+    gameState.rocks.forEach((rock) => {
+      this.drawSprite(rock, this.rockSprite);
+    });
+    gameState.friedChickens.forEach((fc) => {
+      this.drawSprite(fc, this.friedChickenSprite);
+    });
+
+    gameState.deathEffects.forEach((effect) => {
+      effect.updateAnimation();
+      this.drawAnimatedSprite(effect, this.deathEffectSpriteSheet);
+    });
   }
 
   // Draw a static sprite

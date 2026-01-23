@@ -11,6 +11,7 @@ import { WaveController } from "./WaveController.js";
 import { WAVE_CONFIGS } from "../config/Config.js";
 import { HUDManager } from "./HUDManager.js";
 import { FriedChicken } from "../entities/FriedChicken.js";
+import { DeathEffect } from "../entities/DeathEffect.js";
 
 export class Game {
   constructor() {
@@ -22,146 +23,86 @@ export class Game {
     this.hudManager = new HUDManager();
     this.waveController = new WaveController();
 
+    this.animationFrameId = null;
+
     this.setupControls();
 
-    this.waveController.createFirstWave(this.gameState);
+    this.waveController.createWave(this.gameState);
 
     this.canvasManager.onResizeAction = () => {
       this.gameState.player.clampToBounds();
     };
+
     this.hudManager.printLives(this.gameState);
     this.start();
-
-    // this.startBackgroundAudio(); browser blocks autoplay audio on refersh
   }
 
   // Setup keyboard controls for player movement and shooting
   setupControls() {
     this.inputHandler.bindKey("ArrowLeft", () => {
       this.gameState.player.move({ left: true });
-      this.startBackgroundAudio();
     });
 
     this.inputHandler.bindKey("ArrowRight", () => {
       this.gameState.player.move({ right: true });
-      this.startBackgroundAudio();
     });
 
     this.inputHandler.bindKey("ArrowUp", () => {
       this.gameState.player.move({ up: true });
-      this.startBackgroundAudio();
     });
 
     this.inputHandler.bindKey("ArrowDown", () => {
       this.gameState.player.move({ down: true });
-      this.startBackgroundAudio();
     });
 
     this.inputHandler.bindKey("Space", () => {
       if (this.gameState.player.canShoot()) {
         const spawn = this.gameState.player.shoot();
+        this.audioManager.play("bullet");
         this.gameState.addBullet(new Bullet(spawn.x, spawn.y));
       }
-      this.startBackgroundAudio();
+    });
+
+    this.inputHandler.bindKey("Escape", () => {
+      if (this.gameState.isPaused) {
+        this.resume();
+      } else {
+        this.pause();
+      }
     });
   }
 
-  // Start background music playback
-  startBackgroundAudio() {
-    this.audioManager.playMusic();
-  }
-  // check if the player was hit and returns true if so
-  checkAllCollisions() {
-    return this.collisionDetector.checkCollisions(this.gameState);
-  }
-  // check if the player should still be alive after the hit or no
-  handlePlayerHit(wasHit) {
-    if (wasHit) {
-      const isDead = this.gameState.loseLife();
-      this.hudManager.printLives(this.gameState);
-      if (isDead) this.handleGameOver();
-    }
-  }
-  // Handle bullet-chicken collisions: deactivate both and spawn fried chicken
-  handleBulletChickenCollisions(collisions) {
-    collisions.forEach(({ bullet, chicken }) => {
-      bullet.deactivate();
-      chicken.deactivate();
-      this.gameState.addFriedChicken(
-        new FriedChicken(chicken.x, chicken.y, chicken.score)
-      );
-    });
-  }
-
-  // Check and return bullet-chicken collisions
-  bulletChickenCollisions() {
-    return this.collisionDetector.checkBulletsVsChickens(
-      this.gameState.bullets,
-      this.gameState.chickens
-    );
-  }
-
-  // Handle fried chicken collection: deactivate and add score
-  handleFriedChickenCollection(collected) {
-    collected.forEach((fc) => {
-      fc.deactivate();
-      this.gameState.addScore(fc.score);
-    });
-    this.hudManager.updateScore(this.gameState);
-  }
-
-  // Check and return fried chicken-player collisions
-  friedChickenCollection() {
-    return this.collisionDetector.checkFriedChickensVsPlayer(
-      this.gameState.friedChickens,
-      this.gameState.player
-    );
-  }
-
-  handleGameOver() {
-    this.gameState.status = "gameover";
-    window.location.href = "/pages/gameover.html"
-  }
   // Main game loop called every frame
   gameLoop() {
+    if (this.gameState.isPaused) {
+      return;
+    }
+
     this.inputHandler.processInput();
     this.gameState.updateTime();
     this.updateEntitiesPositions();
     this.attemptSpawnEggs();
-    this.handleBulletChickenCollisions(this.bulletChickenCollisions());
-    this.handlePlayerHit(this.checkAllCollisions());
-    this.handleFriedChickenCollection(this.friedChickenCollection());
+    this.checkCollisions();
     this.removeInactiveEntities();
-
-    if (this.checkWaveComplete()) return;
-
+    this.checkAndAdvanceWave();
     this.canvasManager.render(this.gameState);
-    requestAnimationFrame(() => this.gameLoop());
-  }
 
-  // check if wave is complete and return true if so.
-  checkWaveComplete() {
-    if (this.gameState.isWaveComplete()) {
-      this.handleWaveComplete();
-      return true;
-    }
-    return false;
-  }
-
-  // simple redirection if the wave is complete "will change when we add more waves"
-  handleWaveComplete() {
-    this.gameState.status = "complete";
-    window.location.href = "/pages/scoreboard.html";
+    this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
   }
 
   // Update positions of all entities based on their velocities and movement types
   updateEntitiesPositions() {
     this.gameState.bullets.forEach((bullet) => bullet.move());
+
     this.gameState.eggs.forEach((egg) => egg.move());
+
     this.gameState.chickens.forEach((chicken) =>
       chicken.move(this.gameState.gameTime),
     );
-    this.gameState.friedChickens.forEach((fc)=>fc.move());
+
+    this.gameState.rocks.forEach((rock) => rock.move());
+
+    this.gameState.friedChickens.forEach((fc) => fc.move());
   }
 
   // Attempt to spawn eggs from active chickens based on the current wave's drop rate
@@ -178,22 +119,230 @@ export class Game {
     });
   }
 
+  // Check all collisions between entities and handle their effects
+  checkCollisions() {
+    this.checkBulletsVsChickens();
+
+    this.checkPlayerVsFriedChickens();
+
+    if (this.gameState.player.isInvulnerable()) return;
+
+    this.checkPlayerVsChickens();
+
+    this.checkPlayerVsEggs();
+
+    this.checkPlayerVsRocks();
+  }
+
+  /**
+   * Check collisions between bullets and chickens
+   * On collision, deactivate both and spawn fried chicken
+   */
+  checkBulletsVsChickens() {
+    this.collisionDetector.checkGroupVsGroup(
+      this.gameState.bullets,
+      this.gameState.chickens,
+      (bullet, chicken) => {
+        chicken.decreaseLives();
+        bullet.deactivate();
+        if (chicken.getLives() <= 0) {
+          chicken.deactivate();
+          const spawn = chicken.drop();
+          import("./AudioManager.js").then(({ AudioManager }) => {
+            AudioManager.getInstance().play("chickenDeath");
+          });
+          this.gameState.addDeathEffect(
+            new DeathEffect(
+              chicken.x,
+              chicken.y,
+              chicken.width,
+              chicken.height,
+            ),
+          );
+          this.gameState.addFriedChicken(
+            new FriedChicken(spawn.x, spawn.y, chicken.score),
+          );
+        }
+      },
+    );
+  }
+
+  /**
+   * Check collisions between player and fried chickens
+   * On collision, deactivate fried chicken and increase score
+   */
+  checkPlayerVsFriedChickens() {
+    this.collisionDetector.checkGroupVsItem(
+      this.gameState.friedChickens,
+      this.gameState.player,
+      (fc) => {
+        fc.deactivate();
+        this.audioManager.play("crunch");
+        this.gameState.addScore(fc.score);
+        this.hudManager.updateScore(this.gameState);
+      },
+    );
+  }
+
+  /**
+   * Check collisions between player and chickens
+   * On collision, deactivate chicken and handle player hit
+   */
+  checkPlayerVsChickens() {
+    this.collisionDetector.checkGroupVsItem(
+      this.gameState.chickens,
+      this.gameState.player,
+      (chicken) => {
+        chicken.deactivate();
+        this.handlePlayerHit();
+      },
+    );
+  }
+
+  /**
+   * Check collisions between player and eggs
+   * On collision, deactivate egg and handle player hit
+   */
+  checkPlayerVsEggs() {
+    this.collisionDetector.checkGroupVsItem(
+      this.gameState.eggs,
+      this.gameState.player,
+      (egg) => {
+        egg.deactivate();
+        this.handlePlayerHit();
+      },
+    );
+  }
+
+  /**
+   * Check collisions between player and rocks
+   * On collision, deactivate rock and handle player hit
+   */
+  checkPlayerVsRocks() {
+    this.collisionDetector.checkGroupVsItem(
+      this.gameState.rocks,
+      this.gameState.player,
+      (rock) => {
+        rock.deactivate();
+        this.handlePlayerHit();
+      },
+    );
+  }
+
   // Remove inactive entities caused by collisions or moving out of bounds
   removeInactiveEntities() {
     this.gameState.bullets = this.gameState.bullets.filter(
-      (bullet) => bullet.isActive && bullet.y + bullet.height > 0,
+      (bullet) => bullet.isActive,
     );
 
-    this.gameState.eggs = this.gameState.eggs.filter(
-      (egg) => egg.isActive && egg.y < CanvasManager.getInstance().height,
-    );
+    this.gameState.eggs = this.gameState.eggs.filter((egg) => egg.isActive);
 
     this.gameState.chickens = this.gameState.chickens.filter(
       (chicken) => chicken.isActive,
     );
+
+    this.gameState.rocks = this.gameState.rocks.filter((rock) => rock.isActive);
+
     this.gameState.friedChickens = this.gameState.friedChickens.filter(
-      (fc)=>fc.isActive && fc.y < CanvasManager.getInstance().height
-    )
+      (fc) => fc.isActive,
+    );
+
+    this.gameState.deathEffects = this.gameState.deathEffects.filter(
+      (effect) => effect.isActive,
+    );
+  }
+
+  /**
+   * Check if the current wave is completed and advance to the next wave if so,
+   * if all waves are completed, handle game completion.
+   */
+  checkAndAdvanceWave() {
+    let waveCompleted = false;
+
+    switch (this.gameState.currentWave) {
+      case 1:
+        if (
+          this.gameState.chickens.length === 0 &&
+          this.gameState.eggs.length === 0
+        ) {
+          waveCompleted = true;
+        }
+        break;
+
+      case 2:
+        if (
+          !this.gameState.hasPendingSpawns &&
+          this.gameState.rocks.length === 0
+        ) {
+          waveCompleted = true;
+        }
+        break;
+
+      case 3:
+        if (
+          !this.gameState.hasPendingSpawns &&
+          this.gameState.chickens.length === 0 &&
+          this.gameState.eggs.length === 0
+        ) {
+          waveCompleted = true;
+        }
+        break;
+
+      default:
+        this.handleGameComplete();
+        break;
+    }
+
+    if (waveCompleted) {
+      this.gameState.incrementWaveNumber();
+      this.waveController.createWave(this.gameState);
+    }
+  }
+
+  // handle player hit logic: play sound, lose life, check for game over
+  handlePlayerHit() {
+    const wasHit = this.gameState.player.hit();
+
+    if (!wasHit) return;
+
+    this.audioManager.play("hit");
+    const isDead = this.gameState.loseLife();
+    this.hudManager.printLives(this.gameState);
+
+    if (isDead) this.handleGameOver();
+  }
+
+  // simple redirection to game over page
+  handleGameOver() {
+    this.gameState.status = "gameover";
+    window.location.href = "/pages/gameover.html";
+  }
+
+  // simple redirection to scoreboard page
+  handleGameComplete() {
+    this.gameState.status = "complete";
+    window.location.href = "/pages/scoreboard.html";
+  }
+
+  pause() {
+    if (!this.gameState.isPaused) {
+      this.gameState.pause();
+      this.audioManager.pauseMusic();
+
+      if (this.animationFrameId) {
+        cancelAnimationFrame(this.animationFrameId);
+        this.animationFrameId = null;
+      }
+    }
+  }
+
+  resume() {
+    if (this.gameState.isPaused) {
+      this.gameState.resume();
+      this.audioManager.resumeMusic();
+
+      this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
+    }
   }
 
   start() {

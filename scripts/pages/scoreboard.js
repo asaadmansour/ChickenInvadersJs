@@ -1,5 +1,9 @@
 import { getScores } from "../utils/Storage.js";
 import { isValidScoreEntry } from "../utils/Validations.js";
+import {
+  playBackgroundMusic,
+  addButtonHoverSound,
+} from "../utils/AudioHelper.js";
 
 const scoreList = document.getElementById("scoreList");
 const emptyState = document.getElementById("emptyState");
@@ -16,7 +20,7 @@ allScores = allScores.sort((a, b) => b.score - a.score);
 function renderScores(scoresToRender) {
   // Clear existing list
   scoreList.innerHTML = "";
-  
+
   if (scoresToRender.length === 0) {
     emptyState.classList.remove("hidden");
   } else {
@@ -48,24 +52,28 @@ renderScores(allScores.slice(0, 10));
 // Filter functionality - filter as user types
 playerNameInput.addEventListener("input", (e) => {
   const searchName = e.target.value.trim().toLowerCase();
-  
+
   if (searchName === "") {
     // Show top 10 if input is empty
     renderScores(allScores.slice(0, 10));
   } else {
     // Filter scores by name (case-insensitive)
-    const filteredScores = allScores.filter(player => 
-      player.name.toLowerCase().includes(searchName)
+    const filteredScores = allScores.filter((player) =>
+      player.name.toLowerCase().includes(searchName),
     );
     renderScores(filteredScores);
   }
 });
 
+// Victory sound
+playBackgroundMusic("../assets/audio/Victory.mp3", 0.7, false);
 
+// Button hover sound
+addButtonHoverSound();
 
 // Navigation
 backBtn.addEventListener("click", () => {
-  window.location.href = "index.html";
+  window.location.href = "../index.html";
 });
 
 newGameBtn.addEventListener("click", () => {

@@ -26,5 +26,9 @@ export class Bullet extends GameObject {
    */
   move() {
     this.y -= this.moveSpeed;
+
+    if (this.y + this.height < 0) {
+      this.deactivate();
+    }
   }
 }
