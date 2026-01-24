@@ -53,6 +53,13 @@
 
             window.location.href = "../index.html";
         });
+
+        window.addEventListener("keydown", (event) => {
+            if (event.code === "Escape") {
+                event.preventDefault();
+                window.location.href = "game.html";
+            }
+        });
     </script>
 </body>
 
