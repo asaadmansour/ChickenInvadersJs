@@ -1,16 +1,14 @@
-// scripts/firebase/firebaseConfig.js
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
 
-// Firebase configuration
+// Firebase configuration from .env
 const firebaseConfig = {
-  apiKey: "AIzaSyDJno6qzd412tft1jNv9v-Odhut-YDDeh0",
-  authDomain: "chicken-invaders-scoreboard.firebaseapp.com",
-  projectId: "chicken-invaders-scoreboard",
-  storageBucket: "chicken-invaders-scoreboard.firebasestorage.app",
-  messagingSenderId: "569264713165",
-  appId: "1:569264713165:web:40c4c7b0b0fdf381dae884",
+  apiKey: import.meta.env.FIREBASE_API_KEY,
+  authDomain: import.meta.env.FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.FIREBASE_APP_ID,
 };
 
 // Initialize Firebase App
