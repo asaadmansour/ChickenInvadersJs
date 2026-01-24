@@ -30,14 +30,14 @@ export class WaveController {
     // Check if we are resuming from a pause
     if (savedChickens || savedRocks) {
       this.rehydrateGameState(gameState, savedChickens, savedRocks);
-      
+
       // Special logic to resume spawners for Wave 2 and Wave 3
       if (gameState.currentWave === 2) {
         this.createSecondWave(gameState, true);
       } else if (gameState.currentWave === 3) {
         this.createThirdWave(gameState, true);
       }
-      return; 
+      return;
     }
 
     // Normal progression if no saved data exists
@@ -79,19 +79,31 @@ export class WaveController {
       });
       localStorage.removeItem("savedRocks");
     }
-    
-    gameState.hasPendingSpawns = false; 
+
+    gameState.hasPendingSpawns = false;
   }
 
   createFirstWave(gameState) {
     const config = WAVE_CONFIGS[0];
-    const totalWidth = (config.cols - 1) * config.spacingX;
-    const startX = (CanvasManager.getInstance().width - totalWidth) / 2;
+    const canvas = CanvasManager.getInstance();
+
+    // Calculate actual pixel spacing from ratios
+    const spacingX = canvas.width * config.spacingXRatio;
+    const spacingY = canvas.height * config.spacingYRatio;
+    const startY = canvas.height * config.startYRatio;
+
+    const chickenWidth = canvas.width * 0.06; // ENTITY_RATIOS.CHICKEN_WIDTH
+    const oscillationRange = canvas.width * 0.077; // ENTITY_RATIOS.CHICKEN_HORIZONTAL_RANGE
+
+    // Total width includes: all spacing + one chicken width + oscillation on both sides
+    const totalWidth =
+      (config.cols - 1) * spacingX + chickenWidth + oscillationRange * 2;
+    const startX = (canvas.width - totalWidth) / 2 + oscillationRange;
 
     for (let rows = 0; rows < config.rows; rows++) {
       for (let cols = 0; cols < config.cols; cols++) {
-        const x = startX + cols * config.spacingX;
-        const y = config.startY + rows * config.spacingY;
+        const x = startX + cols * spacingX;
+        const y = startY + rows * spacingY;
         gameState.addChicken(new Chicken(x, y));
       }
     }
@@ -100,10 +112,12 @@ export class WaveController {
   createSecondWave(gameState, isResuming = false) {
     const config = WAVE_CONFIGS[1];
     const canvas = CanvasManager.getInstance();
-    
+
     // Calculate how many rocks are left to spawn
     const currentOnScreen = gameState.rocks.length;
-    const totalToSpawn = isResuming ? Math.max(0, config.count - currentOnScreen) : config.count;
+    const totalToSpawn = isResuming
+      ? Math.max(0, config.count - currentOnScreen)
+      : config.count;
 
     if (totalToSpawn <= 0) {
       gameState.hasPendingSpawns = false;
@@ -114,12 +128,14 @@ export class WaveController {
     gameState.hasPendingSpawns = true;
 
     for (let i = 0; i < totalToSpawn; i++) {
-      const nextDelay = config.minSpawnInterval + Math.random() * (config.maxSpawnInterval - config.minSpawnInterval);
+      const nextDelay =
+        config.minSpawnInterval +
+        Math.random() * (config.maxSpawnInterval - config.minSpawnInterval);
       accumulatedTime += nextDelay;
 
       setTimeout(() => {
         if (gameState.isPaused || gameState.status !== "playing") return;
-        
+
         const startOffset = 60;
         let x, y, direction;
         const spawnSeed = Math.random();
@@ -127,8 +143,13 @@ export class WaveController {
         if (spawnSeed < 0.33) {
           const zoneWidth = canvas.width * 0.35;
           const isLeftZone = Math.random() > 0.5;
-          if (isLeftZone) { x = Math.random() * zoneWidth; direction = 1; }
-          else { x = canvas.width - Math.random() * zoneWidth; direction = -1; }
+          if (isLeftZone) {
+            x = Math.random() * zoneWidth;
+            direction = 1;
+          } else {
+            x = canvas.width - Math.random() * zoneWidth;
+            direction = -1;
+          }
           y = -startOffset;
         } else if (spawnSeed < 0.66) {
           x = -startOffset;
@@ -141,7 +162,9 @@ export class WaveController {
         }
 
         const rock = new Rock(x, y, direction);
-        rock.moveSpeed *= (config.minSpeedFactor + Math.random() * (config.maxSpeedFactor - config.minSpeedFactor));
+        rock.moveSpeed *=
+          config.minSpeedFactor +
+          Math.random() * (config.maxSpeedFactor - config.minSpeedFactor);
         gameState.addRock(rock);
 
         if (i === totalToSpawn - 1) gameState.hasPendingSpawns = false;
@@ -155,7 +178,9 @@ export class WaveController {
 
     // Calculate how many umbrella chickens are left to spawn
     const currentOnScreen = gameState.chickens.length;
-    const totalToSpawn = isResuming ? Math.max(0, config.count - currentOnScreen) : config.count;
+    const totalToSpawn = isResuming
+      ? Math.max(0, config.count - currentOnScreen)
+      : config.count;
 
     if (totalToSpawn <= 0) {
       gameState.hasPendingSpawns = false;
@@ -166,16 +191,20 @@ export class WaveController {
     gameState.hasPendingSpawns = true;
 
     for (let i = 0; i < totalToSpawn; i++) {
-      const nextDelay = config.minSpawnInterval + Math.random() * (config.maxSpawnInterval - config.minSpawnInterval);
+      const nextDelay =
+        config.minSpawnInterval +
+        Math.random() * (config.maxSpawnInterval - config.minSpawnInterval);
       accumulatedTime += nextDelay;
 
       setTimeout(() => {
         if (gameState.isPaused || gameState.status !== "playing") return;
-        
+
         const x = Math.random() * (canvas.width * 0.8) + canvas.width * 0.1;
         const y = -50;
         const uc = new UmbrellaChicken(x, y);
-        uc.moveSpeed *= (config.minSpeedFactor + Math.random() * (config.maxSpeedFactor - config.minSpeedFactor));
+        uc.moveSpeed *=
+          config.minSpeedFactor +
+          Math.random() * (config.maxSpeedFactor - config.minSpeedFactor);
         gameState.addChicken(uc);
 
         if (i === totalToSpawn - 1) gameState.hasPendingSpawns = false;

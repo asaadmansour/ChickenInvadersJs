@@ -3,10 +3,10 @@ export const WAVE_CONFIGS = [
   {
     type: "chicken",
     rows: 2,
-    cols: 13,
-    spacingX: 100,
-    spacingY: 80,
-    startY: 50,
+    cols: 12,
+    spacingXRatio: 0.07,  // ~100px on 1300px width screen
+    spacingYRatio: 0.10,   // ~80px on 800px height screen
+    startYRatio: 0.06,     // ~50px on 800px height screen
     eggsDropRate: 0.001,
   },
   // Wave 2
