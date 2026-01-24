@@ -4,7 +4,7 @@ export class GameState {
   static #instance = null;
 
   constructor() {
-   if (GameState.#instance) {
+    if (GameState.#instance) {
       throw new Error("Use GameState.getInstance() instead of new");
     }
 
@@ -37,14 +37,12 @@ export class GameState {
     this.deathEffects = [];
   }
 
-
   static getInstance() {
     if (!GameState.#instance) {
       GameState.#instance = new GameState();
     }
     return GameState.#instance;
   }
-
 
   addScore(points) {
     this.score += points;
@@ -102,7 +100,6 @@ export class GameState {
   }
 
   reset() {
-
     // Clear storage
     localStorage.removeItem("savedScore");
     localStorage.removeItem("savedLives");
