@@ -11,38 +11,31 @@
 
 <body>
 
-  <body>
+  <div class="game-wrapper">
+    <canvas id="gameCanvas"></canvas>
 
-    <div class="game-wrapper">
-      <canvas id="gameCanvas"></canvas>
-
-      <!-- Countdown Overlay -->
-      <div id="countdownOverlay" class="countdown-overlay">
-        <div class="countdown-container">
-          <div id="countdownNumber" class="countdown-number">3</div>
-          <div id="countdownText" class="countdown-text"></div>
-        </div>
-      </div>
-
-      <!-- HUD overlay -->
-      <div class="hud">
-        <div class="hearts-container">
-          <div class="hearts">
-            Lives:
-          </div>
-        </div>
-        <div class="scores">
-          <span id="score">Score: 0</span>
-          <div class="hi-score">
-            Hi-Score: <span id="high-score">0</span>
-          </div>
-        </div>
+    <!-- Countdown Overlay -->
+    <div id="countdownOverlay" class="countdown-overlay">
+      <div class="countdown-container">
+        <div id="countdownNumber" class="countdown-number">3</div>
+        <div id="countdownText" class="countdown-text"></div>
       </div>
     </div>
+
+    <!-- HUD overlay -->
+    <div class="hud">
+      <div class="hearts-container">
+        <div class="hearts">
+          Lives:
+        </div>
+      </div>
+      <div class="scores">
+        <span id="score">Score: 0</span>
+      </div>
     </div>
+  </div>
 
-
-    <script type="module" src="../scripts/core/Game.js"></script>
-  </body>
+  <script type="module" src="../scripts/core/Game.js"></script>
+</body>
 
 </html>
