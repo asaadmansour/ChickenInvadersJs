@@ -13,6 +13,7 @@ import { HUDManager } from "./HUDManager.js";
 import { FriedChicken } from "../entities/FriedChicken.js";
 import { DeathEffect } from "../entities/DeathEffect.js";
 import { CountdownManager } from "./CountdownManager.js";
+import "../utils/AudioHelper.js";
 
 export class Game {
   constructor() {
@@ -371,7 +372,16 @@ export class Game {
 
 // Clear local storage only if the page was reloaded
 if (performance.getEntriesByType("navigation")[0]?.type === "reload") {
+  // Preserve mute settings
+  const musicMuted = localStorage.getItem("musicMuted");
+  const soundEffectsMuted = localStorage.getItem("soundEffectsMuted");
+
   window.localStorage.clear();
+
+  // Restore mute settings
+  if (musicMuted !== null) localStorage.setItem("musicMuted", musicMuted);
+  if (soundEffectsMuted !== null)
+    localStorage.setItem("soundEffectsMuted", soundEffectsMuted);
 }
 
 document.addEventListener("DOMContentLoaded", () => {

@@ -1,23 +1,47 @@
 import {
   addButtonHoverSound,
+  isMusicMuted,
+  isSoundEffectsMuted,
+  setMusicMuted,
+  setSoundEffectsMuted,
 } from "../utils/AudioHelper.js";
 
-// Functional logic for the buttons
 const backBtn = document.getElementById("backToMenuBtn");
 const startBtn = document.getElementById("startNowBtn");
+const muteMusicCheckbox = document.getElementById("muteMusicCheckbox");
+const muteSoundEffectsCheckbox = document.getElementById(
+  "muteSoundEffectsCheckbox",
+);
+
+if (muteMusicCheckbox) {
+  muteMusicCheckbox.checked = isMusicMuted();
+}
+if (muteSoundEffectsCheckbox) {
+  muteSoundEffectsCheckbox.checked = isSoundEffectsMuted();
+}
+
+if (muteMusicCheckbox) {
+  muteMusicCheckbox.addEventListener("change", () => {
+    setMusicMuted(muteMusicCheckbox.checked);
+  });
+}
+
+if (muteSoundEffectsCheckbox) {
+  muteSoundEffectsCheckbox.addEventListener("change", () => {
+    setSoundEffectsMuted(muteSoundEffectsCheckbox.checked);
+  });
+}
 
 if (backBtn) {
-    backBtn.addEventListener("click", () => {
-        // Exit pages folder to root index
-        window.location.href = "../index.html";
-    });
+  backBtn.addEventListener("click", () => {
+    window.location.href = "../index.html";
+  });
 }
 
 if (startBtn) {
-    startBtn.addEventListener("click", () => {
-        // Stay in pages folder to open game
-        window.location.href = "./game.html";
-    });
+  startBtn.addEventListener("click", () => {
+    window.location.href = "./game.html";
+  });
 }
 
 addButtonHoverSound();

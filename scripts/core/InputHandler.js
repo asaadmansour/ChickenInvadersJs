@@ -13,6 +13,10 @@ export class InputHandler {
         event.preventDefault();
         this.bindings[event.code].pressed = true;
       }
+      // Allowed "M" and "S" keys for mute controls (handled by AudioHelper)
+      if (event.code === "KeyM" || event.code === "KeyS") {
+        return;
+      }
     });
 
     window.addEventListener("keyup", (event) => {
