@@ -12,6 +12,7 @@ import { WAVE_CONFIGS } from "../config/Config.js";
 import { HUDManager } from "./HUDManager.js";
 import { FriedChicken } from "../entities/FriedChicken.js";
 import { DeathEffect } from "../entities/DeathEffect.js";
+import { CountdownManager } from "./CountdownManager.js";
 
 // Firebase imports
 import { db } from "../firebase/firebaseConfig.js";
@@ -387,6 +388,18 @@ export class Game {
   }
 
   start() {
+    this.showCountdown();
+  }
+
+  async showCountdown() {
+    const countdown = new CountdownManager({
+      countStart: 3,
+      countDuration: 1000,
+      finalMessage: "DEFEND EARTH!",
+      finalMessageDuration: 1000,
+    });
+
+    await countdown.start();
     this.gameLoop();
   }
 }

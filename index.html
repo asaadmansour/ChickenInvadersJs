@@ -11,78 +11,65 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./css/main.css" />
-    <link rel="stylesheet" href="./css/gameover.css" />
-    <link rel="stylesheet" href="./css/pause.css" />
   </head>
-  <body>
-    <div class="game-container">
-      <div class="text">
-        <h1 class="gradient-text" data-text="CHICKEN">CHICKEN</h1>
-        <h1 class="gradient-text" data-text="INVADERS">INVADERS</h1>
-      </div>
-
-      <div class="buttons">
-        <div class="border-button">
-          <button class="play" type="button">Play</button>
-        </div>
-        <div class="border-button">
-          <button class="instructions" type="button">Instructions</button>
-        </div>
-      </div>
-      <footer>
-        <div class="others">
-          <p>Privacy Policy</p>
-          <p>Terms of Use</p>
-          <p>Contact</p>
-        </div>
-        <div class="socials">
-          <div class="icons">
-            <img src="./assets/facebook-icon.png" alt="Facebook" />
-            <img src="./assets/twitter-icon.png" alt="Twitter" />
-            <img src="./assets/instagram-icon.png" alt="Instagram" />
-          </div>
-        </div>
-      </footer>
-
-      <!-- This is the gameover part -->
-
-      <!-- <div class="gameover-container">
-        <h1>
-            GAME OVER
-        </h1>
-        <div class="scores-container">
-            <p class="final-score-text">
-                FINAL SCORE: <span id="final-score">0</span>
-            </p>
-            <p class="high-score-text">
-                HIGH SCORE: <span id="high-score">0</span>
-            </p>
-        </div>
-        <div class="buttons">
-            <button type="button" class="retry-button">
-                RETRY
-            </button>
-            <button type="button" class="back-to-menu-button">
-                BACK TO MENU
-            </button>
-        </div>
-    </div> -->
-
-      <!-- This is the pause menu part -->
-
-      <!-- <div class="pause-menu-container">
-        <div class="flex-container">
-            <p>
-                PAUSED
-            </p>
-            <div class="buttons">
-                <button type="button">RESUME</button>
-                <button type="button">RESTART</button>
-                <button type="button">EXIT TO MENU</button>
-            </div>
-        </div>
-    </div> -->
+<body>
+  <nav class="top-nav">
+    <div class="nav-left">
+      <a href="/pages/scoreboard.html">
+        <img src="/assets/images/leaderboard.png" alt="leaderboard" class="nav-icon" />
+      </a>
     </div>
-    <script type="module" src="scripts/pages/main.js"></script>
-  </body>
+    <div class="nav-right">
+      <a href="/pages/settings.html">
+        <img src="/assets/images/menuicon.png" alt="Settings" class="nav-icon" id="settings" />
+      </a>
+    </div>
+  </nav>
+
+  <div class="game-container">
+    <div class="text">
+      <h1 class="gradient-text" data-text="CHICKEN">CHICKEN</h1>
+      <h1 class="gradient-text" data-text="INVADERS">INVADERS</h1>
+    </div>
+
+    <div class="buttons">
+      <div class="border-button">
+        <button class="play" type="button">Play</button>
+      </div>
+      <div class="border-button">
+        <button class="instructions" type="button">Instructions</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="others">
+      <a href="/pages/privacyAndTerms.html">
+        <p>Privacy Policy</p>
+      </a>
+      <a href="/pages/privacyAndTerms.html">
+        <p>Terms of Use</p>
+      </a>
+      <p>
+        <a href="https://discord.gg/dXD748rQpc" target="_blank" rel="noopener">
+          Contact
+        </a>
+      </p>
+    </div>
+    <div class="socials">
+      <div class="icons">
+        <a href="https://discord.gg/dXD748rQpc" target="_blank" rel="noopener">
+          <img id="discord" src="assets/images/discord-icon2.png" alt="Discord" />
+        </a>
+        <a href="https://github.com/asaadmansour/ChickenInvadersJs" target="_blank" rel="noopener">
+          <img id="github" src="/assets/images/github-icon2.png" alt="Github" />
+        </a>
+        <a href="https://youtube.com">
+          <img src="assets/images/yt-icon2.png" alt="Youtube Demo" />
+        </a>
+      </div>
+    </div>
+  </footer>
+  <script type="module" src="scripts/pages/main.js"></script>
+</body>
 </html>
