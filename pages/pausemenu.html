@@ -26,21 +26,20 @@
 
     <script>
         document.getElementById("resumeBtn").addEventListener("click", () => {
-            // Redirect back to the game page
             window.location.href = "game.html"; 
         });
 
-       document.getElementById("restartBtn").addEventListener("click", () => {
-                // 1. Wipe all memory
-                localStorage.removeItem("savedScore");
-                localStorage.removeItem("savedLives");
-                localStorage.removeItem("savedWave");
-                localStorage.removeItem("savedChickens");
-                localStorage.removeItem("savedRocks");
 
-                    // 2. Go back to game (it will now start fresh)
-                    window.location.href = "game.html"; 
-    });
+document.getElementById("restartBtn").addEventListener("click", () => {
+    const keysToRemove = [
+        "savedScore", "savedLives", "savedWave", 
+        "savedChickens", "savedRocks", 
+        "playerX", "playerY"
+    ];
+    keysToRemove.forEach(key => localStorage.removeItem(key));
+
+    window.location.href = "game.html"; 
+});
 
         document.getElementById("exitBtn").addEventListener("click", () => {
             window.location.href = "../index.html";

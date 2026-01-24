@@ -4,22 +4,31 @@ export class GameState {
   static #instance = null;
 
   constructor() {
-    if (GameState.#instance) {
+   if (GameState.#instance) {
       throw new Error("Use GameState.getInstance() instead of new");
     }
 
-    // LOAD SAVED DATA OR USE DEFAULTS
-    // We use JSON.parse and localStorage to bring back the state
+    // 1. Restore Basic Values or set defaults
     this.score = parseInt(localStorage.getItem("savedScore")) || 0;
     this.lives = parseInt(localStorage.getItem("savedLives")) || 3;
     this.currentWave = parseInt(localStorage.getItem("savedWave")) || 1;
+
+    // 2. Initialize Player
+    this.player = new Player();
+
+    // 3. Restore Player Position (Prevents resetting to center)
+    const savedX = localStorage.getItem("playerX");
+    const savedY = localStorage.getItem("playerY");
+    if (savedX !== null && savedY !== null) {
+      this.player.x = parseFloat(savedX);
+      this.player.y = parseFloat(savedY);
+    }
 
     this.status = "playing";
     this.gameTime = 0;
     this.isPaused = false;
     this.hasPendingSpawns = false;
 
-    this.player = new Player();
     this.bullets = [];
     this.eggs = [];
     this.chickens = [];
@@ -28,12 +37,14 @@ export class GameState {
     this.deathEffects = [];
   }
 
+
   static getInstance() {
     if (!GameState.#instance) {
       GameState.#instance = new GameState();
     }
     return GameState.#instance;
   }
+
 
   addScore(points) {
     this.score += points;

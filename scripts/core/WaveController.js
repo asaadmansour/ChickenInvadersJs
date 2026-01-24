@@ -8,14 +8,39 @@ export class WaveController {
   constructor() {}
 
   createWave(gameState) {
-    const savedChickens = localStorage.getItem("savedChickens");
-    const savedRocks = localStorage.getItem("savedRocks");
+    const savedChickensStr = localStorage.getItem("savedChickens");
+    const savedRocksStr = localStorage.getItem("savedRocks");
 
+    let savedChickens = null;
+    let savedRocks = null;
+
+    try {
+      if (savedChickensStr) {
+        const parsed = JSON.parse(savedChickensStr);
+        if (Array.isArray(parsed) && parsed.length > 0) savedChickens = parsed;
+      }
+      if (savedRocksStr) {
+        const parsed = JSON.parse(savedRocksStr);
+        if (Array.isArray(parsed) && parsed.length > 0) savedRocks = parsed;
+      }
+    } catch (e) {
+      console.error("Error parsing saved state:", e);
+    }
+
+    // Check if we are resuming from a pause
     if (savedChickens || savedRocks) {
       this.rehydrateGameState(gameState, savedChickens, savedRocks);
+      
+      // Special logic to resume spawners for Wave 2 and Wave 3
+      if (gameState.currentWave === 2) {
+        this.createSecondWave(gameState, true);
+      } else if (gameState.currentWave === 3) {
+        this.createThirdWave(gameState, true);
+      }
       return; 
     }
 
+    // Normal progression if no saved data exists
     switch (gameState.currentWave) {
       case 1:
         this.createFirstWave(gameState);
@@ -32,9 +57,8 @@ export class WaveController {
     }
   }
 
-  rehydrateGameState(gameState, chickensJson, rocksJson) {
-    if (chickensJson) {
-      const chickensData = JSON.parse(chickensJson);
+  rehydrateGameState(gameState, chickensData, rocksData) {
+    if (chickensData && Array.isArray(chickensData)) {
       chickensData.forEach((data) => {
         let chicken;
         if (data.type === "UmbrellaChicken") {
@@ -48,8 +72,7 @@ export class WaveController {
       localStorage.removeItem("savedChickens");
     }
 
-    if (rocksJson) {
-      const rocksData = JSON.parse(rocksJson);
+    if (rocksData && Array.isArray(rocksData)) {
       rocksData.forEach((data) => {
         const rock = new Rock(data.x, data.y, data.direction);
         gameState.addRock(rock);
@@ -74,18 +97,29 @@ export class WaveController {
     }
   }
 
-  createSecondWave(gameState) {
+  createSecondWave(gameState, isResuming = false) {
     const config = WAVE_CONFIGS[1];
     const canvas = CanvasManager.getInstance();
+    
+    // Calculate how many rocks are left to spawn
+    const currentOnScreen = gameState.rocks.length;
+    const totalToSpawn = isResuming ? Math.max(0, config.count - currentOnScreen) : config.count;
+
+    if (totalToSpawn <= 0) {
+      gameState.hasPendingSpawns = false;
+      return;
+    }
+
     let accumulatedTime = 0;
     gameState.hasPendingSpawns = true;
 
-    for (let i = 0; i < config.count; i++) {
+    for (let i = 0; i < totalToSpawn; i++) {
       const nextDelay = config.minSpawnInterval + Math.random() * (config.maxSpawnInterval - config.minSpawnInterval);
       accumulatedTime += nextDelay;
 
       setTimeout(() => {
         if (gameState.isPaused || gameState.status !== "playing") return;
+        
         const startOffset = 60;
         let x, y, direction;
         const spawnSeed = Math.random();
@@ -107,35 +141,44 @@ export class WaveController {
         }
 
         const rock = new Rock(x, y, direction);
-        const speedVar = config.minSpeedFactor + Math.random() * (config.maxSpeedFactor - config.minSpeedFactor);
-        rock.moveSpeed *= speedVar;
+        rock.moveSpeed *= (config.minSpeedFactor + Math.random() * (config.maxSpeedFactor - config.minSpeedFactor));
         gameState.addRock(rock);
 
-        if (i === config.count - 1) gameState.hasPendingSpawns = false;
+        if (i === totalToSpawn - 1) gameState.hasPendingSpawns = false;
       }, accumulatedTime);
     }
   }
 
-  createThirdWave(gameState) {
+  createThirdWave(gameState, isResuming = false) {
     const config = WAVE_CONFIGS[2];
+    const canvas = CanvasManager.getInstance();
+
+    // Calculate how many umbrella chickens are left to spawn
+    const currentOnScreen = gameState.chickens.length;
+    const totalToSpawn = isResuming ? Math.max(0, config.count - currentOnScreen) : config.count;
+
+    if (totalToSpawn <= 0) {
+      gameState.hasPendingSpawns = false;
+      return;
+    }
+
     let accumulatedTime = 0;
     gameState.hasPendingSpawns = true;
 
-    for (let i = 0; i < config.count; i++) {
+    for (let i = 0; i < totalToSpawn; i++) {
       const nextDelay = config.minSpawnInterval + Math.random() * (config.maxSpawnInterval - config.minSpawnInterval);
       accumulatedTime += nextDelay;
 
       setTimeout(() => {
         if (gameState.isPaused || gameState.status !== "playing") return;
-        const canvas = CanvasManager.getInstance();
+        
         const x = Math.random() * (canvas.width * 0.8) + canvas.width * 0.1;
         const y = -50;
         const uc = new UmbrellaChicken(x, y);
-        const speedVar = config.minSpeedFactor + Math.random() * (config.maxSpeedFactor - config.minSpeedFactor);
-        uc.moveSpeed *= speedVar;
+        uc.moveSpeed *= (config.minSpeedFactor + Math.random() * (config.maxSpeedFactor - config.minSpeedFactor));
         gameState.addChicken(uc);
 
-        if (i === config.count - 1) gameState.hasPendingSpawns = false;
+        if (i === totalToSpawn - 1) gameState.hasPendingSpawns = false;
       }, accumulatedTime);
     }
   }
