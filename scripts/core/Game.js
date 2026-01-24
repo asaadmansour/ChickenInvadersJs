@@ -100,9 +100,6 @@ export class Game {
   }
 
   updateEntitiesPositions() {
-    if (this.gameState.currentWave === 2) {
-      console.log("Rocks in memory:", this.gameState.rocks.length);
-    }
     this.gameState.bullets.forEach((bullet) => bullet.move());
     this.gameState.eggs.forEach((egg) => egg.move());
     this.gameState.chickens.forEach((chicken) =>
@@ -248,7 +245,6 @@ export class Game {
     }
 
     if (waveCompleted) {
-      console.log("Wave Completed! Moving to next...");
       this.gameState.incrementWaveNumber();
       this.waveController.createWave(this.gameState);
     }
@@ -282,6 +278,20 @@ export class Game {
   }
 
   pause() {
+    const keysToRemove = [
+      "savedScore",
+      "savedLives",
+      "savedWave",
+      "savedChickens",
+      "savedRocks",
+      "savedBullets",
+      "savedEggs",
+      "savedFriedChickens",
+      "playerX",
+      "playerY",
+    ];
+    keysToRemove.forEach((key) => localStorage.removeItem(key));
+
     // 1. Save Core State
     localStorage.setItem("savedScore", this.gameState.score);
     localStorage.setItem("savedLives", this.gameState.lives);
@@ -344,6 +354,11 @@ export class Game {
   start() {
     this.gameLoop();
   }
+}
+
+// Clear local storage only if the page was reloaded
+if (performance.getEntriesByType("navigation")[0]?.type === "reload") {
+  window.localStorage.clear();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
