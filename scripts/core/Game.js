@@ -326,6 +326,7 @@ export class Game {
     const friedChickenData = this.gameState.friedChickens.map((f) => ({
       x: f.x,
       y: f.y,
+      score: f.score,
     }));
     localStorage.setItem(
       "savedFriedChickens",

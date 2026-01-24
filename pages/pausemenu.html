@@ -35,7 +35,7 @@
         document.getElementById("restartBtn").addEventListener("click", () => {
             const keysToRemove = [
                 "savedScore", "savedLives", "savedWave",
-                "savedChickens", "savedRocks",
+                "savedChickens", "savedRocks", "savedBullets", "savedEggs", "savedFriedChickens",
                 "playerX", "playerY"
             ];
             keysToRemove.forEach(key => localStorage.removeItem(key));
@@ -44,6 +44,13 @@
         });
 
         document.getElementById("exitBtn").addEventListener("click", () => {
+            const keysToRemove = [
+                "savedScore", "savedLives", "savedWave",
+                "savedChickens", "savedRocks", "savedBullets", "savedEggs", "savedFriedChickens",
+                "playerX", "playerY"
+            ];
+            keysToRemove.forEach(key => localStorage.removeItem(key));
+
             window.location.href = "../index.html";
         });
     </script>
