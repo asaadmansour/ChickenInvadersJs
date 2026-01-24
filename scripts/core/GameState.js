@@ -25,7 +25,7 @@ export class GameState {
     }
 
     this.status = "playing";
-    this.gameTime = 0;
+    this.gameTime = parseFloat(localStorage.getItem("savedGameTime")) || 0;
     this.isPaused = false;
     this.hasPendingSpawns = false;
 

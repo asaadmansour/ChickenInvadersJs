@@ -12,6 +12,7 @@ import { WAVE_CONFIGS } from "../config/Config.js";
 import { HUDManager } from "./HUDManager.js";
 import { FriedChicken } from "../entities/FriedChicken.js";
 import { DeathEffect } from "../entities/DeathEffect.js";
+import { BossChicken } from "../entities/BossChicken.js";
 
 export class Game {
   constructor() {
@@ -111,13 +112,10 @@ export class Game {
   }
 
   attemptSpawnEggs() {
-    const currentWaveIdx = this.gameState.currentWave - 1;
-    const dropRate = WAVE_CONFIGS[currentWaveIdx]?.eggsDropRate || 0.001;
-
     this.gameState.chickens.forEach((chicken) => {
-      if (chicken.isActive && Math.random() < dropRate) {
-        const spawn = chicken.drop();
-        this.gameState.addEgg(new Egg(spawn.x, spawn.y));
+      if (chicken.isActive && Math.random() < chicken.dropRate) {
+        const spawnPositions = chicken.drop();
+        spawnPositions.forEach((pos) => this.gameState.addEgg(new Egg(pos.x, pos.y)));
       }
     });
   }
@@ -138,9 +136,15 @@ export class Game {
       (bullet, chicken) => {
         chicken.decreaseLives();
         bullet.deactivate();
-        if (chicken.getLives() <= 0) {
+        
+       
+        if (chicken instanceof BossChicken) {
+          chicken.onHit();
+        }
+        
+        if (chicken.lives <= 0) {
           chicken.deactivate();
-          const spawn = chicken.drop();
+          const spawnPositions = chicken.drop();
           this.audioManager.play("chickenDeath");
           this.gameState.addDeathEffect(
             new DeathEffect(
@@ -150,9 +154,21 @@ export class Game {
               chicken.height,
             ),
           );
-          this.gameState.addFriedChicken(
-            new FriedChicken(spawn.x, spawn.y, chicken.score),
-          );
+
+          if (chicken instanceof BossChicken) {
+            // Add boss score directly
+            this.gameState.addScore(chicken.score);
+            this.hudManager.updateScore(this.gameState);
+          } else {
+            
+            this.gameState.addFriedChicken(
+              new FriedChicken(
+                spawnPositions[0].x,
+                spawnPositions[0].y,
+                chicken.score,
+              ),
+            );
+          }
         }
       },
     );
@@ -239,6 +255,15 @@ export class Game {
         )
           waveCompleted = true;
         break;
+      case 4:
+        if (
+          !this.gameState.hasPendingSpawns &&
+          this.gameState.chickens.length === 0 &&
+          this.gameState.friedChickens.length === 0
+        ) {
+          waveCompleted = true;
+        }
+        break;
       default:
         this.handleGameComplete();
         return;
@@ -289,6 +314,7 @@ export class Game {
       "savedFriedChickens",
       "playerX",
       "playerY",
+      "savedGameTime",
     ];
     keysToRemove.forEach((key) => localStorage.removeItem(key));
 
@@ -296,16 +322,20 @@ export class Game {
     localStorage.setItem("savedScore", this.gameState.score);
     localStorage.setItem("savedLives", this.gameState.lives);
     localStorage.setItem("savedWave", this.gameState.currentWave);
+    localStorage.setItem("savedGameTime", this.gameState.gameTime);
 
     // 2. Save Player Position
     localStorage.setItem("playerX", this.gameState.player.x);
     localStorage.setItem("playerY", this.gameState.player.y);
 
-    // 3. Save Chickens (Wave 1 & 3)
+    // 3. Save Chickens (Wave 1, 3 & 4)
     const chickensData = this.gameState.chickens.map((c) => ({
       x: c.x,
       y: c.y,
+      startXRatio: c.startXRatio,  
+      startYRatio: c.startYRatio,
       lives: c.lives,
+      maxLives: c.maxLives,  
       type: c.constructor.name,
     }));
     localStorage.setItem("savedChickens", JSON.stringify(chickensData));

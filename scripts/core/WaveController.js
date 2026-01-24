@@ -6,6 +6,8 @@ import { FriedChicken } from "../entities/FriedChicken.js";
 import { UmbrellaChicken } from "../entities/UmbrellaChicken.js";
 import { CanvasManager } from "./CanvasManager.js";
 import { WAVE_CONFIGS } from "../config/Config.js";
+import { BossChicken } from "../entities/BossChicken.js";
+import { ENTITY_RATIOS } from "../config/Constants.js";
 
 export class WaveController {
   constructor() {}
@@ -85,6 +87,9 @@ export class WaveController {
       case 3:
         this.createThirdWave(gameState);
         break;
+      case 4:
+        this.createFourthWave(gameState);
+        break;
       default:
         console.warn(`No configuration for wave ${gameState.currentWave}.`);
         break;
@@ -102,12 +107,18 @@ export class WaveController {
     if (chickensData && Array.isArray(chickensData)) {
       chickensData.forEach((data) => {
         let chicken;
-        if (data.type === "UmbrellaChicken") {
+        if (data.type === "BossChicken") {
+          chicken = new BossChicken(data.x, data.y);
+          chicken.maxLives = data.maxLives || data.lives;  
+        } else if (data.type === "UmbrellaChicken") {
           chicken = new UmbrellaChicken(data.x, data.y);
         } else {
           chicken = new Chicken(data.x, data.y);
         }
         chicken.lives = data.lives;
+        
+        if (data.startXRatio !== undefined) chicken.startXRatio = data.startXRatio;
+        if (data.startYRatio !== undefined) chicken.startYRatio = data.startYRatio;
         gameState.addChicken(chicken);
       });
       localStorage.removeItem("savedChickens");
@@ -175,6 +186,7 @@ export class WaveController {
         gameState.addChicken(new Chicken(x, y));
       }
     }
+    
   }
 
   createSecondWave(gameState, isResuming = false) {
@@ -278,5 +290,18 @@ export class WaveController {
         if (i === totalToSpawn - 1) gameState.hasPendingSpawns = false;
       }, accumulatedTime);
     }
+  }
+  createFourthWave(gameState) {
+    const canvas = CanvasManager.getInstance();
+    const bossWidth = canvas.width * ENTITY_RATIOS.BOSS_CHICKEN_WIDTH;
+    const centeredX = (canvas.width - bossWidth) / 2;
+    
+    gameState.hasPendingSpawns = true;  
+    
+    setTimeout(() => {
+      if (gameState.isPaused || gameState.status !== "playing") return;
+      gameState.addChicken(new BossChicken(centeredX, 100));
+      gameState.hasPendingSpawns = false;  
+    }, 2000);  // 2 second delay
   }
 }

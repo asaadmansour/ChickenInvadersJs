@@ -17,6 +17,8 @@ export const ENTITY_RATIOS = {
   UMBRELLA_CHICKEN_HEIGHT: 0.1,
   DEATH_EFFECT_WIDTH: 0.07,
   DEATH_EFFECT_HEIGHT: 0.13,
+  BOSS_CHICKEN_WIDTH: 0.25,
+  BOSS_CHICKEN_HEIGHT: 0.35,
 };
 
 export const PLAYER = {
@@ -56,6 +58,7 @@ export const CHICKEN = {
   MOVE_SPEED: 1,
   IMAGE: "/assets/images/chicken_spritesheet.png",
   SCORE: 100,
+  DROP_RATE: 0.001,
 };
 
 export const FRIED_CHICKEN = {
@@ -64,11 +67,20 @@ export const FRIED_CHICKEN = {
 };
 
 export const UMBRELLA_CHICKEN = {
-  MOVE_SPEED: 4,
+  MOVE_SPEED: 2,
   IMAGE: "/assets/images/chicken_umbrellas_spritesheet.png",
   SCORE: 150,
+  LIVES: 2,
+  DROP_RATE: 0.0015,
 };
-
+export const BOSS_CHICKEN = {
+  MOVE_SPEED: 2,
+  IMAGE: "/assets/images/bossChicken.png",
+  IMAGE_HURT: "/assets/images/bossChickenHurt.png",
+  SCORE: 5000,
+  LIVES: 15,
+  DROP_RATE: 0.02,
+};
 export const DEATH_EFFECT = {
   IMAGE: "/assets/images/Death Effect.png",
   FRAME_COUNT: 9,

@@ -10,7 +10,8 @@ import {
 } from "../config/Constants.js";
 
 import { UmbrellaChicken } from "../entities/UmbrellaChicken.js";
-
+import { BOSS_CHICKEN } from "../config/Constants.js";
+import { BossChicken } from "../entities/BossChicken.js";
 export class CanvasManager {
   static #instance = null;
 
@@ -49,7 +50,11 @@ export class CanvasManager {
 
     this.deathEffectSpriteSheet = new Image();
     this.deathEffectSpriteSheet.src = DEATH_EFFECT.IMAGE;
+    this.bossSpriteSheet = new Image();
+    this.bossSpriteSheet.src = BOSS_CHICKEN.IMAGE;
 
+    this.bossHurtSpriteSheet = new Image();
+    this.bossHurtSpriteSheet.src = BOSS_CHICKEN.IMAGE_HURT;
     this.resizeCanvas();
 
     this.setResizeListener();
@@ -102,13 +107,16 @@ export class CanvasManager {
     });
 
     gameState.chickens.forEach((chicken) => {
-      chicken.updateAnimation();
+        chicken.updateAnimation();
 
-      if (chicken instanceof UmbrellaChicken && chicken.lives == 2) {
-        this.drawAnimatedSprite(chicken, this.umbrellaChickenSpriteSheet);
-      } else {
-        this.drawAnimatedSprite(chicken, this.chickenSpriteSheet);
-      }
+        if (chicken instanceof BossChicken) {
+            const sprite = chicken.isHurt ? this.bossHurtSpriteSheet : this.bossSpriteSheet;
+            this.drawAnimatedSprite(chicken, sprite);
+        } else if (chicken instanceof UmbrellaChicken && chicken.lives == 2) {
+            this.drawAnimatedSprite(chicken, this.umbrellaChickenSpriteSheet);
+        } else {
+            this.drawAnimatedSprite(chicken, this.chickenSpriteSheet);
+        }
     });
 
     gameState.eggs.forEach((egg) => {
