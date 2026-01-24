@@ -1,3 +1,4 @@
+import { CanvasManager } from '../core/CanvasManager.js';
 export class GameObject {
   constructor(x, y, moveSpeed = 0) {
     if (new.target === GameObject) {
@@ -37,5 +38,19 @@ export class GameObject {
    */
   deactivate() {
     this.isActive = false;
+  }
+  /**
+   * Keep player within canvas boundaries
+   */
+  clampToBounds() {
+    this.x = Math.max(
+      0,
+      Math.min(this.x, CanvasManager.getInstance().width - this.width),
+    );
+
+    this.y = Math.max(
+      0,
+      Math.min(this.y, CanvasManager.getInstance().height - this.height),
+    );
   }
 }

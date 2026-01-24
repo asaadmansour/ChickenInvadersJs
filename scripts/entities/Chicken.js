@@ -5,14 +5,13 @@ import { CHICKEN } from "../config/Constants.js";
 export class Chicken extends GameObject {
   constructor(x, y, lives = 1) {
     super(x, y, CHICKEN.MOVE_SPEED);
+    const canvas = CanvasManager.getInstance();
     this.lives = lives;
-    this.startX = x;
-    this.startY = y;
+    this.startXRatio  = x / canvas.width;
+    this.startYRatio = y / canvas.height;
     this.score = CHICKEN.SCORE; //chicken points
 
     // Animation properties
-    this.horizontalRange = CHICKEN.HORIZONTAL_RANGE;
-    this.verticalRange = CHICKEN.VERTICAL_RANGE;
     this.currentFrame = 0;
     this.frameCount = CHICKEN.FRAME_COUNT;
     this.cols = CHICKEN.COLS;
@@ -21,6 +20,21 @@ export class Chicken extends GameObject {
     this.frameDelay = CHICKEN.FRAME_DELAY; // Change frame every 15 game ticks
   }
 
+  // Responsive oscillation ranges
+  get horizontalRange() {
+    return CanvasManager.getInstance().width * ENTITY_RATIOS.CHICKEN_HORIZONTAL_RANGE;
+  }
+
+  get verticalRange() {
+    return CanvasManager.getInstance().height * ENTITY_RATIOS.CHICKEN_VERTICAL_RANGE;
+  }
+  // Getters calculate actual position based on current canvas size
+  get startX() {
+    return this.startXRatio * CanvasManager.getInstance().width;
+  }
+  get startY() {
+    return this.startYRatio * CanvasManager.getInstance().height;
+  }
   /**
    * Update animation frame based on timer
    */
@@ -74,5 +88,6 @@ export class Chicken extends GameObject {
   move(time) {
     this.x = this.startX + Math.sin(time) * this.horizontalRange;
     this.y = this.startY + Math.sin(time * 2) * this.verticalRange;
+    this.clampToBounds();
   }
 }

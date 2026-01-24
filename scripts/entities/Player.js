@@ -49,20 +49,7 @@ export class Player extends GameObject {
     this.clampToBounds();
   }
 
-  /**
-   * Keep player within canvas boundaries
-   */
-  clampToBounds() {
-    this.x = Math.max(
-      0,
-      Math.min(this.x, CanvasManager.getInstance().width - this.width),
-    );
 
-    this.y = Math.max(
-      0,
-      Math.min(this.y, CanvasManager.getInstance().height - this.height),
-    );
-  }
 
   /**
    * Check if player can shoot based on fire rate

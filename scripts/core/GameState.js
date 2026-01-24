@@ -8,17 +8,27 @@ export class GameState {
       throw new Error("Use GameState.getInstance() instead of new");
     }
 
-    // Game progress
-    this.score = 0;
-    this.lives = 3;
-    this.currentWave = 1;
+    // 1. Restore Basic Values or set defaults
+    this.score = parseInt(localStorage.getItem("savedScore")) || 0;
+    this.lives = parseInt(localStorage.getItem("savedLives")) || 3;
+    this.currentWave = parseInt(localStorage.getItem("savedWave")) || 1;
+
+    // 2. Initialize Player
+    this.player = new Player();
+
+    // 3. Restore Player Position (Prevents resetting to center)
+    const savedX = localStorage.getItem("playerX");
+    const savedY = localStorage.getItem("playerY");
+    if (savedX !== null && savedY !== null) {
+      this.player.x = parseFloat(savedX);
+      this.player.y = parseFloat(savedY);
+    }
+
     this.status = "playing";
     this.gameTime = 0;
     this.isPaused = false;
     this.hasPendingSpawns = false;
 
-    // Entity collections
-    this.player = new Player();
     this.bullets = [];
     this.eggs = [];
     this.chickens = [];
@@ -27,7 +37,6 @@ export class GameState {
     this.deathEffects = [];
   }
 
-  // Singleton access method
   static getInstance() {
     if (!GameState.#instance) {
       GameState.#instance = new GameState();
@@ -90,17 +99,25 @@ export class GameState {
     this.isPaused = false;
   }
 
-  // Reset the game state to initial values
   reset() {
+    // Clear storage
+    localStorage.removeItem("savedScore");
+    localStorage.removeItem("savedLives");
+    localStorage.removeItem("savedWave");
+    localStorage.removeItem("savedChickens");
+    localStorage.removeItem("savedRocks");
+
+    // Reset local variables
     this.score = 0;
     this.lives = 3;
-    this.currentLevel = 1;
+    this.currentWave = 1;
     this.status = "playing";
     this.gameTime = 0;
     this.isPaused = false;
-    this.player.reset();
     this.bullets = [];
     this.eggs = [];
     this.chickens = [];
+    this.rocks = [];
+    if (this.player) this.player.reset();
   }
 }

@@ -60,7 +60,6 @@ function startTransition() {
 // Navigation to instructions
 if (instructionsBtn) {
   instructionsBtn.addEventListener("click", () => {
-    // Path adjusted to enter the pages folder
     window.location.href = "pages/instructions.html";
   });
 }

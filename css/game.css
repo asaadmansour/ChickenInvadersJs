@@ -15,7 +15,7 @@ body {
   background-image: url("../assets/images/space_background.png");
   background-size: auto;
   background-repeat: repeat;
-  animation: scrollBackground 25s linear infinite;
+  animation: scrollBackground 13s linear infinite;
 }
 
 @keyframes scrollBackground {
@@ -23,7 +23,7 @@ body {
     background-position: 0 0;
   }
   to {
-    background-position: 0 2000px;
+    background-position: 0 1024px; 
   }
 }
 body::after {
@@ -44,7 +44,7 @@ body::after {
 }
 
 
-.hud {
+/* .hud {
   position: absolute;
   top: 20px;
   left: 0;
