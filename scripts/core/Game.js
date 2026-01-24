@@ -27,7 +27,7 @@ export class Game {
 
     this.setupControls();
     this.bindPauseMenu();
-    
+
     // Initialize the game session correctly
     this.init();
 
@@ -48,16 +48,24 @@ export class Game {
 
     this.hudManager.updateScore(this.gameState);
     this.hudManager.printLives(this.gameState);
-    
+
     // Start the game loop
     this.start();
   }
 
   setupControls() {
-    this.inputHandler.bindKey("ArrowLeft", () => this.gameState.player.move({ left: true }));
-    this.inputHandler.bindKey("ArrowRight", () => this.gameState.player.move({ right: true }));
-    this.inputHandler.bindKey("ArrowUp", () => this.gameState.player.move({ up: true }));
-    this.inputHandler.bindKey("ArrowDown", () => this.gameState.player.move({ down: true }));
+    this.inputHandler.bindKey("ArrowLeft", () =>
+      this.gameState.player.move({ left: true }),
+    );
+    this.inputHandler.bindKey("ArrowRight", () =>
+      this.gameState.player.move({ right: true }),
+    );
+    this.inputHandler.bindKey("ArrowUp", () =>
+      this.gameState.player.move({ up: true }),
+    );
+    this.inputHandler.bindKey("ArrowDown", () =>
+      this.gameState.player.move({ down: true }),
+    );
     this.inputHandler.bindKey("Space", () => {
       if (this.gameState.player.canShoot()) {
         const spawn = this.gameState.player.shoot();
@@ -93,14 +101,16 @@ export class Game {
 
   updateEntitiesPositions() {
     if (this.gameState.currentWave === 2) {
-        console.log("Rocks in memory:", this.gameState.rocks.length);
+      console.log("Rocks in memory:", this.gameState.rocks.length);
     }
     this.gameState.bullets.forEach((bullet) => bullet.move());
     this.gameState.eggs.forEach((egg) => egg.move());
-    this.gameState.chickens.forEach((chicken) => chicken.move(this.gameState.gameTime));
+    this.gameState.chickens.forEach((chicken) =>
+      chicken.move(this.gameState.gameTime),
+    );
     this.gameState.rocks.forEach((rock) => rock.move());
     this.gameState.friedChickens.forEach((fc) => fc.move());
-    this.gameState.deathEffects.forEach((de) => de.update?.()); 
+    this.gameState.deathEffects.forEach((de) => de.update?.());
   }
 
   attemptSpawnEggs() {
@@ -125,49 +135,78 @@ export class Game {
   }
 
   checkBulletsVsChickens() {
-    this.collisionDetector.checkGroupVsGroup(this.gameState.bullets, this.gameState.chickens, (bullet, chicken) => {
-      chicken.decreaseLives();
-      bullet.deactivate();
-      if (chicken.getLives() <= 0) {
-        chicken.deactivate();
-        const spawn = chicken.drop();
-        this.audioManager.play("chickenDeath");
-        this.gameState.addDeathEffect(new DeathEffect(chicken.x, chicken.y, chicken.width, chicken.height));
-        this.gameState.addFriedChicken(new FriedChicken(spawn.x, spawn.y, chicken.score));
-      }
-    });
+    this.collisionDetector.checkGroupVsGroup(
+      this.gameState.bullets,
+      this.gameState.chickens,
+      (bullet, chicken) => {
+        chicken.decreaseLives();
+        bullet.deactivate();
+        if (chicken.getLives() <= 0) {
+          chicken.deactivate();
+          const spawn = chicken.drop();
+          this.audioManager.play("chickenDeath");
+          this.gameState.addDeathEffect(
+            new DeathEffect(
+              chicken.x,
+              chicken.y,
+              chicken.width,
+              chicken.height,
+            ),
+          );
+          this.gameState.addFriedChicken(
+            new FriedChicken(spawn.x, spawn.y, chicken.score),
+          );
+        }
+      },
+    );
   }
 
   checkPlayerVsFriedChickens() {
-    this.collisionDetector.checkGroupVsItem(this.gameState.friedChickens, this.gameState.player, (fc) => {
-      fc.deactivate();
-      this.audioManager.play("crunch");
-      this.gameState.addScore(fc.score);
-      this.hudManager.updateScore(this.gameState);
-    });
+    this.collisionDetector.checkGroupVsItem(
+      this.gameState.friedChickens,
+      this.gameState.player,
+      (fc) => {
+        fc.deactivate();
+        this.audioManager.play("crunch");
+        this.gameState.addScore(fc.score);
+        this.hudManager.updateScore(this.gameState);
+      },
+    );
   }
 
   checkPlayerVsChickens() {
-    this.collisionDetector.checkGroupVsItem(this.gameState.chickens, this.gameState.player, (chicken) => {
-      if (chicken.isActive) {
-        chicken.deactivate();
-        this.handlePlayerHit();
-      }
-    });
+    this.collisionDetector.checkGroupVsItem(
+      this.gameState.chickens,
+      this.gameState.player,
+      (chicken) => {
+        if (chicken.isActive) {
+          chicken.deactivate();
+          this.handlePlayerHit();
+        }
+      },
+    );
   }
 
   checkPlayerVsEggs() {
-    this.collisionDetector.checkGroupVsItem(this.gameState.eggs, this.gameState.player, (egg) => {
-      egg.deactivate();
-      this.handlePlayerHit();
-    });
+    this.collisionDetector.checkGroupVsItem(
+      this.gameState.eggs,
+      this.gameState.player,
+      (egg) => {
+        egg.deactivate();
+        this.handlePlayerHit();
+      },
+    );
   }
 
   checkPlayerVsRocks() {
-    this.collisionDetector.checkGroupVsItem(this.gameState.rocks, this.gameState.player, (rock) => {
-      rock.deactivate();
-      this.handlePlayerHit();
-    });
+    this.collisionDetector.checkGroupVsItem(
+      this.gameState.rocks,
+      this.gameState.player,
+      (rock) => {
+        rock.deactivate();
+        this.handlePlayerHit();
+      },
+    );
   }
 
   removeInactiveEntities() {
@@ -175,26 +214,36 @@ export class Game {
     this.gameState.eggs = this.gameState.eggs.filter((e) => e.isActive);
     this.gameState.chickens = this.gameState.chickens.filter((c) => c.isActive);
     this.gameState.rocks = this.gameState.rocks.filter((r) => r.isActive);
-    this.gameState.friedChickens = this.gameState.friedChickens.filter((f) => f.isActive);
-    this.gameState.deathEffects = this.gameState.deathEffects.filter((d) => d.isActive);
+    this.gameState.friedChickens = this.gameState.friedChickens.filter(
+      (f) => f.isActive,
+    );
+    this.gameState.deathEffects = this.gameState.deathEffects.filter(
+      (d) => d.isActive,
+    );
   }
 
-
   checkAndAdvanceWave() {
-    
     let waveCompleted = false;
     switch (this.gameState.currentWave) {
-      case 1: 
-        if (this.gameState.chickens.length === 0) waveCompleted = true; 
+      case 1:
+        if (this.gameState.chickens.length === 0) waveCompleted = true;
         break;
-      case 2: 
-        if (!this.gameState.hasPendingSpawns && this.gameState.rocks.length === 0) waveCompleted = true; 
+      case 2:
+        if (
+          !this.gameState.hasPendingSpawns &&
+          this.gameState.rocks.length === 0
+        )
+          waveCompleted = true;
         break;
-      case 3: 
-        if (!this.gameState.hasPendingSpawns && this.gameState.chickens.length === 0) waveCompleted = true; 
+      case 3:
+        if (
+          !this.gameState.hasPendingSpawns &&
+          this.gameState.chickens.length === 0
+        )
+          waveCompleted = true;
         break;
-      default: 
-        this.handleGameComplete(); 
+      default:
+        this.handleGameComplete();
         return;
     }
 
@@ -243,35 +292,59 @@ export class Game {
     localStorage.setItem("playerY", this.gameState.player.y);
 
     // 3. Save Chickens (Wave 1 & 3)
-    const chickensData = this.gameState.chickens.map(c => ({
-        x: c.x, 
-        y: c.y, 
-        lives: c.lives, 
-        type: c.constructor.name
+    const chickensData = this.gameState.chickens.map((c) => ({
+      x: c.x,
+      y: c.y,
+      lives: c.lives,
+      type: c.constructor.name,
     }));
     localStorage.setItem("savedChickens", JSON.stringify(chickensData));
 
     // 4. Save Rocks (Wave 2)
-    const rocksData = this.gameState.rocks.map(r => ({
-        x: r.x, 
-        y: r.y, 
-        direction: r.direction
+    const rocksData = this.gameState.rocks.map((r) => ({
+      x: r.x,
+      y: r.y,
+      direction: r.direction,
     }));
     localStorage.setItem("savedRocks", JSON.stringify(rocksData));
 
-    // 5. Execution Clean up
+    // 5. Save Bullets
+    const bulletData = this.gameState.bullets.map((b) => ({
+      x: b.x,
+      y: b.y,
+    }));
+    localStorage.setItem("savedBullets", JSON.stringify(bulletData));
+
+    // 6. Save Eggs
+    const eggData = this.gameState.eggs.map((e) => ({
+      x: e.x,
+      y: e.y,
+    }));
+    localStorage.setItem("savedEggs", JSON.stringify(eggData));
+
+    // 6. Save Fried Chickens
+    const friedChickenData = this.gameState.friedChickens.map((f) => ({
+      x: f.x,
+      y: f.y,
+    }));
+    localStorage.setItem(
+      "savedFriedChickens",
+      JSON.stringify(friedChickenData),
+    );
+
+    // 7. Execution Clean up
     this.gameState.pause();
     this.audioManager.pauseMusic();
     if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
-    
+
     window.location.href = "../pages/pausemenu.html";
   }
 
-  start() { 
-    this.gameLoop(); 
+  start() {
+    this.gameLoop();
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => { 
-    new Game(); 
+document.addEventListener("DOMContentLoaded", () => {
+  new Game();
 });
