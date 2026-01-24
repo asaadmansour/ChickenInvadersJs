@@ -13,14 +13,6 @@ import { HUDManager } from "./HUDManager.js";
 import { FriedChicken } from "../entities/FriedChicken.js";
 import { DeathEffect } from "../entities/DeathEffect.js";
 
-// Firebase imports
-import { db } from "../firebase/firebaseConfig.js";
-import {
-  collection,
-  addDoc,
-  serverTimestamp,
-} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
-
 export class Game {
   constructor() {
     this.audioManager = AudioManager.getInstance();
@@ -34,29 +26,23 @@ export class Game {
     this.animationFrameId = null;
 
     this.setupControls();
+    this.bindPauseMenu();
     this.waveController.createWave(this.gameState);
 
     this.canvasManager.onResizeAction = () => {
       this.gameState.player.clampToBounds();
     };
-
+    
+    this.hudManager.updateScore(this.gameState);
     this.hudManager.printLives(this.gameState);
     this.start();
   }
 
   setupControls() {
-    this.inputHandler.bindKey("ArrowLeft", () => {
-      this.gameState.player.move({ left: true });
-    });
-    this.inputHandler.bindKey("ArrowRight", () => {
-      this.gameState.player.move({ right: true });
-    });
-    this.inputHandler.bindKey("ArrowUp", () => {
-      this.gameState.player.move({ up: true });
-    });
-    this.inputHandler.bindKey("ArrowDown", () => {
-      this.gameState.player.move({ down: true });
-    });
+    this.inputHandler.bindKey("ArrowLeft", () => this.gameState.player.move({ left: true }));
+    this.inputHandler.bindKey("ArrowRight", () => this.gameState.player.move({ right: true }));
+    this.inputHandler.bindKey("ArrowUp", () => this.gameState.player.move({ up: true }));
+    this.inputHandler.bindKey("ArrowDown", () => this.gameState.player.move({ down: true }));
     this.inputHandler.bindKey("Space", () => {
       if (this.gameState.player.canShoot()) {
         const spawn = this.gameState.player.shoot();
@@ -64,18 +50,19 @@ export class Game {
         this.gameState.addBullet(new Bullet(spawn.x, spawn.y));
       }
     });
-    this.inputHandler.bindKey("Escape", () => {
-      if (this.gameState.isPaused) this.resume();
-      else this.pause();
-    });
+    this.inputHandler.bindKey("Escape", () => this.pause());
+    this.inputHandler.bindKey("KeyP", () => this.pause());
   }
 
-  // Main game loop called every frame
-  gameLoop() {
-    // If the game is paused or over, do not continue the loop
-    if (this.gameState.isPaused || this.gameState.status === "gameover") {
-      return;
+  bindPauseMenu() {
+    const pauseTrigger = document.getElementById("pause-trigger");
+    if (pauseTrigger) {
+      pauseTrigger.addEventListener("click", () => this.pause());
     }
+  }
+
+  gameLoop() {
+    if (this.gameState.isPaused || this.gameState.status === "gameover") return;
 
     this.inputHandler.processInput();
     this.gameState.updateTime();
@@ -92,196 +79,89 @@ export class Game {
   updateEntitiesPositions() {
     this.gameState.bullets.forEach((bullet) => bullet.move());
     this.gameState.eggs.forEach((egg) => egg.move());
-    this.gameState.chickens.forEach((chicken) =>
-      chicken.move(this.gameState.gameTime),
-    );
+    this.gameState.chickens.forEach((chicken) => chicken.move(this.gameState.gameTime));
     this.gameState.rocks.forEach((rock) => rock.move());
     this.gameState.friedChickens.forEach((fc) => fc.move());
   }
 
   attemptSpawnEggs() {
     this.gameState.chickens.forEach((chicken) => {
-      if (
-        chicken.isActive &&
-        Math.random() <
-          WAVE_CONFIGS[this.gameState.currentWave - 1].eggsDropRate
-      ) {
+      if (chicken.isActive && Math.random() < WAVE_CONFIGS[this.gameState.currentWave - 1].eggsDropRate) {
         const spawn = chicken.drop();
         this.gameState.addEgg(new Egg(spawn.x, spawn.y));
       }
     });
   }
 
-  // Check all collisions between entities and handle their effects
   checkCollisions() {
     this.checkBulletsVsChickens();
-
     this.checkPlayerVsFriedChickens();
-
     if (this.gameState.player.isInvulnerable()) return;
-
     this.checkPlayerVsChickens();
-
     this.checkPlayerVsEggs();
-
     this.checkPlayerVsRocks();
   }
 
-  /**
-   * Check collisions between bullets and chickens
-   * On collision, deactivate both and spawn fried chicken
-   */
   checkBulletsVsChickens() {
-    this.collisionDetector.checkGroupVsGroup(
-      this.gameState.bullets,
-      this.gameState.chickens,
-      (bullet, chicken) => {
-        chicken.decreaseLives();
-        bullet.deactivate();
-        if (chicken.getLives() <= 0) {
-          chicken.deactivate();
-          const spawn = chicken.drop();
-          import("./AudioManager.js").then(({ AudioManager }) => {
-            AudioManager.getInstance().play("chickenDeath");
-          });
-          this.gameState.addDeathEffect(
-            new DeathEffect(
-              chicken.x,
-              chicken.y,
-              chicken.width,
-              chicken.height,
-            ),
-          );
-          this.gameState.addFriedChicken(
-            new FriedChicken(spawn.x, spawn.y, chicken.score),
-          );
-        }
-      },
-    );
-  }
-
-  /**
-   * Check collisions between player and fried chickens
-   * On collision, deactivate fried chicken and increase score
-   */
-  checkPlayerVsFriedChickens() {
-    this.collisionDetector.checkGroupVsItem(
-      this.gameState.friedChickens,
-      this.gameState.player,
-      (fc) => {
-        fc.deactivate();
-        this.audioManager.play("crunch");
-        this.gameState.addScore(fc.score);
-        this.hudManager.updateScore(this.gameState);
-      },
-    );
-  }
-
-  /**
-   * Check collisions between player and chickens
-   * On collision, deactivate chicken and handle player hit
-   */
-  checkPlayerVsChickens() {
-    this.collisionDetector.checkGroupVsItem(
-      this.gameState.chickens,
-      this.gameState.player,
-      (chicken) => {
+    this.collisionDetector.checkGroupVsGroup(this.gameState.bullets, this.gameState.chickens, (bullet, chicken) => {
+      chicken.decreaseLives();
+      bullet.deactivate();
+      if (chicken.getLives() <= 0) {
         chicken.deactivate();
-        this.handlePlayerHit();
-      },
-    );
+        const spawn = chicken.drop();
+        this.audioManager.play("chickenDeath");
+        this.gameState.addDeathEffect(new DeathEffect(chicken.x, chicken.y, chicken.width, chicken.height));
+        this.gameState.addFriedChicken(new FriedChicken(spawn.x, spawn.y, chicken.score));
+      }
+    });
   }
 
-  /**
-   * Check collisions between player and eggs
-   * On collision, deactivate egg and handle player hit
-   */
+  checkPlayerVsFriedChickens() {
+    this.collisionDetector.checkGroupVsItem(this.gameState.friedChickens, this.gameState.player, (fc) => {
+      fc.deactivate();
+      this.audioManager.play("crunch");
+      this.gameState.addScore(fc.score);
+      this.hudManager.updateScore(this.gameState);
+    });
+  }
+
+  checkPlayerVsChickens() {
+    this.collisionDetector.checkGroupVsItem(this.gameState.chickens, this.gameState.player, (chicken) => {
+      chicken.deactivate();
+      this.handlePlayerHit();
+    });
+  }
+
   checkPlayerVsEggs() {
-    this.collisionDetector.checkGroupVsItem(
-      this.gameState.eggs,
-      this.gameState.player,
-      (egg) => {
-        egg.deactivate();
-        this.handlePlayerHit();
-      },
-    );
+    this.collisionDetector.checkGroupVsItem(this.gameState.eggs, this.gameState.player, (egg) => {
+      egg.deactivate();
+      this.handlePlayerHit();
+    });
   }
 
-  /**
-   * Check collisions between player and rocks
-   * On collision, deactivate rock and handle player hit
-   */
   checkPlayerVsRocks() {
-    this.collisionDetector.checkGroupVsItem(
-      this.gameState.rocks,
-      this.gameState.player,
-      (rock) => {
-        rock.deactivate();
-        this.handlePlayerHit();
-      },
-    );
+    this.collisionDetector.checkGroupVsItem(this.gameState.rocks, this.gameState.player, (rock) => {
+      rock.deactivate();
+      this.handlePlayerHit();
+    });
   }
 
-  // Remove inactive entities caused by collisions or moving out of bounds
   removeInactiveEntities() {
-    this.gameState.bullets = this.gameState.bullets.filter(
-      (bullet) => bullet.isActive,
-    );
-
-    this.gameState.eggs = this.gameState.eggs.filter((egg) => egg.isActive);
-
-    this.gameState.chickens = this.gameState.chickens.filter(
-      (chicken) => chicken.isActive,
-    );
-
-    this.gameState.rocks = this.gameState.rocks.filter((rock) => rock.isActive);
-
-    this.gameState.friedChickens = this.gameState.friedChickens.filter(
-      (fc) => fc.isActive,
-    );
-
-    this.gameState.deathEffects = this.gameState.deathEffects.filter(
-      (effect) => effect.isActive,
-    );
+    this.gameState.bullets = this.gameState.bullets.filter((b) => b.isActive);
+    this.gameState.eggs = this.gameState.eggs.filter((e) => e.isActive);
+    this.gameState.chickens = this.gameState.chickens.filter((c) => c.isActive);
+    this.gameState.rocks = this.gameState.rocks.filter((r) => r.isActive);
+    this.gameState.friedChickens = this.gameState.friedChickens.filter((f) => f.isActive);
+    this.gameState.deathEffects = this.gameState.deathEffects.filter((d) => d.isActive);
   }
 
-  /**
-   * Check if the current wave is completed and advance to the next wave if so,
-   * if all waves are completed, handle game completion.
-   */
   checkAndAdvanceWave() {
     let waveCompleted = false;
     switch (this.gameState.currentWave) {
-      case 1:
-        if (
-          this.gameState.chickens.length === 0 &&
-          this.gameState.eggs.length === 0
-        )
-          waveCompleted = true;
-        break;
-
-      case 2:
-        if (
-          !this.gameState.hasPendingSpawns &&
-          this.gameState.rocks.length === 0
-        ) {
-          waveCompleted = true;
-        }
-        break;
-
-      case 3:
-        if (
-          !this.gameState.hasPendingSpawns &&
-          this.gameState.chickens.length === 0 &&
-          this.gameState.eggs.length === 0
-        ) {
-          waveCompleted = true;
-        }
-        break;
-
-      default:
-        this.handleGameComplete();
-        break;
+      case 1: if (this.gameState.chickens.length === 0 && this.gameState.eggs.length === 0) waveCompleted = true; break;
+      case 2: if (!this.gameState.hasPendingSpawns && this.gameState.rocks.length === 0) waveCompleted = true; break;
+      case 3: if (!this.gameState.hasPendingSpawns && this.gameState.chickens.length === 0 && this.gameState.eggs.length === 0) waveCompleted = true; break;
+      default: this.handleGameComplete(); break;
     }
     if (waveCompleted) {
       this.gameState.incrementWaveNumber();
@@ -289,106 +169,55 @@ export class Game {
     }
   }
 
-  // handle player hit logic: play sound, lose life, check for game over
   handlePlayerHit() {
     const wasHit = this.gameState.player.hit();
-
     if (!wasHit) return;
-
     this.audioManager.play("hit");
     const isDead = this.gameState.loseLife();
     this.hudManager.printLives(this.gameState);
-
     if (isDead) this.handleGameOver();
   }
 
-  // --- Firebase Saving Logic ---
-  async saveScoreToFirebase() {
-    let playerName = prompt(
-      "Game Over! Enter your name for the leaderboard:",
-      "Hero",
-    );
-
-    // Handle cancel or empty name
-    if (playerName === null || playerName.trim() === "") {
-      playerName = "Anonymous";
-    }
-
-    try {
-      await addDoc(collection(db, "scores"), {
-        name: playerName,
-        score: this.gameState.score,
-        createdAt: serverTimestamp(),
-      });
-      console.log("Score saved to Firebase successfully!");
-    } catch (error) {
-      console.error("Firebase Error:", error);
-    }
-  }
-
-  /**
-   * TEAM NOTE: Updated handleGameOver to prevent the loop from re-triggering the prompt.
-   * 1. Check if already in gameover state.
-   * 2. Cancel the animation frame immediately.
-   */
   async handleGameOver() {
-    // PREVENT LOOP: If we are already handling gameover, exit.
     if (this.gameState.status === "gameover") return;
-
     this.gameState.status = "gameover";
-
     localStorage.setItem("finalScore", this.gameState.score);
-
-    // STOP ENGINE: Stop the game loop before showing the prompt
-    if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId);
-      this.animationFrameId = null;
-    }
-
-    // Redirect to the Game Over screen
+    localStorage.setItem("gameStatus", "lose");
+    if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
     window.location.href = "../pages/gameover.html";
   }
 
-  // Same logic as handleGameOver but for successful completion
   async handleGameComplete() {
     if (this.gameState.status === "complete") return;
-
     this.gameState.status = "complete";
-
-    if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId);
-      this.animationFrameId = null;
-    }
-
-    // // Interaction with user and database
-    await this.saveScoreToFirebase();
-
-    // Redirect to the Scoreboard screen
-    window.location.href = "./scoreboard.html";
+    localStorage.setItem("finalScore", this.gameState.score);
+    localStorage.setItem("gameStatus", "win");
+    if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
+    window.location.href = "../pages/gameover.html";
   }
 
   pause() {
-    if (!this.gameState.isPaused) {
-      this.gameState.pause();
-      this.audioManager.pauseMusic();
-      if (this.animationFrameId) {
-        cancelAnimationFrame(this.animationFrameId);
-        this.animationFrameId = null;
-      }
-    }
+    localStorage.setItem("savedScore", this.gameState.score);
+    localStorage.setItem("savedLives", this.gameState.lives);
+    localStorage.setItem("savedWave", this.gameState.currentWave);
+
+    const chickensData = this.gameState.chickens.map(c => ({
+        x: c.x, y: c.y, lives: c.lives, type: c.constructor.name
+    }));
+    localStorage.setItem("savedChickens", JSON.stringify(chickensData));
+
+    const rocksData = this.gameState.rocks.map(r => ({
+        x: r.x, y: r.y, direction: r.direction
+    }));
+    localStorage.setItem("savedRocks", JSON.stringify(rocksData));
+
+    this.gameState.pause();
+    this.audioManager.pauseMusic();
+    if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
+    window.location.href = "../pages/pausemenu.html";
   }
 
-  resume() {
-    if (this.gameState.isPaused) {
-      this.gameState.resume();
-      this.audioManager.resumeMusic();
-      this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
-    }
-  }
-
-  start() {
-    this.gameLoop();
-  }
+  start() { this.gameLoop(); }
 }
 
-new Game();
+document.addEventListener("DOMContentLoaded", () => { new Game(); });

@@ -3,28 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chicken Invaders</title>
+    <title>Chicken Invaders - Paused</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/main.css">
-    <link rel="stylesheet" href="../css/gameover.css">
     <link rel="stylesheet" href="../css/pause.css">
 </head>
 <body>
     <div class="game-container">
-        <div class="pause-menu-container">
+        <div class="pause-menu-container active" style="opacity: 1; visibility: visible; pointer-events: all;">
             <div class="flex-container">
-                    <p>
-                        PAUSED
-                    </p>
-                    <div class="buttons">
-                        <button type="button">RESUME</button>
-                        <button type="button">RESTART</button>
-                        <button type="button">EXIT TO MENU</button>
-                    </div>
+                <p>PAUSED</p>
+                <div class="buttons">
+                    <button type="button" id="resumeBtn">RESUME</button>
+                    <button type="button" id="restartBtn">RESTART</button>
+                    <button type="button" id="exitBtn">EXIT TO MENU</button>
                 </div>
             </div>
         </div>
-    </body>
+    </div>
+
+    <script>
+        document.getElementById("resumeBtn").addEventListener("click", () => {
+            // Redirect back to the game page
+            window.location.href = "game.html"; 
+        });
+
+       document.getElementById("restartBtn").addEventListener("click", () => {
+                // 1. Wipe all memory
+                localStorage.removeItem("savedScore");
+                localStorage.removeItem("savedLives");
+                localStorage.removeItem("savedWave");
+                localStorage.removeItem("savedChickens");
+                localStorage.removeItem("savedRocks");
+
+                    // 2. Go back to game (it will now start fresh)
+                    window.location.href = "game.html"; 
+    });
+
+        document.getElementById("exitBtn").addEventListener("click", () => {
+            window.location.href = "../index.html";
+        });
+    </script>
+</body>
 </html>
+

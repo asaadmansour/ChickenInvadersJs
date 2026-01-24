@@ -8,16 +8,17 @@ export class GameState {
       throw new Error("Use GameState.getInstance() instead of new");
     }
 
-    // Game progress
-    this.score = 0;
-    this.lives = 3;
-    this.currentWave = 1;
+    // LOAD SAVED DATA OR USE DEFAULTS
+    // We use JSON.parse and localStorage to bring back the state
+    this.score = parseInt(localStorage.getItem("savedScore")) || 0;
+    this.lives = parseInt(localStorage.getItem("savedLives")) || 3;
+    this.currentWave = parseInt(localStorage.getItem("savedWave")) || 1;
+
     this.status = "playing";
     this.gameTime = 0;
     this.isPaused = false;
     this.hasPendingSpawns = false;
 
-    // Entity collections
     this.player = new Player();
     this.bullets = [];
     this.eggs = [];
@@ -27,7 +28,6 @@ export class GameState {
     this.deathEffects = [];
   }
 
-  // Singleton access method
   static getInstance() {
     if (!GameState.#instance) {
       GameState.#instance = new GameState();
@@ -90,17 +90,26 @@ export class GameState {
     this.isPaused = false;
   }
 
-  // Reset the game state to initial values
   reset() {
+
+    // Clear storage
+    localStorage.removeItem("savedScore");
+    localStorage.removeItem("savedLives");
+    localStorage.removeItem("savedWave");
+    localStorage.removeItem("savedChickens");
+    localStorage.removeItem("savedRocks");
+
+    // Reset local variables
     this.score = 0;
     this.lives = 3;
-    this.currentLevel = 1;
+    this.currentWave = 1;
     this.status = "playing";
     this.gameTime = 0;
     this.isPaused = false;
-    this.player.reset();
     this.bullets = [];
     this.eggs = [];
     this.chickens = [];
+    this.rocks = [];
+    if (this.player) this.player.reset();
   }
 }

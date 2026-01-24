@@ -9,20 +9,21 @@
   </head>
   <body>
 <body>
+ 
     <div class="game-wrapper">
-      <canvas id="gameCanvas"></canvas>
-      
-      <!-- HUD overlay -->
-      <div class="hud">
+    <canvas id="gameCanvas"></canvas>
+    
+    <div class="hud">
         <div class="hearts">
-
-          <!-- <img class="heart" src="../assets/images/lives.webp" alt="">
-          <img class="heart" src="../assets/images/lives.webp" alt="">
-          <img class="heart" src="../assets/images/lives.webp" alt=""> -->
+            </div>
+        <div class="right-hud">
+            <span id="score">0</span>
+            <button type="button" id="pause-trigger" class="pause-btn">PAUSE</button>
         </div>
-        <span id="score">0</span>
-      </div>
     </div>
+</div>
+
+    
     <script type="module" src="../scripts/core/Game.js"></script>
   </body>
 </html>

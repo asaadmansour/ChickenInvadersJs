@@ -44,7 +44,7 @@ body::after {
 }
 
 
-.hud {
+/* .hud {
   position: absolute;
   top: 20px;
   left: 0;
@@ -72,4 +72,66 @@ body::after {
 .heart {
   width: 25px;
   height: 25px;
+} */
+
+/* --- HUD Styling --- */
+.hud {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  padding: 0 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 999;
+  pointer-events: none; 
 }
+
+.right-hud {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  pointer-events: all; 
+}
+
+#score {
+  color: #fff;
+  font-family: "Orbitron", sans-serif;
+  font-size: 24px;
+  text-shadow: 0 0 10px #000;
+}
+
+/* --- Green Pause Button Design --- */
+.pause-btn {
+  background: linear-gradient(to bottom, #4dfba3, #21d7b3);
+  border: 1px solid #1a8a6d;
+  border-radius: 8px;
+  color: #0c1b2c;
+  font-family: 'Orbitron', sans-serif;
+  font-weight: bold;
+  font-size: 13px;
+  padding: 8px 18px;
+  cursor: pointer;
+  text-transform: uppercase;
+  box-shadow: 0 0 15px rgba(77, 251, 163, 0.4);
+  transition: all 0.2s ease-in-out;
+  pointer-events: all;
+  position: relative;
+  z-index: 1000;
+}
+
+.pause-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(77, 251, 163, 0.7);
+  filter: brightness(1.1);
+}
+
+.pause-btn:active {
+  transform: scale(0.95);
+
+}
+.heart {
+  width: 25px;
+  height: 25px;
+} 
