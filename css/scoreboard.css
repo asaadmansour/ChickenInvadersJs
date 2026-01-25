@@ -13,7 +13,7 @@ body {
   font-family: var(--font-primary);
   min-height: 100vh;
   background: #050111 url('../assets/images/space_background.png') repeat;
-  animation: scrollBackground 25s linear infinite;
+  animation: scrollBackground 13s linear infinite;
   background-size: auto;
   position: relative;
   overflow-x: hidden;
@@ -35,7 +35,7 @@ body::before {
 
 @keyframes scrollBackground {
   from { background-position: 0 0; }
-  to { background-position: 0 2000px; }
+  to { background-position: 0 1024px; }
 }
 
 /* Ambient glow spots */

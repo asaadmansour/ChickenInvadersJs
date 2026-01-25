@@ -16,7 +16,7 @@
   inset: 0;
   background: url("../public/assets/images/space_background.png") repeat;
   opacity: 0.3;
-  animation: scrollBackground 25s linear infinite;
+  animation: scrollBackground 13s linear infinite;
 }
 
 .blocker-text {
@@ -60,7 +60,7 @@
 
 @keyframes scrollBackground {
   from { background-position: 0 0; }
-  to { background-position: 0 2000px; }
+  to { background-position: 0 1024px; }
 }
 
 /* Show blocker on tablet and mobile */

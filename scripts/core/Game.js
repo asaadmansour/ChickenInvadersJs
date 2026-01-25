@@ -129,16 +129,16 @@ export class Game {
       const isSmallScreen = window.innerWidth < 1024;
       
       if (isSmallScreen) {
-        // Screen is too small - auto-pause if playing
+       
         if (!this.gameState.isPaused && this.gameState.status === "playing") {
           this.pause();
           sessionStorage.setItem('pausedByScreenSize', 'true');
         }
       } else {
-        // Screen is desktop size - only auto-resume if paused by screen size
+       
         if (sessionStorage.getItem('pausedByScreenSize') === 'true') {
           sessionStorage.removeItem('pausedByScreenSize');
-          // Don't auto-resume - let user manually resume
+          
         }
       }
     };

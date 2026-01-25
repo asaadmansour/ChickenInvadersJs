@@ -1,6 +1,6 @@
 body{
     background: #050111 url("../assets/images/space_background.png") repeat;
-    animation: scrollBackground 25s linear infinite;
+    animation: scrollBackground 13s linear infinite;
     background-size: auto;
     min-height: 100vh;
     overflow-x: hidden;
@@ -153,7 +153,7 @@ h1 {
 /* Background Animation */
 @keyframes scrollBackground {
     from { background-position: 0 0; }
-    to { background-position: 0 2000px; }
+    to { background-position: 0 1024px; }
 }
 
 /* Mobile Responsive Styles */
