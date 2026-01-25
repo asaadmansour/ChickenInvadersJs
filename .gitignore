@@ -1,2 +1,11 @@
 CHIKEN-INVANDERS
 scripts/firebase/firebaseConfig.js
+
+# Environment variables
+.env
+
+# Build output
+dist/
+
+# Dependencies
+node_modules/
