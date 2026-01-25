@@ -32,6 +32,7 @@ export class Game {
     this.setupControls();
     this.bindPauseMenu();
     this.setupVisibilityHandler();
+    this.setupScreenSizeMonitor();
 
     // Initialize the game session correctly
     this.init();
@@ -121,6 +122,32 @@ export class Game {
         }
       }
     });
+  }
+
+  setupScreenSizeMonitor() {
+    const checkScreenSize = () => {
+      const isSmallScreen = window.innerWidth < 1024;
+      
+      if (isSmallScreen) {
+        // Screen is too small - auto-pause if playing
+        if (!this.gameState.isPaused && this.gameState.status === "playing") {
+          this.pause();
+          sessionStorage.setItem('pausedByScreenSize', 'true');
+        }
+      } else {
+        // Screen is desktop size - only auto-resume if paused by screen size
+        if (sessionStorage.getItem('pausedByScreenSize') === 'true') {
+          sessionStorage.removeItem('pausedByScreenSize');
+          // Don't auto-resume - let user manually resume
+        }
+      }
+    };
+    
+    // Listen for window resize events
+    window.addEventListener('resize', checkScreenSize);
+    
+    // Initial check on load
+    checkScreenSize();
   }
 
   gameLoop() {

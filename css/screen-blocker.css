@@ -1,0 +1,71 @@
+/* Desktop-Only Screen Blocker */
+.screen-blocker {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #050111 0%, #1a0535 50%, #2d1b4e 100%);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+  padding: 20px;
+}
+
+.screen-blocker::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("../public/assets/images/space_background.png") repeat;
+  opacity: 0.3;
+  animation: scrollBackground 25s linear infinite;
+}
+
+.blocker-text {
+  position: relative;
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(1.5rem, 8vw, 3rem);
+  font-weight: 900;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  line-height: 1.4;
+  
+  background: linear-gradient(
+    to right,
+    #c388dc,
+    #a7d0ef,
+    #aafbfc,
+    #dbfdf4,
+    #f9fbac
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  
+  filter: drop-shadow(0 0 20px rgba(170, 251, 252, 0.7));
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.7;
+    transform: scale(1);
+    filter: drop-shadow(0 0 15px rgba(170, 251, 252, 0.5));
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 30px rgba(170, 251, 252, 0.9));
+  }
+}
+
+@keyframes scrollBackground {
+  from { background-position: 0 0; }
+  to { background-position: 0 2000px; }
+}
+
+/* Show blocker on tablet and mobile */
+@media (max-width: 1024px) {
+  .screen-blocker {
+    display: flex;
+  }
+}
