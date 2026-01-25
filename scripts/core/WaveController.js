@@ -5,9 +5,13 @@ import { UmbrellaChicken } from "../entities/UmbrellaChicken.js";
 import { CanvasManager } from "./CanvasManager.js";
 import { WAVE_CONFIGS } from "../config/Config.js";
 export class WaveController {
-  constructor() {}
+  constructor() {
+    this.spawnQueue = [];
+  }
 
   createWave(gameState) {
+    this.clearPendingSpawns();
+
     switch (gameState.currentWave) {
       case 1:
         this.createFirstWave(gameState);
@@ -26,6 +30,29 @@ export class WaveController {
     }
   }
 
+  processPendingSpawns(gameState) {
+    if (this.spawnQueue.length === 0) {
+      gameState.hasPendingSpawns = false;
+      return;
+    }
+
+    while (
+      this.spawnQueue.length > 0 &&
+      gameState.gameTime >= this.spawnQueue[0].time
+    ) {
+      const spawn = this.spawnQueue.shift();
+
+      if (spawn.entity instanceof Rock) {
+        gameState.addRock(spawn.entity);
+      } else if (
+        spawn.entity instanceof Chicken ||
+        spawn.entity instanceof UmbrellaChicken
+      ) {
+        gameState.addChicken(spawn.entity);
+      }
+    }
+  }
+
   // Create the first wave of chickens - 2 rows, 13 chickens per row
   createFirstWave(gameState) {
     const config = WAVE_CONFIGS[0];
@@ -36,12 +63,12 @@ export class WaveController {
     const spacingY = canvas.height * config.spacingYRatio;
     const startY = canvas.height * config.startYRatio;
 
-    
     const chickenWidth = canvas.width * 0.06; // ENTITY_RATIOS.CHICKEN_WIDTH
     const oscillationRange = canvas.width * 0.077; // ENTITY_RATIOS.CHICKEN_HORIZONTAL_RANGE
 
     // Total width includes: all spacing + one chicken width + oscillation on both sides
-    const totalWidth = (config.cols - 1) * spacingX + chickenWidth + oscillationRange * 2;
+    const totalWidth =
+      (config.cols - 1) * spacingX + chickenWidth + oscillationRange * 2;
     const startX = (canvas.width - totalWidth) / 2 + oscillationRange;
 
     for (let rows = 0; rows < config.rows; rows++) {
@@ -68,57 +95,51 @@ export class WaveController {
 
       accumulatedTime += nextDelay;
 
-      setTimeout(() => {
-        if (gameState.status !== "playing") return;
+      const scheduleTime = gameState.gameTime + accumulatedTime / 1000;
 
-        const startOffset = 60;
-        let x, y, direction;
+      const startOffset = 60;
+      let x, y, direction;
 
-        // Randomly pick a side
-        const spawnSeed = Math.random();
+      // Randomly pick a side
+      const spawnSeed = Math.random();
 
-        if (spawnSeed < 0.33) {
-          // --- OPTION 1: TOP SPAWN ---
-          const zoneWidth = canvas.width * 0.35; // Use 35% of width on each side
-          const isLeftZone = Math.random() > 0.5;
+      if (spawnSeed < 0.33) {
+        // --- OPTION 1: TOP SPAWN ---
+        const zoneWidth = canvas.width * 0.35; // Use 35% of width on each side
+        const isLeftZone = Math.random() > 0.5;
 
-          if (isLeftZone) {
-            // Top-Left Zone -> Move Right
-            x = Math.random() * zoneWidth;
-            direction = 1;
-          } else {
-            // Top-Right Zone -> Move Left
-            x = canvas.width - Math.random() * zoneWidth;
-            direction = -1;
-          }
-
-          y = -startOffset;
-        } else if (spawnSeed < 0.66) {
-          // --- OPTION 2: LEFT SPAWN ---
-          x = -startOffset;
-          y = Math.random() * (canvas.height * 0.35);
+        if (isLeftZone) {
+          // Top-Left Zone -> Move Right
+          x = Math.random() * zoneWidth;
           direction = 1;
         } else {
-          // --- OPTION 3: RIGHT SPAWN ---
-          x = canvas.width + startOffset;
-          y = Math.random() * (canvas.height * 0.35);
+          // Top-Right Zone -> Move Left
+          x = canvas.width - Math.random() * zoneWidth;
           direction = -1;
         }
 
-        const rock = new Rock(x, y, direction);
+        y = -startOffset;
+      } else if (spawnSeed < 0.66) {
+        // --- OPTION 2: LEFT SPAWN ---
+        x = -startOffset;
+        y = Math.random() * (canvas.height * 0.35);
+        direction = 1;
+      } else {
+        // --- OPTION 3: RIGHT SPAWN ---
+        x = canvas.width + startOffset;
+        y = Math.random() * (canvas.height * 0.35);
+        direction = -1;
+      }
 
-        const speedVar =
-          config.minSpeedFactor +
-          Math.random() * (config.maxSpeedFactor - config.minSpeedFactor);
+      const rock = new Rock(x, y, direction);
 
-        rock.moveSpeed *= speedVar;
+      const speedVar =
+        config.minSpeedFactor +
+        Math.random() * (config.maxSpeedFactor - config.minSpeedFactor);
 
-        gameState.addRock(rock);
+      rock.moveSpeed *= speedVar;
 
-        if (i === config.count - 1) {
-          gameState.hasPendingSpawns = false;
-        }
-      }, accumulatedTime);
+      this.spawnQueue.push({ time: scheduleTime, entity: rock });
     }
   }
 
@@ -136,28 +157,26 @@ export class WaveController {
 
       accumulatedTime += nextDelay;
 
-      setTimeout(() => {
-        if (gameState.status !== "playing") return;
+      const scheduleTime = gameState.gameTime + accumulatedTime / 1000;
 
-        const canvas = CanvasManager.getInstance();
+      const canvas = CanvasManager.getInstance();
 
-        const x = Math.random() * (canvas.width * 0.8) + canvas.width * 0.1;
-        const y = -50;
+      const x = Math.random() * (canvas.width * 0.8) + canvas.width * 0.1;
+      const y = -50;
 
-        const uc = new UmbrellaChicken(x, y);
+      const uc = new UmbrellaChicken(x, y);
 
-        const speedVar =
-          config.minSpeedFactor +
-          Math.random() * (config.maxSpeedFactor - config.minSpeedFactor);
+      const speedVar =
+        config.minSpeedFactor +
+        Math.random() * (config.maxSpeedFactor - config.minSpeedFactor);
 
-        uc.moveSpeed *= speedVar;
+      uc.moveSpeed *= speedVar;
 
-        gameState.addChicken(uc);
-
-        if (i === config.count - 1) {
-          gameState.hasPendingSpawns = false;
-        }
-      }, accumulatedTime);
+      this.spawnQueue.push({ time: scheduleTime, entity: uc });
     }
+  }
+
+  clearPendingSpawns() {
+    this.spawnQueue = [];
   }
 }

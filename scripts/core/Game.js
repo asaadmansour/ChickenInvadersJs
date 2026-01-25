@@ -30,6 +30,7 @@ export class Game {
     this.gameState = GameState.getInstance();
     this.hudManager = new HUDManager();
     this.waveController = new WaveController();
+    this.pauseMenu = document.getElementById("pauseMenu");
 
     this.animationFrameId = null;
 
@@ -45,19 +46,31 @@ export class Game {
   }
 
   setupControls() {
+    let lastToggleTime = 0;
+
     this.inputHandler.bindKey("ArrowLeft", () => {
+      if (this.gameState.isPaused) return;
+
       this.gameState.player.move({ left: true });
     });
     this.inputHandler.bindKey("ArrowRight", () => {
+      if (this.gameState.isPaused) return;
+
       this.gameState.player.move({ right: true });
     });
     this.inputHandler.bindKey("ArrowUp", () => {
+      if (this.gameState.isPaused) return;
+
       this.gameState.player.move({ up: true });
     });
     this.inputHandler.bindKey("ArrowDown", () => {
+      if (this.gameState.isPaused) return;
+
       this.gameState.player.move({ down: true });
     });
     this.inputHandler.bindKey("Space", () => {
+      if (this.gameState.isPaused) return;
+
       if (this.gameState.player.canShoot()) {
         const spawn = this.gameState.player.shoot();
         this.audioManager.play("bullet");
@@ -65,6 +78,10 @@ export class Game {
       }
     });
     this.inputHandler.bindKey("Escape", () => {
+      const now = Date.now();
+      if (now - lastToggleTime < 300) return; // Ignore if pressed too fast
+      lastToggleTime = now;
+
       if (this.gameState.isPaused) this.resume();
       else this.pause();
     });
@@ -72,13 +89,15 @@ export class Game {
 
   // Main game loop called every frame
   gameLoop() {
-    // If the game is paused or over, do not continue the loop
+    this.inputHandler.processInput();
+
     if (this.gameState.isPaused || this.gameState.status === "gameover") {
+      this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
       return;
     }
 
-    this.inputHandler.processInput();
     this.gameState.updateTime();
+    this.waveController.processPendingSpawns(this.gameState);
     this.updateEntitiesPositions();
     this.attemptSpawnEggs();
     this.checkCollisions();
@@ -371,10 +390,7 @@ export class Game {
     if (!this.gameState.isPaused) {
       this.gameState.pause();
       this.audioManager.pauseMusic();
-      if (this.animationFrameId) {
-        cancelAnimationFrame(this.animationFrameId);
-        this.animationFrameId = null;
-      }
+      this.pauseMenu.classList.add("active");
     }
   }
 
@@ -382,7 +398,7 @@ export class Game {
     if (this.gameState.isPaused) {
       this.gameState.resume();
       this.audioManager.resumeMusic();
-      this.animationFrameId = requestAnimationFrame(() => this.gameLoop());
+      this.pauseMenu.classList.remove("active");
     }
   }
 
@@ -391,4 +407,4 @@ export class Game {
   }
 }
 
-new Game();
+window.game = new Game();

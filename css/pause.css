@@ -1,90 +1,93 @@
 .pause-menu-container {
-    position: fixed;           /* ← very important */
-    inset: 0;                  /* = top:0 right:0 bottom:0 left:0 */
-    background-color: rgba(0, 0, 0, 0.45);  /* black with ~65% opacity */
-    -webkit-backdrop-filter: blur(4px);     /* for Safari */
-    /* backdrop-filter: blur(4px);             optional: nice blur (frosted glass) */
+  position: fixed; /* ← very important */
+  inset: 0; /* = top:0 right:0 bottom:0 left:0 */
+  background-color: rgba(0, 0, 0, 0.45); /* black with ~65% opacity */
+  -webkit-backdrop-filter: blur(4px); /* for Safari */
+  /* backdrop-filter: blur(4px);             optional: nice blur (frosted glass) */
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-    z-index: 1000;
+  z-index: 1000;
 
-    /* Initially hidden  control with JS */
-    opacity: 1;
-    pointer-events: none;
-    visibility: visible;
-    transition: opacity 0.4s ease;
+  /* Initially hidden  control with JS */
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity 0.4s ease;
 }
 
 /* When shown (you'll toggle this class with JavaScript) */
-/* .pause-menu-container.active {
-    opacity: 1;
-    pointer-events: all;
-    visibility: visible;
-} */
-
-.flex-container{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 8vh;
-
+.pause-menu-container.active {
+  opacity: 1;
+  pointer-events: all;
+  visibility: visible;
 }
 
-.flex-container p{
-    color: transparent;
-    
-    font-size: 64px;
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 8vh;
+}
 
-    /* The Gradient */
-    background: linear-gradient(
-        to right,
-        #c388dc,
-        #cf12c5,
-        #aafbfc,
-        #a4f6fa,
-        #dbfdf4,
-        #f9fbac
-);
+.flex-container p {
+  color: transparent;
 
-    -webkit-background-clip: text;
-    background-clip: text;
+  font-size: 64px;
 
-    -webkit-text-stroke: 3px transparent;
-    
-    filter: drop-shadow(0 0 15px rgba(167, 208, 239, 0.7));
-    animation: glow 2s ease-in-out infinite alternate;
+  /* The Gradient */
+  background: linear-gradient(
+    to right,
+    #c388dc,
+    #cf12c5,
+    #aafbfc,
+    #a4f6fa,
+    #dbfdf4,
+    #f9fbac
+  );
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  -webkit-text-stroke: 3px transparent;
+
+  filter: drop-shadow(0 0 15px rgba(167, 208, 239, 0.7));
+  animation: glow 2s ease-in-out infinite alternate;
 }
 
 @keyframes glow {
-    from { filter: drop-shadow(0 0 10px rgba(239, 167, 235, 0.5)); }
-    to { filter: drop-shadow(0 0 20px rgba(30, 75, 109, 0.9)); }
+  from {
+    filter: drop-shadow(0 0 10px rgba(239, 167, 235, 0.5));
+  }
+  to {
+    filter: drop-shadow(0 0 20px rgba(30, 75, 109, 0.9));
+  }
 }
 
-.buttons{
-    display: flex;
-    flex-direction: column;
-    gap: 4vh;
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 4vh;
 }
 
-button{
-    border-radius: 64px;
-    border: 2px solid rgba(195, 136, 220, 0.25);
-    box-shadow:
-        0 0 15px 2px rgba(195, 136, 220, 0.35),
-        0 0 30px 5px rgba(207, 18, 197, 0.25),
-        inset 0 0 12px rgba(170, 251, 252, 0.15);
-    transition: all 0.5s ease-in-out;
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
+button {
+  border-radius: 64px;
+  border: 2px solid rgba(195, 136, 220, 0.25);
+  box-shadow:
+    0 0 15px 2px rgba(195, 136, 220, 0.35),
+    0 0 30px 5px rgba(207, 18, 197, 0.25),
+    inset 0 0 12px rgba(170, 251, 252, 0.15);
+  transition: all 0.5s ease-in-out;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
 }
 
-button:hover{
-    box-shadow:
+button:hover {
+  box-shadow:
     0 0 25px 8px rgba(195, 136, 220, 0.55),
     0 0 45px 12px rgba(207, 18, 197, 0.4),
     0 0 70px 20px rgba(170, 251, 252, 0.25),
