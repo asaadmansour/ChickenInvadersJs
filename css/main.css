@@ -278,3 +278,120 @@ footer {
     transform: translate(-120vw, -120vh) rotate(-45deg);
   }
 }
+
+/* Mobile Responsive Styles */
+@media (max-width: 1024px) {
+  h1 {
+    font-size: 80px;
+  }
+  
+  button.play {
+    width: 35vw;
+    height: 12vh;
+    font-size: 40px;
+  }
+  
+  button.instructions {
+    width: 25vw;
+    height: 9vh;
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .top-nav {
+    padding: 15px 25px;
+  }
+  
+  .nav-icon {
+    width: 70px;
+  }
+  
+  .nav-icon#settings {
+    width: 100px;
+  }
+  
+  h1 {
+    font-size: 60px;
+    letter-spacing: 3px;
+  }
+  
+  button.play {
+    width: 50vw;
+    height: 10vh;
+    font-size: 32px;
+  }
+  
+  button.instructions {
+    width: 40vw;
+    height: 8vh;
+    font-size: 16px;
+  }
+  
+  footer {
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px 20px;
+  }
+  
+  .others {
+    gap: 20px;
+    font-size: 14px;
+  }
+  
+  .socials img {
+    width: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .top-nav {
+    padding: 10px 15px;
+  }
+  
+  .nav-icon {
+    width: 50px;
+  }
+  
+  .nav-icon#settings {
+    width: 70px;
+  }
+  
+  .game-container {
+    gap: 5vh;
+  }
+  
+  h1 {
+    font-size: 40px;
+    letter-spacing: 2px;
+  }
+  
+  button.play {
+    width: 70vw;
+    min-width: 200px;
+    height: 60px;
+    font-size: 24px;
+  }
+  
+  button.instructions {
+    width: 60vw;
+    min-width: 180px;
+    height: 50px;
+    font-size: 14px;
+  }
+  
+  .others {
+    flex-direction: column;
+    gap: 10px;
+    font-size: 12px;
+  }
+  
+  .socials .icons {
+    gap: 15px;
+  }
+  
+  .socials img {
+    width: 35px;
+  }
+}
+
