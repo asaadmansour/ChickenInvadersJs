@@ -22,6 +22,11 @@ export class GameState {
     this.isCountdownActive = false;
     this.hasPendingSpawns = false;
 
+    this.spawner = {
+      nextSpawnTime: 0,
+      spawnsRemaining: 0,
+    };
+
     this.bullets = [];
     this.eggs = [];
     this.chickens = [];
@@ -100,6 +105,7 @@ export class GameState {
     this.status = "playing";
     this.gameTime = 0;
     this.isPaused = false;
+    this.spawner = { nextSpawnTime: 0, spawnsRemaining: 0 };
     this.bullets = [];
     this.eggs = [];
     this.chickens = [];

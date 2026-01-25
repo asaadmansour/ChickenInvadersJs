@@ -128,6 +128,7 @@ export class Game {
     this.inputHandler.processInput();
     this.gameState.updateTime();
     this.updateEntitiesPositions();
+    this.waveController.updateSpawner(this.gameState); // Handle timed spawns
     this.attemptSpawnEggs();
     this.checkCollisions();
     this.removeInactiveEntities();
