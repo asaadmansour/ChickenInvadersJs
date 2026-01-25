@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 import { resolve } from 'path';
 
 export default defineConfig({
-  // Base path for the app (root for most deployments)
+  // Base path for the app 
   base: './',
   
   // Build output directory
@@ -10,8 +10,6 @@ export default defineConfig({
     outDir: 'dist',
     // Generate sourcemaps for debugging
     sourcemap: true,
-    // Ensure assets use relative paths
-    assetsDir: 'assets',
     // Multi-page app configuration
     rollupOptions: {
       input: {
