@@ -39,7 +39,7 @@ if (gameStatus === "win") {
 
 if (submitBtn) {
     submitBtn.addEventListener("click", async () => {
-        const name = nameInput.value.trim();
+        const name = nameInput.value.trim().toUpperCase();
         if (!name) {
             nameInput.classList.add("input-error");
             setTimeout(() => nameInput.classList.remove("input-error"), 400);
