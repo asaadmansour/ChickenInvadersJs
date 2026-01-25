@@ -1,8 +1,5 @@
 import { Chicken } from "../entities/Chicken.js";
 import { Rock } from "../entities/Rock.js";
-import { Bullet } from "../entities/Bullet.js";
-import { Egg } from "../entities/Egg.js";
-import { FriedChicken } from "../entities/FriedChicken.js";
 import { UmbrellaChicken } from "../entities/UmbrellaChicken.js";
 import { CanvasManager } from "./CanvasManager.js";
 import { WAVE_CONFIGS } from "../config/Config.js";
@@ -11,70 +8,6 @@ export class WaveController {
   constructor() {}
 
   createWave(gameState) {
-    const savedChickensStr = localStorage.getItem("savedChickens");
-    const savedRocksStr = localStorage.getItem("savedRocks");
-    const savedBulletsStr = localStorage.getItem("savedBullets");
-    const savedEggsStr = localStorage.getItem("savedEggs");
-    const savedFriedChickensStr = localStorage.getItem("savedFriedChickens");
-
-    let savedChickens = null;
-    let savedRocks = null;
-    let savedBullets = null;
-    let savedEggs = null;
-    let savedFriedChickens = null;
-    try {
-      if (savedChickensStr) {
-        const parsed = JSON.parse(savedChickensStr);
-        if (Array.isArray(parsed) && parsed.length > 0) savedChickens = parsed;
-      }
-      if (savedRocksStr) {
-        const parsed = JSON.parse(savedRocksStr);
-        if (Array.isArray(parsed) && parsed.length > 0) savedRocks = parsed;
-      }
-      if (savedBulletsStr) {
-        const parsed = JSON.parse(savedBulletsStr);
-        if (Array.isArray(parsed) && parsed.length > 0) savedBullets = parsed;
-      }
-      if (savedEggsStr) {
-        const parsed = JSON.parse(savedEggsStr);
-        if (Array.isArray(parsed) && parsed.length > 0) savedEggs = parsed;
-      }
-      if (savedFriedChickensStr) {
-        const parsed = JSON.parse(savedFriedChickensStr);
-        if (Array.isArray(parsed) && parsed.length > 0)
-          savedFriedChickens = parsed;
-      }
-    } catch (e) {
-      console.error("Error parsing saved state:", e);
-    }
-
-    // Check if we are resuming from a pause
-    if (
-      savedChickens ||
-      savedRocks ||
-      savedBullets ||
-      savedEggs ||
-      savedFriedChickens
-    ) {
-      this.rehydrateGameState(
-        gameState,
-        savedChickens,
-        savedRocks,
-        savedBullets,
-        savedEggs,
-        savedFriedChickens,
-      );
-
-      // Special logic to resume spawners for Wave 2 and Wave 3
-      if (gameState.currentWave === 2) {
-        this.createSecondWave(gameState, true);
-      } else if (gameState.currentWave === 3) {
-        this.createThirdWave(gameState, true);
-      }
-      return;
-    }
-
-    // Normal progression if no saved data exists
     switch (gameState.currentWave) {
       case 1:
         this.createFirstWave(gameState);
@@ -89,66 +22,6 @@ export class WaveController {
         console.warn(`No configuration for wave ${gameState.currentWave}.`);
         break;
     }
-  }
-
-  rehydrateGameState(
-    gameState,
-    chickensData,
-    rocksData,
-    bulletsData,
-    eggsData,
-    friedChickensData,
-  ) {
-    if (chickensData && Array.isArray(chickensData)) {
-      chickensData.forEach((data) => {
-        let chicken;
-        if (data.type === "UmbrellaChicken") {
-          chicken = new UmbrellaChicken(data.x, data.y);
-        } else {
-          chicken = new Chicken(data.x, data.y);
-        }
-        chicken.lives = data.lives;
-        gameState.addChicken(chicken);
-      });
-      localStorage.removeItem("savedChickens");
-    }
-
-    if (rocksData && Array.isArray(rocksData)) {
-      rocksData.forEach((data) => {
-        const rock = new Rock(data.x, data.y, data.direction);
-        gameState.addRock(rock);
-      });
-      localStorage.removeItem("savedRocks");
-    }
-
-    if (bulletsData && Array.isArray(bulletsData)) {
-      bulletsData.forEach((data) => {
-        const bullet = new Bullet(data.x, data.y);
-        gameState.addBullet(bullet);
-      });
-
-      localStorage.removeItem("savedBullets");
-    }
-
-    if (eggsData && Array.isArray(eggsData)) {
-      eggsData.forEach((data) => {
-        const egg = new Egg(data.x, data.y);
-        gameState.addEgg(egg);
-      });
-
-      localStorage.removeItem("savedEggs");
-    }
-
-    if (friedChickensData && Array.isArray(friedChickensData)) {
-      friedChickensData.forEach((data) => {
-        const friedChicken = new FriedChicken(data.x, data.y, data.score);
-        gameState.addFriedChicken(friedChicken);
-      });
-
-      localStorage.removeItem("savedFriedChickens");
-    }
-
-    gameState.hasPendingSpawns = false;
   }
 
   createFirstWave(gameState) {

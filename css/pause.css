@@ -36,6 +36,7 @@
 .flex-container p {
     color: transparent;
     font-size: 64px;
+    font-family: 'Orbitron', sans-serif;
     background: linear-gradient(
         to right,
         #c388dc,
@@ -63,7 +64,7 @@
     gap: 4vh;
 }
 
-button {
+.pause-menu-container button {
     border-radius: 64px;
     border: 2px solid rgba(195, 136, 220, 0.25);
     box-shadow:
@@ -74,15 +75,16 @@ button {
     position: relative;
     overflow: hidden;
     z-index: 1;
-    /* Removed fixed sizes to keep your original feel */
     padding: 15px 40px; 
     cursor: pointer;
-    background: transparent; /* Keep it transparent if you didn't specify color */
+    background: rgba(0, 0, 0, 0.8);
     color: white; 
     font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
 }
 
-button:hover {
+.pause-menu-container button:hover {
     box-shadow:
         0 0 25px 8px rgba(195, 136, 220, 0.55),
         0 0 45px 12px rgba(207, 18, 197, 0.4),

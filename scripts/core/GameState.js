@@ -8,21 +8,13 @@ export class GameState {
       throw new Error("Use GameState.getInstance() instead of new");
     }
 
-    // 1. Restore Basic Values or set defaults
-    this.score = parseInt(localStorage.getItem("savedScore")) || 0;
-    this.lives = parseInt(localStorage.getItem("savedLives")) || 3;
-    this.currentWave = parseInt(localStorage.getItem("savedWave")) || 1;
+    // Initialize game state
+    this.score = 0;
+    this.lives = 3;
+    this.currentWave = 1;
 
-    // 2. Initialize Player
+    // Initialize Player
     this.player = new Player();
-
-    // 3. Restore Player Position (Prevents resetting to center)
-    const savedX = localStorage.getItem("playerX");
-    const savedY = localStorage.getItem("playerY");
-    if (savedX !== null && savedY !== null) {
-      this.player.x = parseFloat(savedX);
-      this.player.y = parseFloat(savedY);
-    }
 
     this.status = "playing";
     this.gameTime = 0;
@@ -100,13 +92,6 @@ export class GameState {
   }
 
   reset() {
-    // Clear storage
-    localStorage.removeItem("savedScore");
-    localStorage.removeItem("savedLives");
-    localStorage.removeItem("savedWave");
-    localStorage.removeItem("savedChickens");
-    localStorage.removeItem("savedRocks");
-
     // Reset local variables
     this.score = 0;
     this.lives = 3;

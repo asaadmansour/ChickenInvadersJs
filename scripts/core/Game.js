@@ -13,7 +13,7 @@ import { HUDManager } from "./HUDManager.js";
 import { FriedChicken } from "../entities/FriedChicken.js";
 import { DeathEffect } from "../entities/DeathEffect.js";
 import { CountdownManager } from "./CountdownManager.js";
-import "../utils/AudioHelper.js";
+import { addButtonHoverSound } from "../utils/AudioHelper.js";
 
 export class Game {
   constructor() {
@@ -79,11 +79,35 @@ export class Game {
     this.inputHandler.bindKey("KeyP", () => this.pause());
   }
 
+  // This is for binding the pause menu buttons to game actions
   bindPauseMenu() {
     const pauseTrigger = document.getElementById("pause-trigger");
     if (pauseTrigger) {
       pauseTrigger.addEventListener("click", () => this.pause());
     }
+
+    const resumeBtn = document.getElementById("resumeBtn");
+    const restartBtn = document.getElementById("restartBtn");
+    const exitBtn = document.getElementById("exitBtn");
+
+    if (resumeBtn) {
+      resumeBtn.addEventListener("click", () => this.resume());
+    }
+    if (restartBtn) {
+      restartBtn.addEventListener("click", () => this.restart());
+    }
+    if (exitBtn) {
+      exitBtn.addEventListener("click", () => this.exitToMenu());
+    }
+
+    addButtonHoverSound();
+
+    document.addEventListener("keydown", (event) => {
+      if (event.code === "Escape" && this.gameState.isPaused) {
+        event.preventDefault();
+        this.resume();
+      }
+    });
   }
 
   gameLoop() {
@@ -280,77 +304,40 @@ export class Game {
   }
 
   pause() {
-    const keysToRemove = [
-      "savedScore",
-      "savedLives",
-      "savedWave",
-      "savedChickens",
-      "savedRocks",
-      "savedBullets",
-      "savedEggs",
-      "savedFriedChickens",
-      "playerX",
-      "playerY",
-    ];
-    keysToRemove.forEach((key) => localStorage.removeItem(key));
+    if (this.gameState.isPaused) return;
 
-    // 1. Save Core State
-    localStorage.setItem("savedScore", this.gameState.score);
-    localStorage.setItem("savedLives", this.gameState.lives);
-    localStorage.setItem("savedWave", this.gameState.currentWave);
-
-    // 2. Save Player Position
-    localStorage.setItem("playerX", this.gameState.player.x);
-    localStorage.setItem("playerY", this.gameState.player.y);
-
-    // 3. Save Chickens (Wave 1 & 3)
-    const chickensData = this.gameState.chickens.map((c) => ({
-      x: c.x,
-      y: c.y,
-      lives: c.lives,
-      type: c.constructor.name,
-    }));
-    localStorage.setItem("savedChickens", JSON.stringify(chickensData));
-
-    // 4. Save Rocks (Wave 2)
-    const rocksData = this.gameState.rocks.map((r) => ({
-      x: r.x,
-      y: r.y,
-      direction: r.direction,
-    }));
-    localStorage.setItem("savedRocks", JSON.stringify(rocksData));
-
-    // 5. Save Bullets
-    const bulletData = this.gameState.bullets.map((b) => ({
-      x: b.x,
-      y: b.y,
-    }));
-    localStorage.setItem("savedBullets", JSON.stringify(bulletData));
-
-    // 6. Save Eggs
-    const eggData = this.gameState.eggs.map((e) => ({
-      x: e.x,
-      y: e.y,
-    }));
-    localStorage.setItem("savedEggs", JSON.stringify(eggData));
-
-    // 6. Save Fried Chickens
-    const friedChickenData = this.gameState.friedChickens.map((f) => ({
-      x: f.x,
-      y: f.y,
-      score: f.score,
-    }));
-    localStorage.setItem(
-      "savedFriedChickens",
-      JSON.stringify(friedChickenData),
-    );
-
-    // 7. Execution Clean up
     this.gameState.pause();
     this.audioManager.pauseMusic();
     if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
 
-    window.location.href = "../pages/pausemenu.html";
+    // Show pause overlay
+    const pauseOverlay = document.getElementById("pauseMenuContainer");
+    if (pauseOverlay) {
+      pauseOverlay.classList.add("active");
+    }
+  }
+
+  resume() {
+    if (!this.gameState.isPaused) return;
+
+    // Hide pause overlay
+    const pauseOverlay = document.getElementById("pauseMenuContainer");
+    if (pauseOverlay) {
+      pauseOverlay.classList.remove("active");
+    }
+
+    this.gameState.resume();
+    this.audioManager.resumeMusic();
+
+    this.gameLoop();
+  }
+
+  restart() {
+    window.location.reload();
+  }
+
+  exitToMenu() {
+    window.location.href = "../index.html";
   }
 
   start() {
@@ -368,20 +355,6 @@ export class Game {
     await countdown.start();
     this.gameLoop();
   }
-}
-
-// Clear local storage only if the page was reloaded
-if (performance.getEntriesByType("navigation")[0]?.type === "reload") {
-  // Preserve mute settings
-  const musicMuted = localStorage.getItem("musicMuted");
-  const soundEffectsMuted = localStorage.getItem("soundEffectsMuted");
-
-  window.localStorage.clear();
-
-  // Restore mute settings
-  if (musicMuted !== null) localStorage.setItem("musicMuted", musicMuted);
-  if (soundEffectsMuted !== null)
-    localStorage.setItem("soundEffectsMuted", soundEffectsMuted);
 }
 
 document.addEventListener("DOMContentLoaded", () => {

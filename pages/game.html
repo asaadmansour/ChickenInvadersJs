@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chicken Invaders</title>
   <link rel="stylesheet" href="../css/game.css" />
+  <link rel="stylesheet" href="../css/pause.css" />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
@@ -19,6 +20,18 @@
       <div class="countdown-container">
         <div id="countdownNumber" class="countdown-number">3</div>
         <div id="countdownText" class="countdown-text"></div>
+      </div>
+    </div>
+
+    <!-- Pause Menu Overlay -->
+    <div id="pauseMenuContainer" class="pause-menu-container">
+      <div class="flex-container">
+        <p>PAUSED</p>
+        <div class="buttons">
+          <button type="button" id="resumeBtn">RESUME</button>
+          <button type="button" id="restartBtn">RESTART</button>
+          <button type="button" id="exitBtn">EXIT TO MENU</button>
+        </div>
       </div>
     </div>
 
