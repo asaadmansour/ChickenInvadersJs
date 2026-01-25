@@ -75,7 +75,13 @@ export class Game {
         this.gameState.addBullet(new Bullet(spawn.x, spawn.y));
       }
     });
-    this.inputHandler.bindKey("Escape", () => this.pause());
+    this.inputHandler.bindKey("Escape", () => {
+      if (this.gameState.isPaused) {
+        this.resume();
+      } else {
+        this.pause();
+      }
+    });
     this.inputHandler.bindKey("KeyP", () => this.pause());
   }
 
@@ -101,13 +107,6 @@ export class Game {
     }
 
     addButtonHoverSound();
-
-    document.addEventListener("keydown", (event) => {
-      if (event.code === "Escape" && this.gameState.isPaused) {
-        event.preventDefault();
-        this.resume();
-      }
-    });
   }
 
   gameLoop() {

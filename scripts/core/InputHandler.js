@@ -11,7 +11,12 @@ export class InputHandler {
     window.addEventListener("keydown", (event) => {
       if (this.bindings[event.code]) {
         event.preventDefault();
-        this.bindings[event.code].pressed = true;
+        // Execute Escape key immediately (for pause/resume)
+        if (event.code === "Escape" || event.code === "KeyP") {
+          this.bindings[event.code].action();
+        } else {
+          this.bindings[event.code].pressed = true;
+        }
       }
       // Allowed "M" and "S" keys for mute controls (handled by AudioHelper)
       if (event.code === "KeyM" || event.code === "KeyS") {
