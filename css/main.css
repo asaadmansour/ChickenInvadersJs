@@ -16,9 +16,9 @@ body {
   font-family: "Orbitron", sans-serif;
   min-height: 100vh;
   background: #050111 url("../assets/images/space_background.png") repeat;
-  animation: scrollBackground 25s linear infinite;
+  animation: scrollBackground 13s linear infinite;
   background-size: auto;
-  
+
   display: grid;
   grid-template-rows: auto 1fr auto; /* Nav, Game Menu, Footer */
   align-items: center;
@@ -56,7 +56,7 @@ body::after {
   filter: drop-shadow(0 0 10px rgba(167, 208, 239, 0.5));
 }
 
-.nav-icon#settings{
+.nav-icon#settings {
   width: 150px;
 }
 
@@ -190,7 +190,6 @@ footer {
   gap: 20px;
 }
 
-
 .socials img {
   width: 50px;
   height: auto;
@@ -202,18 +201,24 @@ footer {
   transform: translateY(-5px);
 }
 
-
 /* 7. Animations */
 @keyframes glow {
-  from { filter: drop-shadow(0 0 10px rgba(167, 208, 239, 0.5)); }
-  to { filter: drop-shadow(0 0 20px rgba(167, 208, 239, 0.9)); }
+  from {
+    filter: drop-shadow(0 0 10px rgba(167, 208, 239, 0.5));
+  }
+  to {
+    filter: drop-shadow(0 0 20px rgba(167, 208, 239, 0.9));
+  }
 }
 
 @keyframes scrollBackground {
-  from { background-position: 0 0; }
-  to { background-position: 0 2000px; }
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 0 1024px;
+  }
 }
-
 
 /* Ship Animation Styling */
 .transition-ship {
