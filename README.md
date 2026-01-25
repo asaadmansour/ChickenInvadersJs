@@ -1,5 +1,7 @@
 # 🐔 Chicken Invaders JS
 
+> **🎮 [PLAY NOW](https://chickeninvadersjs.netlify.app)** | A modern web-based remake of the classic Chicken Invaders game
+
 A modern web-based remake of the classic Chicken Invaders game, built with vanilla JavaScript and HTML5 Canvas. Battle waves of intergalactic chickens hell-bent on revenge against humanity for our oppression of Earth chickens!
 
 ## 🎮 About The Game

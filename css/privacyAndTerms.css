@@ -155,3 +155,56 @@ h1 {
     from { background-position: 0 0; }
     to { background-position: 0 2000px; }
 }
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+    .container {
+        padding: 2rem 1rem;
+    }
+    
+    h1 {
+        font-size: 2rem;
+        letter-spacing: 2px;
+    }
+    
+    .instructions-card {
+        padding: 1.5rem;
+    }
+    
+    .instruction-section h2 {
+        font-size: 1.3rem;
+    }
+    
+    .p-text {
+        font-size: 1rem;
+    }
+    
+    .buttons {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .nav-btn {
+        width: 100%;
+        padding: 15px 25px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.5rem;
+    }
+    
+    .instructions-card {
+        padding: 1rem;
+    }
+    
+    .instruction-section h2 {
+        font-size: 1.1rem;
+    }
+    
+    .p-text {
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+}
