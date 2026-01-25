@@ -6,13 +6,13 @@ export class HUDManager {
   }
 
   printLives(gameState) {
-    this.heartsDiv.innerHTML = "";
+    this.heartsDiv.innerHTML = "Lives: ";
     for (let i = 0; i < gameState.lives; i++) {
       this.heartsDiv.innerHTML += `<img class="heart" src="${LIVE.IMAGE}" alt="life">`;
     }
   }
 
   updateScore(gameState) {
-    this.scoreSpan.innerHTML = gameState.score;
+    this.scoreSpan.innerHTML = `Score: ${gameState.score}`;
   }
 }

@@ -1,9 +1,12 @@
 import { Chicken } from "../entities/Chicken.js";
 import { Rock } from "../entities/Rock.js";
+import { Bullet } from "../entities/Bullet.js";
+import { Egg } from "../entities/Egg.js";
+import { FriedChicken } from "../entities/FriedChicken.js";
 import { UmbrellaChicken } from "../entities/UmbrellaChicken.js";
-
 import { CanvasManager } from "./CanvasManager.js";
 import { WAVE_CONFIGS } from "../config/Config.js";
+
 export class WaveController {
   constructor() {
     this.spawnQueue = [];
@@ -23,9 +26,7 @@ export class WaveController {
         this.createThirdWave(gameState);
         break;
       default:
-        console.warn(
-          `No configuration for wave ${gameState.currentWave}. No entities created.`,
-        );
+        console.warn(`No configuration for wave ${gameState.currentWave}.`);
         break;
     }
   }
@@ -80,19 +81,28 @@ export class WaveController {
     }
   }
 
-  // Create the second wave of rocks
-  createSecondWave(gameState) {
+  createSecondWave(gameState, isResuming = false) {
     const config = WAVE_CONFIGS[1];
     const canvas = CanvasManager.getInstance();
+
+    // Calculate how many rocks are left to spawn
+    const currentOnScreen = gameState.rocks.length;
+    const totalToSpawn = isResuming
+      ? Math.max(0, config.count - currentOnScreen)
+      : config.count;
+
+    if (totalToSpawn <= 0) {
+      gameState.hasPendingSpawns = false;
+      return;
+    }
 
     let accumulatedTime = 0;
     gameState.hasPendingSpawns = true;
 
-    for (let i = 0; i < config.count; i++) {
+    for (let i = 0; i < totalToSpawn; i++) {
       const nextDelay =
         config.minSpawnInterval +
         Math.random() * (config.maxSpawnInterval - config.minSpawnInterval);
-
       accumulatedTime += nextDelay;
 
       const scheduleTime = gameState.gameTime + accumulatedTime / 1000;
@@ -143,18 +153,28 @@ export class WaveController {
     }
   }
 
-  // Create the third wave of umbrella chickens - spawn at random intervals from the top
-  createThirdWave(gameState) {
+  createThirdWave(gameState, isResuming = false) {
     const config = WAVE_CONFIGS[2];
+    const canvas = CanvasManager.getInstance();
+
+    // Calculate how many umbrella chickens are left to spawn
+    const currentOnScreen = gameState.chickens.length;
+    const totalToSpawn = isResuming
+      ? Math.max(0, config.count - currentOnScreen)
+      : config.count;
+
+    if (totalToSpawn <= 0) {
+      gameState.hasPendingSpawns = false;
+      return;
+    }
 
     let accumulatedTime = 0;
     gameState.hasPendingSpawns = true;
 
-    for (let i = 0; i < config.count; i++) {
+    for (let i = 0; i < totalToSpawn; i++) {
       const nextDelay =
         config.minSpawnInterval +
         Math.random() * (config.maxSpawnInterval - config.minSpawnInterval);
-
       accumulatedTime += nextDelay;
 
       const scheduleTime = gameState.gameTime + accumulatedTime / 1000;

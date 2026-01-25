@@ -1,35 +1,76 @@
+/* 1. Global Reset & Base Styles */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   scroll-behavior: smooth;
 }
+
 a {
-  text-decoration: none;
+  all: unset;
+  cursor: pointer;
 }
+
+/* 2. Grid Layout Structure */
 body {
   font-family: "Orbitron", sans-serif;
   min-height: 100vh;
   background: #050111 url("../assets/images/space_background.png") repeat;
   animation: scrollBackground 25s linear infinite;
   background-size: auto;
-  display: flex;
-  justify-content: center;
+  
+  display: grid;
+  grid-template-rows: auto 1fr auto; /* Nav, Game Menu, Footer */
   align-items: center;
+  overflow: hidden;
+  position: relative;
 }
+
+/* Background Overlay */
 body::after {
-  position: absolute;
+  position: fixed;
   inset: 0;
   content: "";
-  background-color: rgb(0, 0, 0, 0.45);
+  background-color: rgba(0, 0, 0, 0.45);
   z-index: 1;
+  pointer-events: none;
 }
+
+/* 3. Navigation (Top Row) */
+.top-nav {
+  grid-row: 1;
+  display: flex;
+  justify-content: space-between; /* Pushes icons to far left and right */
+  align-items: center;
+  padding: 20px 40px;
+  width: 100%;
+  z-index: 22;
+}
+
+.nav-icon {
+  width: 100px;
+  height: auto;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  filter: drop-shadow(0 0 10px rgba(167, 208, 239, 0.5));
+}
+
+.nav-icon#settings{
+  width: 150px;
+}
+
+.nav-icon:hover {
+  transform: scale(1.1);
+}
+
+/* 4. Game Container (Middle Row) */
 .game-container {
+  grid-row: 2;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10vh;
+  gap: 8vh;
   z-index: 22;
 }
 
@@ -50,8 +91,6 @@ h1 {
 
 .gradient-text {
   color: transparent;
-
-  /* The Gradient */
   background: linear-gradient(
     to right,
     #c388dc,
@@ -61,32 +100,14 @@ h1 {
     #dbfdf4,
     #f9fbac
   );
-
   -webkit-background-clip: text;
   background-clip: text;
-
   -webkit-text-stroke: 3px transparent;
-
   filter: drop-shadow(0 0 15px rgba(167, 208, 239, 0.7));
   animation: glow 2s ease-in-out infinite alternate;
 }
 
-@keyframes glow {
-  from {
-    filter: drop-shadow(0 0 10px rgba(167, 208, 239, 0.5));
-  }
-  to {
-    filter: drop-shadow(0 0 20px rgba(167, 208, 239, 0.9));
-  }
-}
-@keyframes scrollBackground {
-  from {
-    background-position: 0 0;
-  }
-  to {
-    background-position: 0 2000px;
-  }
-}
+/* 5. Buttons */
 .buttons {
   display: flex;
   flex-direction: column;
@@ -98,7 +119,7 @@ h1 {
   display: inline-block;
   background: linear-gradient(to right, #99ddcc 0%, #bfff00 100%);
   padding: 4px;
-  border-radius: 68px; /* Slightly larger than button radius */
+  border-radius: 68px;
   transition: all 0.3s ease-in-out;
 }
 
@@ -106,7 +127,6 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
-
   background: linear-gradient(to right, #99ddcc 0%, #bfff00 100%);
   color: #35013f;
   font-family: "Orbitron", sans-serif;
@@ -136,16 +156,17 @@ button.instructions {
   filter: drop-shadow(0 0 15px rgba(191, 255, 0, 0.6));
 }
 
+/* 6. Footer (Bottom Row) */
 footer {
-  position: absolute;
-  bottom: 20px;
+  grid-row: 3;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 0 40px;
+  padding: 20px 40px;
   color: #ffffff;
+  z-index: 22;
 }
 
 .others {
@@ -157,6 +178,97 @@ footer {
   text-align: center;
   cursor: pointer;
 }
+
 .others p:hover {
   text-decoration: underline;
+}
+
+.socials .icons {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+
+.socials img {
+  width: 50px;
+  height: auto;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.socials img:hover {
+  transform: translateY(-5px);
+}
+
+
+/* 7. Animations */
+@keyframes glow {
+  from { filter: drop-shadow(0 0 10px rgba(167, 208, 239, 0.5)); }
+  to { filter: drop-shadow(0 0 20px rgba(167, 208, 239, 0.9)); }
+}
+
+@keyframes scrollBackground {
+  from { background-position: 0 0; }
+  to { background-position: 0 2000px; }
+}
+
+
+/* Ship Animation Styling */
+.transition-ship {
+  position: fixed;
+  bottom: -100px;
+  right: -100px;
+  width: 80px;
+  z-index: 9999;
+  pointer-events: none;
+  filter: drop-shadow(0 0 15px var(--color-teal, #aafbfc));
+}
+
+/* The Trail/Cloud Trailblazer */
+.ship-trail {
+  position: fixed;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(45deg, #c388dc, #a7d0ef, #f9fbac);
+  border-radius: 50%;
+  filter: blur(40px);
+  z-index: 9998;
+  opacity: 0.8;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+/* The Final Wipe to cover the screen */
+.screen-wipe {
+  position: fixed;
+  inset: 0;
+  background: #050111;
+  z-index: 10000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease-in;
+}
+
+.screen-wipe.active {
+  opacity: 1;
+}
+
+/* Keyframes for the wavy flight path */
+@keyframes flyPath {
+  0% {
+    transform: translate(0, 0) rotate(-45deg);
+  }
+  25% {
+    transform: translate(-25vw, -25vh) rotate(-35deg);
+  }
+  50% {
+    transform: translate(-50vw, -40vh) rotate(-55deg);
+  }
+  75% {
+    transform: translate(-75vw, -65vh) rotate(-40deg);
+  }
+  100% {
+    transform: translate(-120vw, -120vh) rotate(-45deg);
+  }
 }

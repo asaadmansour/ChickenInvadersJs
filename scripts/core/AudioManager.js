@@ -5,6 +5,12 @@ import {
   CHICKEN_DEATH_AUDIO,
   FRIED_CHICKEN_CRUNCH_AUDIO,
 } from "../config/Constants.js";
+import {
+  isMusicMuted,
+  isSoundEffectsMuted,
+  registerGameAudio,
+} from "../utils/AudioHelper.js";
+
 export class AudioManager {
   static #instance = null;
   constructor() {
@@ -21,6 +27,7 @@ export class AudioManager {
     this.sounds.game.loop = true;
     this.sounds.game.volume = 0.7;
     this.sounds.game.preload = "auto";
+    registerGameAudio(this.sounds.game);
     this.sounds.game.play();
   }
 
@@ -32,6 +39,7 @@ export class AudioManager {
 
   // For sound effects (bullet, hit) - restarts each time
   play(soundName) {
+    if (isSoundEffectsMuted()) return;
     const audio = this.sounds[soundName];
     if (audio) {
       audio.currentTime = 0;

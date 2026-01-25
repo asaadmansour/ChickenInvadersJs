@@ -12,14 +12,8 @@ import { WAVE_CONFIGS } from "../config/Config.js";
 import { HUDManager } from "./HUDManager.js";
 import { FriedChicken } from "../entities/FriedChicken.js";
 import { DeathEffect } from "../entities/DeathEffect.js";
-
-// Firebase imports
-import { db } from "../firebase/firebaseConfig.js";
-import {
-  collection,
-  addDoc,
-  serverTimestamp,
-} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+import { CountdownManager } from "./CountdownManager.js";
+import "../utils/AudioHelper.js";
 
 export class Game {
   constructor() {
@@ -116,40 +110,30 @@ export class Game {
     );
     this.gameState.rocks.forEach((rock) => rock.move());
     this.gameState.friedChickens.forEach((fc) => fc.move());
+    this.gameState.deathEffects.forEach((de) => de.update?.());
   }
 
   attemptSpawnEggs() {
+    const currentWaveIdx = this.gameState.currentWave - 1;
+    const dropRate = WAVE_CONFIGS[currentWaveIdx]?.eggsDropRate || 0.001;
+
     this.gameState.chickens.forEach((chicken) => {
-      if (
-        chicken.isActive &&
-        Math.random() <
-          WAVE_CONFIGS[this.gameState.currentWave - 1].eggsDropRate
-      ) {
+      if (chicken.isActive && Math.random() < dropRate) {
         const spawn = chicken.drop();
         this.gameState.addEgg(new Egg(spawn.x, spawn.y));
       }
     });
   }
 
-  // Check all collisions between entities and handle their effects
   checkCollisions() {
     this.checkBulletsVsChickens();
-
     this.checkPlayerVsFriedChickens();
-
     if (this.gameState.player.isInvulnerable()) return;
-
     this.checkPlayerVsChickens();
-
     this.checkPlayerVsEggs();
-
     this.checkPlayerVsRocks();
   }
 
-  /**
-   * Check collisions between bullets and chickens
-   * On collision, deactivate both and spawn fried chicken
-   */
   checkBulletsVsChickens() {
     this.collisionDetector.checkGroupVsGroup(
       this.gameState.bullets,
@@ -160,9 +144,7 @@ export class Game {
         if (chicken.getLives() <= 0) {
           chicken.deactivate();
           const spawn = chicken.drop();
-          import("./AudioManager.js").then(({ AudioManager }) => {
-            AudioManager.getInstance().play("chickenDeath");
-          });
+          this.audioManager.play("chickenDeath");
           this.gameState.addDeathEffect(
             new DeathEffect(
               chicken.x,
@@ -179,10 +161,6 @@ export class Game {
     );
   }
 
-  /**
-   * Check collisions between player and fried chickens
-   * On collision, deactivate fried chicken and increase score
-   */
   checkPlayerVsFriedChickens() {
     this.collisionDetector.checkGroupVsItem(
       this.gameState.friedChickens,
@@ -196,25 +174,19 @@ export class Game {
     );
   }
 
-  /**
-   * Check collisions between player and chickens
-   * On collision, deactivate chicken and handle player hit
-   */
   checkPlayerVsChickens() {
     this.collisionDetector.checkGroupVsItem(
       this.gameState.chickens,
       this.gameState.player,
       (chicken) => {
-        chicken.deactivate();
-        this.handlePlayerHit();
+        if (chicken.isActive) {
+          chicken.deactivate();
+          this.handlePlayerHit();
+        }
       },
     );
   }
 
-  /**
-   * Check collisions between player and eggs
-   * On collision, deactivate egg and handle player hit
-   */
   checkPlayerVsEggs() {
     this.collisionDetector.checkGroupVsItem(
       this.gameState.eggs,
@@ -226,10 +198,6 @@ export class Game {
     );
   }
 
-  /**
-   * Check collisions between player and rocks
-   * On collision, deactivate rock and handle player hit
-   */
   checkPlayerVsRocks() {
     this.collisionDetector.checkGroupVsItem(
       this.gameState.rocks,
@@ -241,33 +209,19 @@ export class Game {
     );
   }
 
-  // Remove inactive entities caused by collisions or moving out of bounds
   removeInactiveEntities() {
-    this.gameState.bullets = this.gameState.bullets.filter(
-      (bullet) => bullet.isActive,
-    );
-
-    this.gameState.eggs = this.gameState.eggs.filter((egg) => egg.isActive);
-
-    this.gameState.chickens = this.gameState.chickens.filter(
-      (chicken) => chicken.isActive,
-    );
-
-    this.gameState.rocks = this.gameState.rocks.filter((rock) => rock.isActive);
-
+    this.gameState.bullets = this.gameState.bullets.filter((b) => b.isActive);
+    this.gameState.eggs = this.gameState.eggs.filter((e) => e.isActive);
+    this.gameState.chickens = this.gameState.chickens.filter((c) => c.isActive);
+    this.gameState.rocks = this.gameState.rocks.filter((r) => r.isActive);
     this.gameState.friedChickens = this.gameState.friedChickens.filter(
-      (fc) => fc.isActive,
+      (f) => f.isActive,
     );
-
     this.gameState.deathEffects = this.gameState.deathEffects.filter(
-      (effect) => effect.isActive,
+      (d) => d.isActive,
     );
   }
 
-  /**
-   * Check if the current wave is completed and advance to the next wave if so,
-   * if all waves are completed, handle game completion.
-   */
   checkAndAdvanceWave() {
     let waveCompleted = false;
     switch (this.gameState.currentWave) {
@@ -308,82 +262,31 @@ export class Game {
     }
   }
 
-  // handle player hit logic: play sound, lose life, check for game over
   handlePlayerHit() {
     const wasHit = this.gameState.player.hit();
-
     if (!wasHit) return;
-
     this.audioManager.play("hit");
     const isDead = this.gameState.loseLife();
     this.hudManager.printLives(this.gameState);
-
     if (isDead) this.handleGameOver();
   }
 
-  // --- Firebase Saving Logic ---
-  async saveScoreToFirebase() {
-    let playerName = prompt(
-      "Game Over! Enter your name for the leaderboard:",
-      "Hero",
-    );
-
-    // Handle cancel or empty name
-    if (playerName === null || playerName.trim() === "") {
-      playerName = "Anonymous";
-    }
-
-    try {
-      await addDoc(collection(db, "scores"), {
-        name: playerName,
-        score: this.gameState.score,
-        createdAt: serverTimestamp(),
-      });
-      console.log("Score saved to Firebase successfully!");
-    } catch (error) {
-      console.error("Firebase Error:", error);
-    }
-  }
-
-  /**
-   * TEAM NOTE: Updated handleGameOver to prevent the loop from re-triggering the prompt.
-   * 1. Check if already in gameover state.
-   * 2. Cancel the animation frame immediately.
-   */
   async handleGameOver() {
-    // PREVENT LOOP: If we are already handling gameover, exit.
     if (this.gameState.status === "gameover") return;
-
     this.gameState.status = "gameover";
-
     localStorage.setItem("finalScore", this.gameState.score);
-
-    // STOP ENGINE: Stop the game loop before showing the prompt
-    if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId);
-      this.animationFrameId = null;
-    }
-
-    // Redirect to the Game Over screen
+    localStorage.setItem("gameStatus", "lose");
+    if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
     window.location.href = "../pages/gameover.html";
   }
 
-  // Same logic as handleGameOver but for successful completion
   async handleGameComplete() {
     if (this.gameState.status === "complete") return;
-
     this.gameState.status = "complete";
-
-    if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId);
-      this.animationFrameId = null;
-    }
-
-    // // Interaction with user and database
-    await this.saveScoreToFirebase();
-
-    // Redirect to the Scoreboard screen
-    window.location.href = "./scoreboard.html";
+    localStorage.setItem("finalScore", this.gameState.score);
+    localStorage.setItem("gameStatus", "win");
+    if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId);
+    window.location.href = "../pages/gameover.html";
   }
 
   pause() {
@@ -391,6 +294,7 @@ export class Game {
       this.gameState.pause();
       this.audioManager.pauseMusic();
       this.pauseMenu.classList.add("active");
+      console.log("Game paused");
     }
   }
 
@@ -399,10 +303,23 @@ export class Game {
       this.gameState.resume();
       this.audioManager.resumeMusic();
       this.pauseMenu.classList.remove("active");
+      console.log("Game resumed");
     }
   }
 
   start() {
+    this.showCountdown();
+  }
+
+  async showCountdown() {
+    const countdown = new CountdownManager({
+      countStart: 3,
+      countDuration: 1000,
+      finalMessage: "DEFEND EARTH!",
+      finalMessageDuration: 1000,
+    });
+
+    await countdown.start();
     this.gameLoop();
   }
 }

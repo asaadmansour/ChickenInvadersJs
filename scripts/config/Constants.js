@@ -90,5 +90,5 @@ export const FRIED_CHICKEN_CRUNCH_AUDIO = {
 };
 
 export const LIVE = {
-  IMAGE: "/assets/images/lives.webp",
+  IMAGE: "/assets/images/plane-life.png",
 };

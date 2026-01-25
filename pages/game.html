@@ -5,29 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chicken Invaders</title>
     <link rel="stylesheet" href="../css/game.css" />
-    <link rel="stylesheet" href="../css/pause.css" />
     <link rel="stylesheet" href="../css/main.css" />
-
+    <link rel="stylesheet" href="../css/pause.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap"
       rel="stylesheet"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap"
+      rel="stylesheet"
+    />
   </head>
+
   <body>
     <div class="game-wrapper">
       <canvas id="gameCanvas"></canvas>
 
-      <!-- HUD overlay -->
-      <div class="hud">
-        <div class="hearts">
-          <!-- <img class="heart" src="../assets/images/lives.webp" alt="">
-          <img class="heart" src="../assets/images/lives.webp" alt="">
-          <img class="heart" src="../assets/images/lives.webp" alt=""> -->
-        </div>
-        <span id="score">0</span>
-      </div>
-
-      <!-- Pause Menu -->
+      <!-- Pause Menu Overlay-->
       <div id="pauseMenu" class="pause-menu-container">
         <div class="flex-container">
           <p>PAUSED</p>
@@ -51,6 +47,24 @@
             </button>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Countdown Overlay -->
+    <div id="countdownOverlay" class="countdown-overlay">
+      <div class="countdown-container">
+        <div id="countdownNumber" class="countdown-number">3</div>
+        <div id="countdownText" class="countdown-text"></div>
+      </div>
+    </div>
+
+    <!-- HUD overlay -->
+    <div class="hud">
+      <div class="hearts-container">
+        <div class="hearts">Lives:</div>
+      </div>
+      <div class="scores">
+        <span id="score">Score: 0</span>
       </div>
     </div>
 

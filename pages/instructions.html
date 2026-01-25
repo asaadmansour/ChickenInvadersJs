@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../css/instructions.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
-<body style="background: var(--gradient-bg); min-height: 100vh; overflow-x: hidden;">
+<body>
     
     <div class="ambient-glow ambient-glow-1"></div>
     <div class="ambient-glow ambient-glow-2"></div>
@@ -22,15 +22,19 @@
                 <h2>SYSTEM CONTROLS</h2>
                 <ul class="control-list">
                     <li class="control-item">
-                        <span class="key-cap">ARROWS</span> 
+                        <span class="key-cap">ARROWS</span>
                         <p>Navigate Starship</p>
                     </li>
                     <li class="control-item">
-                        <span class="key-cap">SPACE</span> 
+                        <span class="key-cap">SPACE</span>
                         <p>Fire Laser Cannon</p>
                     </li>
                     <li class="control-item">
-                        <span class="key-cap">ESC</span> 
+                        <span class="key-cap">M</span>
+                        <p>MUTE / UNMUTE</p>
+                    </li>
+                    <li class="control-item">
+                        <span class="key-cap">ESC / P</span>
                         <p>Pause Tactical HUD</p>
                     </li>
                 </ul>
@@ -47,29 +51,13 @@
         </div>
 
         <div class="buttons">
-            <button id="backToMenuBtn" class="nav-btn">ABORT TO MENU</button>
-            <button id="startNowBtn" class="nav-btn">ENGAGE GAME</button>
+            <button type="button" id="backToMenuBtn" class="nav-btn">BACK TO MENU</button>
+            <button type="button" id="startNowBtn" class="nav-btn">START GAME</button>
         </div>
     </div>
 
-    <script type="module">
-        // Functional logic for the buttons
-        const backBtn = document.getElementById("backToMenuBtn");
-        const startBtn = document.getElementById("startNowBtn");
+    <script type="module" src="../scripts/pages/instructions.js">
 
-        if (backBtn) {
-            backBtn.addEventListener("click", () => {
-                // Exit pages folder to root index
-                window.location.href = "../index.html";
-            });
-        }
-
-        if (startBtn) {
-            startBtn.addEventListener("click", () => {
-                // Stay in pages folder to open game
-                window.location.href = "./game.html";
-            });
-        }
     </script>
 </body>
 </html>

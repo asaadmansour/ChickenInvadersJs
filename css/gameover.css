@@ -1,47 +1,139 @@
-.gameover-container{
+/* 1. Main Container Logic */
+.gameover-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 8vh;
+    gap: 5vh; /* Unified to responsive gap */
+    width: 90%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
 }
-.scores-container{
+
+.scores-container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    gap: 2vh;
+    gap: 20px;
+    width: 100%;
 }
 
-.final-score-text{
-    font-size: 48px;
-}
-
-.high-score-text{
-    font-size: 32px;
-}
-
-h1{
+/* 2. Typography */
+h1 {
     color: transparent;
-    
-    /* The Gradient */
-    background: linear-gradient(
-        to right,
-        #c388dc,
-        #cf12c5,
-        #aafbfc,
-        #a4f6fa,
-        #dbfdf4,
-        #f9fbac
-);
-
+    background: linear-gradient(to right, #c388dc, #cf12c5, #aafbfc, #a4f6fa, #dbfdf4, #f9fbac);
     -webkit-background-clip: text;
     background-clip: text;
-
     -webkit-text-stroke: 3px transparent;
-    
     filter: drop-shadow(0 0 15px rgba(167, 208, 239, 0.7));
     animation: glow 2s ease-in-out infinite alternate;
+    
+    font-size: clamp(3rem, 12vw, 5.5rem); 
+    white-space: nowrap; 
+
+    text-align: center;
+    margin-top: 2vh;
+    cursor: pointer;
+}
+.final-score-text {
+    font-size: clamp(1.2rem, 5vw, 2.5rem); /* Responsive size */
+    color: #FFFFFF;
+}
+
+p {
+    color: #FFFFFF;
+    cursor: pointer;
+}
+
+/* 3. Input Styling */
+#playerName {
+    background: rgba(53, 1, 63, 0.4);
+    border: 2px solid rgba(170, 251, 252, 0.4);
+    border-radius: 12px;
+    padding: 12px;
+    color: #FFFFFF;
+    font-family: 'Orbitron', sans-serif;
+    text-align: center;
+    width: 100%;
+    max-width: 350px;
+    outline: none;
+    transition: all 0.4s ease-in-out;
+    box-shadow: inset 0 0 10px rgba(170, 251, 252, 0.1);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    box-sizing: border-box;
+}
+
+#playerName:focus {
+    border-color: #cf12c5;
+    background: rgba(53, 1, 63, 0.6);
+    box-shadow: 0 0 20px rgba(207, 18, 197, 0.4), inset 0 0 15px rgba(207, 18, 197, 0.2);
+}
+
+#playerName::placeholder {
+    color: rgba(170, 251, 252, 0.5);
+    font-size: 0.9rem;
+}
+
+/* 4. Button Logic */
+.buttons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+}
+
+button {
+    border-radius: 12px;
+    width: 180px;
+    max-width: 90vw;
+    height: auto;
+    padding: 15px 10px;
+    font-size: 1rem;
+    color: #35013F;
+    cursor: pointer;
+    font-family: 'Orbitron', sans-serif;
+    font-weight: bold;
+    transition: all 0.5s ease-in-out;
+}
+
+.retry-button, .back-to-menu-button {
+    border: 2px solid rgba(195, 136, 220, 0.25);
+    box-shadow: 0 0 15px 2px rgba(195, 136, 220, 0.35), 0 0 30px 5px rgba(207, 18, 197, 0.25), inset 0 0 12px rgba(170, 251, 252, 0.15);
+}
+
+.retry-button:hover, .back-to-menu-button:hover {
+    box-shadow: 0 0 25px 8px rgba(195, 136, 220, 0.55), 0 0 45px 12px rgba(207, 18, 197, 0.4), 0 0 70px 20px rgba(170, 251, 252, 0.25), inset 0 0 18px rgba(219, 253, 244, 0.3);
+}
+
+.submit-score {
+    background: linear-gradient(to right, #aafbfc, #dbfdf4);
+    border: 2px solid rgba(195, 136, 220, 0.25);
+    box-shadow: 0 0 15px rgba(170, 251, 252, 0.3);
+    margin-bottom: 20px;
+}
+
+.submit-score:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 25px rgba(170, 251, 252, 0.7);
+}
+
+/* 5. Special States & Animations */
+.victory-text {
+    background: linear-gradient(to right, #ffd700, #fff5b1, #ffffff, #ffd700) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.7)) !important;
+    animation: victoryGlow 1.5s ease-in-out infinite alternate, victoryPulse 2s ease-in-out infinite !important;
+}
+
+.input-error {
+    border-color: #ff4b2b !important;
+    box-shadow: 0 0 20px rgba(255, 75, 43, 0.6) !important;
+    animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
 }
 
 @keyframes glow {
@@ -49,48 +141,33 @@ h1{
     to { filter: drop-shadow(0 0 20px rgba(30, 75, 109, 0.9)); }
 }
 
-h1:hover{
-    cursor: pointer;
+@keyframes victoryGlow {
+    from { filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5)); }
+    to { filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.9)); }
 }
 
-p{
-    color: #FFFFFF;
-    cursor: pointer;
+@keyframes victoryPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
 }
 
-.buttons{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
+@keyframes shake {
+    10%, 90% { transform: translate3d(-1px, 0, 0); }
+    20%, 80% { transform: translate3d(2px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+    40%, 60% { transform: translate3d(4px, 0, 0); }
 }
 
-button{
-    border-radius: 12px;
-    width: 20vw;
-    height: 10vh;
-    font-size: 24px;
-    color: #35013F;
-}
-
-.retry-button,
-.back-to-menu-button {
-
-    border: 2px solid rgba(195, 136, 220, 0.25);
-    box-shadow:
-        0 0 15px 2px rgba(195, 136, 220, 0.35),
-        0 0 30px 5px rgba(207, 18, 197, 0.25),
-        inset 0 0 12px rgba(170, 251, 252, 0.15);
-    transition: all 0.5s ease-in-out;
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
-}
-
-.retry-button:hover,
-.back-to-menu-button:hover {
-    box-shadow:
-        0 0 25px 8px rgba(195, 136, 220, 0.55),
-        0 0 45px 12px rgba(207, 18, 197, 0.4),
-        0 0 70px 20px rgba(170, 251, 252, 0.25),
-        inset 0 0 18px rgba(219, 253, 244, 0.3);
+/* 6. Mobile Overrides */
+@media (max-width: 480px) {
+    .buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    .gameover-container {
+        gap: 3vh;
+    }
+    #playerName {
+        font-size: 0.9rem;
+    }
 }

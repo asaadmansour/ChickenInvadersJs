@@ -1,24 +1,23 @@
 .pause-menu-container {
-  position: fixed; /* ← very important */
-  inset: 0; /* = top:0 right:0 bottom:0 left:0 */
-  background-color: rgba(0, 0, 0, 0.45); /* black with ~65% opacity */
-  -webkit-backdrop-filter: blur(4px); /* for Safari */
-  /* backdrop-filter: blur(4px);             optional: nice blur (frosted glass) */
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
 
   display: flex;
   justify-content: center;
   align-items: center;
-
   z-index: 1000;
 
-  /* Initially hidden  control with JS */
+  /* Initially hidden - corrected these 3 lines */
   opacity: 0;
   pointer-events: none;
   visibility: hidden;
   transition: opacity 0.4s ease;
 }
 
-/* When shown (you'll toggle this class with JavaScript) */
+/* This class is added by JS to show the menu */
 .pause-menu-container.active {
   opacity: 1;
   pointer-events: all;
@@ -35,10 +34,7 @@
 
 .flex-container p {
   color: transparent;
-
   font-size: 64px;
-
-  /* The Gradient */
   background: linear-gradient(
     to right,
     #c388dc,
@@ -48,12 +44,9 @@
     #dbfdf4,
     #f9fbac
   );
-
   -webkit-background-clip: text;
   background-clip: text;
-
   -webkit-text-stroke: 3px transparent;
-
   filter: drop-shadow(0 0 15px rgba(167, 208, 239, 0.7));
   animation: glow 2s ease-in-out infinite alternate;
 }
@@ -84,6 +77,12 @@ button {
   position: relative;
   overflow: hidden;
   z-index: 1;
+  /* Removed fixed sizes to keep your original feel */
+  padding: 15px 40px;
+  cursor: pointer;
+  background: transparent; /* Keep it transparent if you didn't specify color */
+  color: white;
+  font-family: "Orbitron", sans-serif;
 }
 
 button:hover {
