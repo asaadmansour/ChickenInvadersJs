@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,11 +8,13 @@
     <link rel="stylesheet" href="../css/variables.css">
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/instructions.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Press+Start+2P&display=swap"
+        rel="stylesheet">
     <link rel="icon" href="../assets/images/chicken.png" type="image/png" size="16x16">
 </head>
+
 <body>
-    
+
     <div class="ambient-glow ambient-glow-1"></div>
     <div class="ambient-glow ambient-glow-2"></div>
 
@@ -32,11 +35,15 @@
                     </li>
                     <li class="control-item">
                         <span class="key-cap">M</span>
-                        <p>MUTE / UNMUTE</p>
+                        <p>Mute / Unmute Music</p>
+                    </li>
+                    <li class="control-item">
+                        <span class="key-cap">S</span>
+                        <p>Mute / Unmute Sound Effects</p>
                     </li>
                     <li class="control-item">
                         <span class="key-cap">ESC / P</span>
-                        <p>Pause Tactical HUD</p>
+                        <p>Pause Game</p>
                     </li>
                 </ul>
             </div>
@@ -44,9 +51,36 @@
             <div class="instruction-section">
                 <h2>TACTICAL MISSION</h2>
                 <p class="mission-text">
-                    The intergalactic chicken fleet is invading! Destroy chickens to earn points. 
-                    Keep an eye out for <strong>Fried Chicken</strong> drops—collect them to boost your score 
+                    The intergalactic chicken fleet is invading! Destroy chickens to earn points.
+                    Keep an eye out for <strong>Fried Chicken</strong> drops—collect them to boost your score
                     and climb the high-score leaderboard.
+                </p>
+            </div>
+
+            <div class="instruction-section">
+                <h2>ENEMY INTEL</h2>
+                <ul class="control-list">
+                    <li class="control-item">
+                        <span class="key-cap">CHICKEN</span>
+                        <p>Standard enemy — 100 points</p>
+                    </li>
+                    <li class="control-item">
+                        <span class="key-cap">UMBRELLA</span>
+                        <p>Parachuting chicken — 150 points (2 hits)</p>
+                    </li>
+                    <li class="control-item">
+                        <span class="key-cap">BOSS</span>
+                        <p>Giant chicken boss — 5000 points (15 hits)</p>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="instruction-section">
+                <h2>HAZARDS</h2>
+                <p class="mission-text">
+                    <strong>Eggs</strong> — Dropped by chickens, avoid them or lose a life!<br>
+                    <strong>Rocks</strong> — Flying debris that damages your ship on contact.<br>
+                    You have <strong>3 lives</strong> — after getting hit, you'll be invulnerable briefly.
                 </p>
             </div>
         </div>
@@ -61,4 +95,5 @@
 
     </script>
 </body>
+
 </html>

@@ -33,4 +33,22 @@
     --gradient-back-btn: linear-gradient(90deg, #2dd4bf 0%, #84cc16 100%);
     --gradient-newgame-btn: linear-gradient(90deg, #06b6d4 0%, #84cc16 100%);
   }
-  
+
+/* Hidden Scrollbar - Allow scrolling without visible scrollbar */
+html {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+html::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+body {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}

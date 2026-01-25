@@ -22,7 +22,8 @@ body {
   display: grid;
   grid-template-rows: auto 1fr auto; /* Nav, Game Menu, Footer */
   align-items: center;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   position: relative;
 }
 

@@ -1,58 +1,56 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>High Scores</title>
-    <link rel="stylesheet" href="../css/scoreboard.css" />
-    <link rel="stylesheet" href="../css/variables.css" />
-    <link rel="stylesheet" href="../css/main.css" />
-    <link rel="icon" href="../assets/images/chicken.png" type="image/png" size="16x16">
-  </head>
-  <body>
-    <!-- Ambient Glow Lights -->
-    <div class="ambient-glow ambient-glow-1"></div>
-    <div class="ambient-glow ambient-glow-2"></div>
-    <div class="ambient-glow ambient-glow-3"></div>
 
-    <!-- Shooting Stars -->
-    <div class="shooting-star shooting-star-1"></div>
-    <div class="shooting-star shooting-star-2"></div>
-    <div class="shooting-star shooting-star-3"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>High Scores</title>
+  <link rel="stylesheet" href="../css/variables.css" />
+  <link rel="stylesheet" href="../css/scoreboard.css" />
+  <link rel="icon" href="../assets/images/chicken.png" type="image/png" size="16x16">
+</head>
 
-    <div class="container">
-      <h1>HIGH SCORES</h1>
+<body>
+  <!-- Ambient Glow Lights -->
+  <div class="ambient-glow ambient-glow-1"></div>
+  <div class="ambient-glow ambient-glow-2"></div>
+  <div class="ambient-glow ambient-glow-3"></div>
 
-      <!-- New Pilot Section -->
-      <div class="new-pilot">
-        <h2>Search Pilot</h2>
-        <div class="input-group">
-          <input
-            type="text"
-            id="playerNameInput"
-            placeholder="Enter Player Name..."
-          />
-          <button id="submitBtn">SEARCH</button>
-        </div>
-      </div>
+  <!-- Shooting Stars -->
+  <div class="shooting-star shooting-star-1"></div>
+  <div class="shooting-star shooting-star-2"></div>
+  <div class="shooting-star shooting-star-3"></div>
 
-      <!-- Score Table -->
-      <div class="table-header">
-        <span>RANK</span>
-        <span>PILOT</span>
-        <span>SCORE</span>
-      </div>
-      <ul id="scoreList"></ul>
+  <div class="container">
+    <h1>HIGH SCORES</h1>
 
-      <p id="emptyState" class="hidden">No scores yet. Play the game!</p>
-
-      <!-- Buttons -->
-      <div class="buttons">
-        <button id="backBtn">BACK TO HOME</button>
-        <button id="newGameBtn">START NEW GAME</button>
+    <!-- New Pilot Section -->
+    <div class="new-pilot">
+      <h2>Search Pilot</h2>
+      <div class="input-group">
+        <input type="text" id="playerNameInput" placeholder="Enter Player Name..." />
+        <button id="submitBtn">SEARCH</button>
       </div>
     </div>
 
-    <script type="module" src="../scripts/pages/scoreboard.js"></script>
-  </body>
+    <!-- Score Table -->
+    <div class="table-header">
+      <span>RANK</span>
+      <span>PILOT</span>
+      <span>SCORE</span>
+    </div>
+    <ul id="scoreList"></ul>
+
+    <p id="emptyState" class="hidden">No scores yet. Play the game!</p>
+
+    <!-- Buttons -->
+    <div class="buttons">
+      <button id="backBtn">BACK TO HOME</button>
+      <button id="newGameBtn">START NEW GAME</button>
+    </div>
+  </div>
+
+  <script type="module" src="../scripts/pages/scoreboard.js"></script>
+</body>
+
 </html>
