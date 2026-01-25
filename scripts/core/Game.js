@@ -150,7 +150,11 @@ export class Game {
 
   attemptSpawnEggs() {
     this.gameState.chickens.forEach((chicken) => {
-      if (chicken.isActive && Math.random() < chicken.dropRate) {
+      if (
+        chicken.isActive &&
+        chicken.lives > 0 &&
+        Math.random() < chicken.dropRate
+      ) {
         const spawnPositions = chicken.drop();
         spawnPositions.forEach((pos) =>
           this.gameState.addEgg(new Egg(pos.x, pos.y)),
