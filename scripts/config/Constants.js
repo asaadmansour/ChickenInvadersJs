@@ -1,8 +1,8 @@
 export const ENTITY_RATIOS = {
   CHICKEN_WIDTH: 0.06,
   CHICKEN_HEIGHT: 0.09,
-  CHICKEN_HORIZONTAL_RANGE: 0.077,  
-  CHICKEN_VERTICAL_RANGE: 0.02,    
+  CHICKEN_HORIZONTAL_RANGE: 0.077,
+  CHICKEN_VERTICAL_RANGE: 0.02,
   PLAYER_WIDTH: 0.06,
   PLAYER_HEIGHT: 0.06,
   EGG_WIDTH: 0.012,
@@ -99,6 +99,10 @@ export const CHICKEN_DEATH_AUDIO = {
 
 export const FRIED_CHICKEN_CRUNCH_AUDIO = {
   AUDIO: "/assets/audio/Crunch.mp3",
+};
+
+export const BOSS_SUSPENSE_AUDIO = {
+  AUDIO: "/assets/audio/Suspense Sting.mp3",
 };
 
 export const LIVE = {

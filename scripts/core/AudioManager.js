@@ -4,6 +4,7 @@ import {
   PLAYER,
   CHICKEN_DEATH_AUDIO,
   FRIED_CHICKEN_CRUNCH_AUDIO,
+  BOSS_SUSPENSE_AUDIO,
 } from "../config/Constants.js";
 import {
   isMusicMuted,
@@ -23,6 +24,7 @@ export class AudioManager {
       hit: new Audio(PLAYER.AUDIO),
       chickenDeath: new Audio(CHICKEN_DEATH_AUDIO.AUDIO),
       crunch: new Audio(FRIED_CHICKEN_CRUNCH_AUDIO.AUDIO),
+      suspenseSting: new Audio(BOSS_SUSPENSE_AUDIO.AUDIO),
     };
     this.sounds.game.loop = true;
     this.sounds.game.volume = 0.7;

@@ -5,6 +5,7 @@ import { CanvasManager } from "./CanvasManager.js";
 import { WAVE_CONFIGS } from "../config/Config.js";
 import { BossChicken } from "../entities/BossChicken.js";
 import { ENTITY_RATIOS } from "../config/Constants.js";
+import { AudioManager } from "./AudioManager.js";
 
 export class WaveController {
   constructor() {}
@@ -161,6 +162,9 @@ export class WaveController {
     const canvas = CanvasManager.getInstance();
     const bossWidth = canvas.width * ENTITY_RATIOS.BOSS_CHICKEN_WIDTH;
     const centeredX = (canvas.width - bossWidth) / 2;
+
+    const audioManager = AudioManager.getInstance();
+    audioManager.play("suspenseSting");
 
     gameState.hasPendingSpawns = true;
 
