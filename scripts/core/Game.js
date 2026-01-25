@@ -30,6 +30,7 @@ export class Game {
 
     this.setupControls();
     this.bindPauseMenu();
+    this.setupVisibilityHandler();
 
     // Initialize the game session correctly
     this.init();
@@ -108,6 +109,17 @@ export class Game {
     }
 
     addButtonHoverSound();
+  }
+
+  setupVisibilityHandler() {
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        // Automatically pause when user leaves the page
+        if (!this.gameState.isPaused && this.gameState.status === "playing") {
+          this.pause();
+        }
+      }
+    });
   }
 
   gameLoop() {
@@ -379,6 +391,12 @@ export class Game {
 
     await countdown.start();
     this.gameState.isCountdownActive = false;
+
+    if (document.hidden && !this.gameState.isPaused) {
+      this.pause();
+      return;
+    }
+
     this.gameLoop();
   }
 }
