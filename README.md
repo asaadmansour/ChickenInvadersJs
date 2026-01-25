@@ -479,9 +479,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ```
 ChickenInvadersJs/
-├── assets/                 # Game assets
-│   ├── audio/             # Sound effects and music
-│   └── images/            # Sprites and backgrounds
+├── public/                 # Static assets (copied to dist/ by Vite)
+│   └── assets/
+│       ├── audio/         # Sound effects and music
+│       └── images/        # Sprites and backgrounds
 ├── css/                   # Stylesheets
 ├── pages/                 # HTML pages
 │   ├── game.html         # Main game page
