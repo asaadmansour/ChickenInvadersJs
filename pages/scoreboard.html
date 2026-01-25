@@ -33,15 +33,22 @@
       </div>
     </div>
 
+    <!-- Loader -->
+    <div id="loader" class="loader-container">
+      <div class="loader-spinner"></div>
+      <p class="loader-text">Loading Scores...</p>
+    </div>
+
     <!-- Score Table -->
-    <div class="table-header">
+    <div id="scoreTable" class="table-header hidden">
       <span>RANK</span>
       <span>PILOT</span>
       <span>SCORE</span>
     </div>
-    <ul id="scoreList"></ul>
+    <ul id="scoreList" class="hidden"></ul>
 
-    <p id="emptyState" class="hidden">No scores yet. Play the game!</p>
+    <p id="emptyState" class="hidden">No scores yet! Play the game to set a new high score.</p>
+    <p id="noSearchResults" class="hidden">No pilots found matching your search. Try a different name.</p>
 
     <!-- Buttons -->
     <div class="buttons">
