@@ -3,6 +3,8 @@ import { Rock } from "../entities/Rock.js";
 import { UmbrellaChicken } from "../entities/UmbrellaChicken.js";
 import { CanvasManager } from "./CanvasManager.js";
 import { WAVE_CONFIGS } from "../config/Config.js";
+import { BossChicken } from "../entities/BossChicken.js";
+import { ENTITY_RATIOS } from "../config/Constants.js";
 
 export class WaveController {
   constructor() {}
@@ -17,6 +19,9 @@ export class WaveController {
         break;
       case 3:
         this.createThirdWave(gameState);
+        break;
+      case 4:
+        this.createFourthWave(gameState);
         break;
       default:
         console.warn(`No configuration for wave ${gameState.currentWave}.`);
@@ -151,5 +156,18 @@ export class WaveController {
         if (i === totalToSpawn - 1) gameState.hasPendingSpawns = false;
       }, accumulatedTime);
     }
+  }
+  createFourthWave(gameState) {
+    const canvas = CanvasManager.getInstance();
+    const bossWidth = canvas.width * ENTITY_RATIOS.BOSS_CHICKEN_WIDTH;
+    const centeredX = (canvas.width - bossWidth) / 2;
+
+    gameState.hasPendingSpawns = true;
+
+    setTimeout(() => {
+      if (gameState.isPaused || gameState.status !== "playing") return;
+      gameState.addChicken(new BossChicken(centeredX, 100));
+      gameState.hasPendingSpawns = false;
+    }, 2000); // 2 second delay
   }
 }

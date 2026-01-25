@@ -3,13 +3,14 @@ import { GameObject } from "./GameObject.js";
 import { ENTITY_RATIOS } from "../config/Constants.js";
 import { CHICKEN } from "../config/Constants.js";
 export class Chicken extends GameObject {
-  constructor(x, y, lives = 1) {
-    super(x, y, CHICKEN.MOVE_SPEED);
+  constructor(x, y, speed = CHICKEN.MOVE_SPEED, lives = 1) {
+    super(x, y, speed);
     const canvas = CanvasManager.getInstance();
     this.lives = lives;
     this.startXRatio  = x / canvas.width;
     this.startYRatio = y / canvas.height;
     this.score = CHICKEN.SCORE; //chicken points
+    this.dropRate = CHICKEN.DROP_RATE;
 
     // Animation properties
     this.currentFrame = 0;
@@ -63,9 +64,9 @@ export class Chicken extends GameObject {
   /**
    * Get current lives of the chicken
    */
-  getLives() {
-    return this.lives;
-  }
+  // getLives() {
+  //   return this.lives;
+  // }
 
   /**
    * Decrease chicken lives by 1
@@ -75,11 +76,11 @@ export class Chicken extends GameObject {
   }
 
   /**
-   *  Drop Egg - returns the spawn position for the egg
-   * @returns {Object} - Spawn position {x, y}
+   *  Drop Egg - returns the spawn position(s) for eggs
+   * @returns {Array} - Array of spawn positions [{x, y}, ...]
    */
   drop() {
-    return { x: this.x + this.width / 2, y: this.y + this.height };
+    return [{ x: this.x + this.width / 2, y: this.y + this.height }];
   }
 
   /**
