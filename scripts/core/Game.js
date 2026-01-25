@@ -328,7 +328,7 @@ export class Game {
   }
 
   pause() {
-    if (this.gameState.isPaused) return;
+    if (this.gameState.isPaused || this.gameState.isCountdownActive) return;
 
     this.gameState.pause();
     this.audioManager.pauseMusic();
@@ -369,6 +369,7 @@ export class Game {
   }
 
   async showCountdown() {
+    this.gameState.isCountdownActive = true;
     const countdown = new CountdownManager({
       countStart: 3,
       countDuration: 1000,
@@ -377,6 +378,7 @@ export class Game {
     });
 
     await countdown.start();
+    this.gameState.isCountdownActive = false;
     this.gameLoop();
   }
 }

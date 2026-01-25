@@ -19,6 +19,7 @@ export class GameState {
     this.status = "playing";
     this.gameTime = parseFloat(localStorage.getItem("savedGameTime")) || 0;
     this.isPaused = false;
+    this.isCountdownActive = false;
     this.hasPendingSpawns = false;
 
     this.bullets = [];
