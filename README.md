@@ -17,7 +17,7 @@ A modern web-based remake of the classic Chicken Invaders game, built with vanil
 
 ### How to Play
 
-- **Move**: Arrow Keys or WASD
+- **Move**: Arrow Keys 
 - **Shoot**: Spacebar
 - **Pause**: P or ESC
 - **Objective**: Survive all waves, collect power-ups, avoid enemy fire, and achieve the highest score!
