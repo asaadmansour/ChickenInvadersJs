@@ -27,6 +27,7 @@ export class Game {
     this.waveController = new WaveController();
 
     this.animationFrameId = null;
+    this.isTransitioningWave = false;
 
     this.setupControls();
     this.bindPauseMenu();
@@ -278,6 +279,9 @@ export class Game {
   }
 
   checkAndAdvanceWave() {
+    // Skip check if we're already transitioning to a new wave
+    if (this.isTransitioningWave) return;
+
     let waveCompleted = false;
     switch (this.gameState.currentWave) {
       case 1:
@@ -307,14 +311,56 @@ export class Game {
         }
         break;
       default:
+        // Wave 5 or beyond - game complete
         this.handleGameComplete();
         return;
     }
 
     if (waveCompleted) {
+      // Check if this is the last wave (wave 4)
+      if (this.gameState.currentWave === 4) {
+        this.handleGameComplete();
+        return;
+      }
+      
+      this.isTransitioningWave = true;
       this.gameState.incrementWaveNumber();
-      this.waveController.createWave(this.gameState);
+      this.showWaveIntroOverlay();
+      // Delay wave creation until overlay animation is done
+      setTimeout(() => {
+        this.waveController.createWave(this.gameState);
+        this.isTransitioningWave = false;
+      }, 2400);
     }
+  }
+
+  showWaveIntroOverlay() {
+    const waveNumber = this.gameState.currentWave;
+    const waveConfig = WAVE_CONFIGS[waveNumber - 1];
+    const waveTitle = waveConfig?.title || "WAVE " + waveNumber;
+
+    const overlay = document.getElementById("waveIntroOverlay");
+    const numberDisplay = document.getElementById("waveNumber");
+    const titleDisplay = document.getElementById("waveTitle");
+
+    if (!overlay || !numberDisplay || !titleDisplay) return;
+
+    overlay.classList.remove("hidden");
+    numberDisplay.textContent = `WAVE ${waveNumber}`;
+    numberDisplay.classList.add("show");
+    titleDisplay.classList.remove("show");
+    titleDisplay.textContent = waveTitle;
+
+    setTimeout(() => {
+      numberDisplay.classList.remove("show");
+      titleDisplay.classList.add("show");
+    }, 1200);
+
+    setTimeout(() => {
+      overlay.classList.add("hidden");
+      numberDisplay.classList.remove("show");
+      titleDisplay.classList.remove("show");
+    }, 2400);
   }
 
   handlePlayerHit() {
@@ -402,7 +448,13 @@ export class Game {
       return;
     }
 
-    this.gameLoop();
+    // Show Wave 1 intro before starting game loop
+    this.showWaveIntroOverlay();
+
+    // Start game loop after intro delay
+    setTimeout(() => {
+      this.gameLoop();
+    }, 2400);
   }
 }
 
