@@ -335,6 +335,8 @@ export class Game {
   }
 
   showWaveIntroOverlay() {
+    this.gameState.isWaveIntroActive = true;
+
     const waveNumber = this.gameState.currentWave;
     const waveConfig = WAVE_CONFIGS[waveNumber - 1];
     const waveTitle = waveConfig?.title || "WAVE " + waveNumber;
@@ -360,6 +362,7 @@ export class Game {
       overlay.classList.add("hidden");
       numberDisplay.classList.remove("show");
       titleDisplay.classList.remove("show");
+      this.gameState.isWaveIntroActive = false;
     }, 2400);
   }
 
@@ -391,7 +394,7 @@ export class Game {
   }
 
   pause() {
-    if (this.gameState.isPaused || this.gameState.isCountdownActive) return;
+    if (this.gameState.isPaused || this.gameState.isCountdownActive || this.gameState.isWaveIntroActive) return;
 
     this.gameState.pause();
     this.audioManager.pauseMusic();

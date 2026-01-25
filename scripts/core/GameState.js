@@ -20,6 +20,7 @@ export class GameState {
     this.gameTime = parseFloat(localStorage.getItem("savedGameTime")) || 0;
     this.isPaused = false;
     this.isCountdownActive = false;
+    this.isWaveIntroActive = false;
     this.hasPendingSpawns = false;
 
     this.spawner = {
