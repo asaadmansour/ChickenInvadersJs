@@ -145,76 +145,9 @@ createWave(gameState) {
 
 **Why**: Wave creation involves complex logic with different enemy types, spawn patterns, and configurations. The factory centralizes this complexity.
 
-### 4. **Observer Pattern (Event-Driven)**
 
-**Used in**: Input handling and UI updates
 
-The `InputHandler` observes keyboard events and notifies the game of actions, while `HUDManager` observes game state changes.
-
-```javascript
-// InputHandler.js
-bindKey(key, callback) {
-  this.keyBindings[key] = callback;
-}
-
-processInput() {
-  Object.entries(this.activeKeys).forEach(([key, isActive]) => {
-    if (isActive && this.keyBindings[key]) {
-      this.keyBindings[key]();
-    }
-  });
-}
-```
-
-**Why**: Decouples input detection from game actions, making controls flexible and easy to rebind.
-
-### 5. **State Pattern**
-
-**Used in**: `GameState` for managing game status
-
-The game has distinct states (playing, paused, gameover, complete) with different behaviors.
-
-```javascript
-// GameState.js
-export class GameState {
-  constructor() {
-    this.status = "playing"; // playing | paused | gameover | complete
-    this.isPaused = false;
-    this.isCountdownActive = false;
-    this.isWaveIntroActive = false;
-  }
-  
-  pause() { this.isPaused = true; }
-  resume() { this.isPaused = false; }
-}
-```
-
-**Why**: Different game states require different update logic. For example, the game loop doesn't run when paused or during wave transitions.
-
-### 6. **Strategy Pattern**
-
-**Used in**: Different chicken movement patterns
-
-Each chicken type implements its own movement strategy while sharing a common interface.
-
-```javascript
-// Chicken.js - Sinusoidal movement
-move(gameTime) {
-  this.x += this.moveSpeed * this.direction;
-  this.y += Math.sin(gameTime * this.TIME_INCREMENT) * this.VERTICAL_RANGE;
-  this.bounceHorizontally();
-}
-
-// BossChicken.js - Linear movement
-move() {
-  this.x += this.moveSpeed * this.direction;
-  this.bounceHorizontally();
-}
-```
-
-**Why**: Different enemy types need unique movement behaviors while maintaining polymorphism.
-
-### 7. **Module Pattern**
+### 4. **Module Pattern**
 
 **Used Throughout**: ES6 modules for encapsulation
 
